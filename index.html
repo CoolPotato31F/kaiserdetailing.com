@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kaiser's Detail Co. | Auto Detailing · Plainfield, IL</title>
+<link rel="icon" type="image/png" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -32,7 +33,7 @@ body {
   overflow-x: hidden;
 }
 a { color: inherit; text-decoration: none; }
-img { display: block; width: 100%; }
+img { display: block; width: 100%; image-rendering: auto; transform: translateZ(0); backface-visibility: hidden; }
 
 /* ── TYPOGRAPHY HELPERS ── */
 .eyebrow {
@@ -212,7 +213,7 @@ nav {
   overflow: hidden; cursor: ew-resize; user-select: none;
 }
 .ba-b, .ba-a { position: absolute; inset: 0; background-size: cover; background-position: center; }
-.ba-b img, .ba-a img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.ba-b img, .ba-a img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; image-rendering: auto; -webkit-font-smoothing: antialiased; transform: translateZ(0); backface-visibility: hidden; }
 .ba-b { clip-path: inset(0 50% 0 0); }
 .ba-a { clip-path: inset(0 0 0 50%); }
 .ba-div {
@@ -498,7 +499,10 @@ footer {
 
 <!-- NAV -->
 <nav>
-  <div class="nav-brand">Kaiser's <span>Detail Co.</span></div>
+  <div class="nav-brand" style="display:flex;align-items:center;gap:10px;">
+    <img src="favicon.png" alt="Logo" style="height:36px;width:auto;display:inline-block;image-rendering:auto;transform:translateZ(0);">
+    Kaiser's <span>Detail Co.</span>
+  </div>
   <ul class="nav-links">
     <li><a href="#before-after">Results</a></li>
     <li><a href="#services">Services</a></li>
@@ -634,6 +638,20 @@ footer {
         <span class="ba-pill after">After</span>
       </div>
     </div>
+
+    <div class="slider-card">
+      <div class="sl-bar"><h3>Engine Bay Cleaning</h3><span class="sl-hint">↔ drag</span></div>
+      <div class="ba-wrap" data-slider>
+        <div class="ba-b tb"><img src="BeforeEngineBay.png"></div>
+        <div class="ba-a ta"><img src="AfterEngineBay.png"></div>
+        <div class="ba-div" data-div></div>
+        <div class="ba-knob" data-knob>
+          <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
+        </div>
+        <span class="ba-pill before">Before</span>
+        <span class="ba-pill after">After</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -699,7 +717,7 @@ footer {
           <span class="addon-cost">+$25</span>
         </div>
         <div class="addon-row" onclick="tick(this)">
-          <label><input type="checkbox" data-p="100"> Wax</label>
+          <label><input type="checkbox" data-p="50"> Wax</label>
           <span class="addon-cost">+$50</span>
         </div>
         <div class="addon-row" onclick="tick(this)">
@@ -724,51 +742,6 @@ footer {
   </div>
 </section>
 
-<!-- GALLERY -->
-<section id="gallery">
-  <div class="eyebrow">Previous Work</div>
-  <h2 class="display">Results That <em>Speak</em></h2>
-  <p class="lead">Real cars. Real transformations. Replace placeholders with your own photos as you build your portfolio.</p>
-
-  <div class="gallery-grid">
-    <div class="gal-item">
-      <div class="gal-ph">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-        Add photo
-      </div>
-      <div class="gal-cap">Interior Detail</div>
-    </div>
-    <div class="gal-item">
-      <div class="gal-ph">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-        Add photo
-      </div>
-      <div class="gal-cap">Exterior Detail</div>
-    </div>
-    <div class="gal-item">
-      <div class="gal-ph">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-        Add photo
-      </div>
-      <div class="gal-cap">Tire Shine &amp; Bay</div>
-    </div>
-    <div class="gal-item">
-      <div class="gal-ph">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-        Add photo
-      </div>
-      <div class="gal-cap">Headlight Restoration</div>
-    </div>
-    <div class="gal-item">
-      <div class="gal-ph">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-        Add photo
-      </div>
-      <div class="gal-cap">Trunk Cleaning</div>
-    </div>
-  </div>
-  <p class="gal-note">📸 <strong>To add photos:</strong> replace each <code>.gal-ph</code> div with <code>&lt;img src="your-photo.jpg"&gt;</code> inside the <code>.gal-item</code>.</p>
-</section>
 
 <!-- BOOKING SECTION -->
 <section id="booking">
