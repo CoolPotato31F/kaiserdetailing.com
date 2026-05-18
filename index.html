@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaiser's Detail Co. | Auto Detailing · Plainfield, IL</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:    #faf7f2;
+  --cream2:   #f2ede4;
+  --white:    #ffffff;
+  --charcoal: #18181a;
+  --ink:      #2e2d2b;
+  --muted:    #6b6860;
+  --rule:     #e0d9ce;
+  --gold:     #b87414;
+  --gold-h:   #9a600e;
+  --gold-bg:  #fdf3e0;
+  --gold-bd:  #e8c47a;
+  --r:        5px;
+  --rl:       12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--cream);
+  color: var(--charcoal);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; width: 100%; }
+
+/* ── TYPOGRAPHY HELPERS ── */
+.eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.6rem;
+}
+.display {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 700; line-height: 1.08;
+  color: var(--charcoal); margin-bottom: 1rem;
+}
+.display em { font-style: italic; color: var(--gold); }
+.lead { font-size: 1rem; color: var(--muted); line-height: 1.75; max-width: 520px; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 62px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5%;
+  background: rgba(250,247,242,0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+}
+.nav-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem; font-weight: 700;
+  color: var(--charcoal); letter-spacing: 0.3px;
+}
+.nav-brand span { color: var(--gold); }
+.nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+.nav-links a {
+  font-size: 0.8rem; font-weight: 500;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--muted); transition: color 0.18s;
+}
+.nav-links a:hover { color: var(--charcoal); }
+.nav-book {
+  background: var(--gold); color: var(--white) !important;
+  padding: 9px 22px; border-radius: var(--r);
+  font-weight: 600 !important; font-size: 0.8rem !important;
+  letter-spacing: 1px; transition: background 0.18s !important;
+}
+.nav-book:hover { background: var(--gold-h) !important; }
+.ham { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+.ham span { width: 22px; height: 1.5px; background: var(--charcoal); transition: 0.25s; }
+.mob-nav {
+  display: none; position: fixed; top: 62px; left: 0; right: 0; z-index: 199;
+  background: var(--white); border-bottom: 1px solid var(--rule);
+  padding: 1.5rem 5%; flex-direction: column; gap: 1.1rem;
+}
+.mob-nav.open { display: flex; }
+.mob-nav a { font-size: 0.88rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.mob-nav a.mob-book { color: var(--gold); font-weight: 600; }
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh;
+  padding: 100px 5% 80px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center; gap: 4rem;
+  position: relative; overflow: hidden;
+  background: var(--white);
+}
+#hero::after {
+  content: '';
+  position: absolute; right: -6%; top: -8%; bottom: -8%;
+  width: 52%; background: var(--cream);
+  clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+  z-index: 0;
+}
+.hero-text { position: relative; z-index: 1; }
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 6vw, 5.2rem);
+  font-weight: 700; line-height: 1.04;
+  margin-bottom: 1.4rem; color: var(--charcoal);
+}
+.hero-title em { font-style: italic; color: var(--gold); display: block; }
+.hero-sub { font-size: 1rem; color: var(--muted); line-height: 1.8; margin-bottom: 0.8rem; max-width: 460px; }
+.hero-sub strong { color: var(--charcoal); font-weight: 600; }
+.college-strip {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--gold-bg); border: 1px solid var(--gold-bd);
+  border-radius: 100px; padding: 7px 16px;
+  font-size: 0.78rem; font-weight: 600; color: var(--gold);
+  margin-bottom: 2rem; letter-spacing: 0.3px;
+}
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+.btn-book {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--gold); color: var(--white);
+  padding: 15px 32px; border-radius: var(--r);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600; font-size: 0.9rem; letter-spacing: 0.5px;
+  transition: background 0.18s, transform 0.15s;
+  border: none; cursor: pointer;
+}
+.btn-book:hover { background: var(--gold-h); transform: translateY(-1px); }
+.btn-book svg { width: 16px; height: 16px; flex-shrink: 0; }
+.btn-ghost {
+  display: inline-flex; align-items: center;
+  background: transparent; color: var(--charcoal);
+  padding: 15px 28px; border-radius: var(--r);
+  font-weight: 500; font-size: 0.9rem;
+  border: 1.5px solid var(--rule); transition: 0.18s; cursor: pointer;
+}
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+.hero-right {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+.stat-tile {
+  background: var(--white); border: 1px solid var(--rule);
+  border-radius: var(--rl); padding: 1.6rem 1.4rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.stat-tile:hover { border-color: var(--gold-bd); transform: translateY(-2px); }
+.stat-tile .num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem; font-weight: 700;
+  color: var(--gold); line-height: 1; margin-bottom: 0.35rem;
+}
+.stat-tile .label { font-size: 0.78rem; font-weight: 500; color: var(--muted); letter-spacing: 0.3px; }
+.stat-tile.span2 { grid-column: span 2; display: flex; align-items: center; gap: 1.2rem; }
+.stat-tile.span2 .num { font-size: 1.5rem; flex-shrink: 0; }
+.stat-tile.span2 p { font-size: 0.83rem; color: var(--muted); line-height: 1.6; }
+
+/* ── BOOK BANNER ── */
+#book-banner {
+  background: var(--gold);
+  padding: 3rem 5%;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 2rem; flex-wrap: wrap;
+}
+.book-banner-text h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem; color: var(--white); font-weight: 700; line-height: 1.15;
+}
+.book-banner-text p { font-size: 0.9rem; color: rgba(255,255,255,0.82); margin-top: 0.4rem; }
+.btn-book-white {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--white); color: var(--gold);
+  padding: 15px 32px; border-radius: var(--r);
+  font-weight: 700; font-size: 0.92rem; letter-spacing: 0.5px;
+  white-space: nowrap; transition: 0.18s; flex-shrink: 0;
+}
+.btn-book-white:hover { background: var(--cream); }
+.btn-book-white svg { width: 16px; height: 16px; }
+
+/* ── BEFORE/AFTER ── */
+#before-after { padding: 100px 5%; background: var(--cream2); }
+.section-head { margin-bottom: 3rem; }
+.sliders-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem;
+}
+.slider-card {
+  border-radius: var(--rl); overflow: hidden;
+  border: 1px solid var(--rule); background: var(--white);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+.sl-bar {
+  padding: 13px 16px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--rule); background: var(--white);
+}
+.sl-bar h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.9rem; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--charcoal);
+}
+.sl-hint { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.5px; }
+.ba-wrap {
+  position: relative; width: 100%; height: 210px;
+  overflow: hidden; cursor: ew-resize; user-select: none;
+}
+.ba-b, .ba-a { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.ba-a { clip-path: inset(0 50% 0 0); }
+.ba-div {
+  position: absolute; top: 0; bottom: 0; left: 50%;
+  width: 2px; background: var(--gold); transform: translateX(-50%); z-index: 3;
+}
+.ba-knob {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--gold); z-index: 4;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 4px rgba(184,116,20,0.22), 0 2px 8px rgba(0,0,0,0.15);
+}
+.ba-knob svg { width: 14px; height: 14px; }
+.ba-pill {
+  position: absolute; bottom: 10px; z-index: 5;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; padding: 3px 9px; border-radius: 100px;
+  pointer-events: none;
+}
+.ba-pill.before { left: 10px; background: rgba(24,24,26,0.65); color: #fff; }
+.ba-pill.after  { right: 10px; background: var(--gold); color: #fff; }
+.photo-hint {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase;
+  color: rgba(24,24,26,0.2); text-align: center; padding: 1rem;
+}
+/* placeholder fills */
+.ib { background: linear-gradient(135deg,#c9b89a,#b8a484 40%,#a89070 70%,#c4aa88); }
+.ia { background: linear-gradient(135deg,#dce4ef,#c8d6e8 40%,#b8ccde 70%,#d4e0ee); }
+.hb { background: linear-gradient(135deg,#d4c494,#c8b870 40%,#bca84e 70%,#d0bc7a); }
+.ha { background: linear-gradient(135deg,#ddeeff,#c8e4fc 40%,#b8d8f8 70%,#cce8ff); }
+.tb { background: linear-gradient(135deg,#bba888,#aa9470 40%,#9e8460,#b4987c); }
+.ta { background: linear-gradient(135deg,#e8e4de,#d8d4ce 40%,#ccc8c0,#dedad4); }
+.tib{ background: linear-gradient(135deg,#948070,#806c5e 40%,#6e5c4c,#887060); }
+.tia{ background: linear-gradient(135deg,#1a1a1a,#0e0e0e 50%,#161616); }
+
+/* ── SERVICES ── */
+#services { padding: 100px 5%; background: var(--white); }
+.services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.svc-card {
+  border-radius: var(--rl); border: 1px solid var(--rule);
+  overflow: hidden; background: var(--cream);
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.svc-card:hover {
+  border-color: var(--gold-bd); transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(184,116,20,0.1);
+}
+.svc-head {
+  padding: 1.8rem; background: var(--white);
+  border-bottom: 1px solid var(--rule);
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.svc-head h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; font-weight: 700; color: var(--charcoal);
+}
+.svc-head p { font-size: 0.8rem; color: var(--muted); margin-top: 3px; }
+.svc-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 700; color: var(--gold); line-height: 1;
+}
+.svc-price sup { font-size: 1rem; vertical-align: super; }
+.svc-body { padding: 1.5rem 1.8rem; }
+.inc-list { list-style: none; margin-bottom: 1.4rem; }
+.inc-list li {
+  font-size: 0.86rem; color: var(--ink);
+  padding: 6px 0; display: flex; align-items: flex-start; gap: 9px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.inc-list li::before {
+  content: '✓'; color: var(--gold); font-weight: 700;
+  flex-shrink: 0; margin-top: 1px;
+}
+.addon-head { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.7rem; }
+.addon-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 12px; border-radius: var(--r);
+  background: var(--white); border: 1px solid var(--rule);
+  margin-bottom: 6px; cursor: pointer; transition: 0.15s;
+}
+.addon-row:hover { border-color: var(--gold-bd); }
+.addon-row label { font-size: 0.84rem; color: var(--ink); cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.addon-row input { accent-color: var(--gold); width: 14px; height: 14px; cursor: pointer; }
+.addon-cost { font-size: 0.82rem; color: var(--gold); font-weight: 600; }
+.svc-total {
+  margin-top: 1.2rem; padding-top: 1rem;
+  border-top: 1.5px solid var(--rule);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.total-lbl { font-size: 0.75rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.total-num { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 700; color: var(--gold); }
+.combo-card {
+  grid-column: span 2; text-align: center;
+  padding: 1.6rem; border-radius: var(--rl);
+  background: var(--gold-bg); border: 1px solid var(--gold-bd);
+  font-size: 0.9rem; color: var(--ink); line-height: 1.7;
+}
+.combo-card strong { color: var(--gold); }
+
+/* ── GALLERY ── */
+#gallery { padding: 100px 5%; background: var(--cream2); }
+.gallery-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-top: 2rem;
+}
+.gal-item {
+  border-radius: var(--rl); overflow: hidden;
+  border: 1px solid var(--rule); background: var(--white);
+  aspect-ratio: 4/3; position: relative;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.gal-item:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+.gal-item img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.gal-ph {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  font-size: 0.62rem; letter-spacing: 2px; text-transform: uppercase; color: var(--rule);
+}
+.gal-cap {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 9px 14px; font-size: 0.7rem; color: var(--white);
+  background: linear-gradient(transparent, rgba(24,24,26,0.72));
+  letter-spacing: 0.5px;
+}
+.gal-item:nth-child(1) { grid-column: span 2; }
+.gal-item:nth-child(4) { grid-column: span 2; }
+.gal-note { text-align: center; margin-top: 1.4rem; font-size: 0.82rem; color: var(--muted); }
+.gal-note strong { color: var(--charcoal); }
+
+/* ── BOOK SECTION ── */
+#booking { padding: 100px 5%; background: var(--white); }
+.booking-layout {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 5rem;
+  align-items: center; max-width: 1100px; margin: 2.5rem auto 0;
+}
+.booking-left p { font-size: 0.95rem; color: var(--muted); line-height: 1.8; margin-bottom: 1.2rem; }
+.how-list { list-style: none; margin: 1.5rem 0; }
+.how-list li {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 12px 0; border-bottom: 1px solid var(--rule);
+  font-size: 0.88rem; color: var(--ink); line-height: 1.5;
+}
+.how-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--gold-bg); border: 1px solid var(--gold-bd);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 700; color: var(--gold); flex-shrink: 0;
+}
+.booksy-cta-card {
+  background: var(--cream); border: 1.5px solid var(--gold-bd);
+  border-radius: var(--rl); padding: 2.5rem;
+  text-align: center;
+}
+.booksy-logo-area {
+  margin-bottom: 1.4rem;
+}
+.booksy-logo-area .b-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; font-weight: 700; color: var(--charcoal);
+}
+.booksy-logo-area .b-handle {
+  font-size: 0.8rem; color: var(--muted); margin-top: 3px;
+}
+.booksy-cta-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.75; margin-bottom: 1.8rem; }
+.booksy-perks {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 2rem;
+}
+.perk {
+  background: var(--white); border: 1px solid var(--rule);
+  border-radius: var(--r); padding: 10px 12px;
+  font-size: 0.78rem; color: var(--ink); font-weight: 500;
+  display: flex; align-items: center; gap: 7px;
+}
+.perk span { font-size: 1rem; }
+.btn-booksy {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; background: var(--gold); color: var(--white);
+  padding: 16px 28px; border-radius: var(--r);
+  font-weight: 700; font-size: 0.95rem; letter-spacing: 0.5px;
+  transition: background 0.18s, transform 0.15s;
+}
+.btn-booksy:hover { background: var(--gold-h); transform: translateY(-1px); }
+.btn-booksy svg { width: 16px; height: 16px; }
+.booksy-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.8rem; }
+
+/* ── CONTACT ── */
+#contact { padding: 100px 5%; background: var(--cream2); }
+.contact-grid {
+  display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem;
+  max-width: 1100px; margin: 2.5rem auto 0; align-items: start;
+}
+.contact-pill {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 1.5rem;
+}
+.c-icon {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--white); border: 1px solid var(--rule);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.c-icon-detail h4 { font-size: 0.7rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.c-icon-detail p { font-size: 0.88rem; color: var(--charcoal); }
+.c-icon-detail a { color: var(--gold); }
+.contact-form {
+  background: var(--white); border: 1px solid var(--rule);
+  border-radius: var(--rl); padding: 2.5rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+}
+.form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.fg { margin-bottom: 1.1rem; }
+.fg label { display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+.fg input, .fg select, .fg textarea {
+  width: 100%; padding: 11px 13px;
+  background: var(--cream); border: 1px solid var(--rule);
+  border-radius: var(--r); color: var(--charcoal);
+  font-family: 'Outfit', sans-serif; font-size: 0.9rem;
+  transition: border-color 0.18s, background 0.18s;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus {
+  outline: none; border-color: var(--gold); background: var(--white);
+}
+.fg select option { background: var(--white); }
+.fg textarea { resize: vertical; min-height: 100px; }
+.form-submit {
+  width: 100%; padding: 14px; border: none; border-radius: var(--r);
+  background: var(--gold); color: var(--white);
+  font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.9rem;
+  letter-spacing: 0.5px; cursor: pointer; transition: 0.18s;
+}
+.form-submit:hover { background: var(--gold-h); transform: translateY(-1px); }
+.form-ok { display: none; text-align: center; padding: 2rem; font-size: 0.95rem; color: var(--gold); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--charcoal); color: rgba(255,255,255,0.7);
+  padding: 3.5rem 5%;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;
+}
+.ft-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem; font-weight: 700; color: var(--white); margin-bottom: 0.4rem;
+}
+.ft-brand span { color: var(--gold); }
+.ft-tag { font-size: 0.78rem; color: rgba(255,255,255,0.45); line-height: 1.6; }
+.ft-right { text-align: right; }
+.ft-right a { color: rgba(255,255,255,0.6); font-size: 0.82rem; line-height: 1.9; display: block; transition: color 0.15s; }
+.ft-right a:hover { color: var(--gold); }
+.ft-right p { font-size: 0.72rem; color: rgba(255,255,255,0.3); margin-top: 0.8rem; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  #hero { grid-template-columns: 1fr; }
+  #hero::after { display: none; }
+  .hero-right { margin-top: 1rem; }
+  .booking-layout { grid-template-columns: 1fr; gap: 3rem; }
+  .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .services-grid { grid-template-columns: 1fr; }
+  .combo-card { grid-column: span 1; }
+  footer { grid-template-columns: 1fr; }
+  .ft-right { text-align: left; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .ham { display: flex; }
+  .gallery-grid { grid-template-columns: 1fr 1fr; }
+  .gal-item:nth-child(1), .gal-item:nth-child(4) { grid-column: span 1; }
+  #book-banner { flex-direction: column; text-align: center; }
+}
+@media (max-width: 520px) {
+  .sliders-grid { grid-template-columns: 1fr; }
+  .gallery-grid { grid-template-columns: 1fr; }
+  .form-2col { grid-template-columns: 1fr; }
+  .stat-tile.span2 { flex-direction: column; text-align: center; }
+  .hero-actions { flex-direction: column; }
+  .booksy-perks { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Kaiser's <span>Detail Co.</span></div>
+  <ul class="nav-links">
+    <li><a href="#before-after">Results</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#booking">Book</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="https://kaiserdetailco.booksy.com/a" target="_blank" class="nav-book">Book Now ↗</a></li>
+  </ul>
+  <div class="ham" id="ham"><span></span><span></span><span></span></div>
+</nav>
+<div class="mob-nav" id="mob-nav">
+  <a href="#before-after">Results</a>
+  <a href="#services">Services</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#booking">Book</a>
+  <a href="#contact">Contact</a>
+  <a href="https://kaiserdetailco.booksy.com/a" target="_blank" class="mob-book">Book on Booksy ↗</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-text">
+    <div class="eyebrow">Plainfield, Illinois · Auto Detailing</div>
+    <h1 class="hero-title">
+      Your Car,<br>
+      <em>Spotless.</em>
+    </h1>
+    <div class="college-strip">🎓 Supporting a local student — book local, drive clean</div>
+    <p class="hero-sub">
+      Kaiser's Detail Co. delivers meticulous interior &amp; exterior detailing. <strong>Book local, support a student, and drive away spotless.</strong>
+    </p>
+    <div class="hero-actions">
+      <a href="https://kaiserdetailco.booksy.com/a" target="_blank" class="btn-book">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 1h3v3M14 1l-7 7M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9"/></svg>
+        Book on Booksy
+      </a>
+      <a href="#services" class="btn-ghost">View Pricing</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="stat-tile">
+      <div class="num">$75</div>
+      <div class="label">Starting price</div>
+    </div>
+    <div class="stat-tile">
+      <div class="num">1–2hr</div>
+      <div class="label">Per vehicle</div>
+    </div>
+    <div class="stat-tile span2">
+      <div class="num">🎓</div>
+      <div>
+        <div class="label">Local student hustle</div>
+        <p>A college student putting in the work to build something real. When you book, you're supporting your community.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING BANNER -->
+<div id="book-banner">
+  <div class="book-banner-text">
+    <h2>Ready to book? It takes 60 seconds.</h2>
+    <p>Pick your service, choose a time, and you're set — right through Booksy.</p>
+  </div>
+  <a href="https://kaiserdetailco.booksy.com/a" target="_blank" class="btn-book-white">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M11 1h3v3M14 1l-7 7M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9"/></svg>
+    Open Booksy Calendar
+  </a>
+</div>
+
+<!-- BEFORE / AFTER -->
+<section id="before-after">
+  <div class="section-head">
+    <div class="eyebrow">The Difference</div>
+    <h2 class="display">See the <em>Transformation</em></h2>
+    <p class="lead">Drag the handle to compare before &amp; after on each service. This is what precision looks like.</p>
+  </div>
+
+  <div class="sliders-grid">
+    <div class="slider-card">
+      <div class="sl-bar"><h3>Interior Detail</h3><span class="sl-hint">↔ drag</span></div>
+      <div class="ba-wrap" data-slider>
+        <div class="ba-b ib"><div class="photo-hint">Add your before photo here</div></div>
+        <div class="ba-a ia"><div class="photo-hint">Add your after photo here</div></div>
+        <div class="ba-div" data-div></div>
+        <div class="ba-knob" data-knob>
+          <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
+        </div>
+        <span class="ba-pill before">Before</span>
+        <span class="ba-pill after">After</span>
+      </div>
+    </div>
+
+    <div class="slider-card">
+      <div class="sl-bar"><h3>Headlight Restore</h3><span class="sl-hint">↔ drag</span></div>
+      <div class="ba-wrap" data-slider>
+        <div class="ba-b hb"><div class="photo-hint">Add your before photo here</div></div>
+        <div class="ba-a ha"><div class="photo-hint">Add your after photo here</div></div>
+        <div class="ba-div" data-div></div>
+        <div class="ba-knob" data-knob>
+          <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
+        </div>
+        <span class="ba-pill before">Before</span>
+        <span class="ba-pill after">After</span>
+      </div>
+    </div>
+
+    <div class="slider-card">
+      <div class="sl-bar"><h3>Trunk Cleaning</h3><span class="sl-hint">↔ drag</span></div>
+      <div class="ba-wrap" data-slider>
+        <div class="ba-b tb"><div class="photo-hint">Add your before photo here</div></div>
+        <div class="ba-a ta"><div class="photo-hint">Add your after photo here</div></div>
+        <div class="ba-div" data-div></div>
+        <div class="ba-knob" data-knob>
+          <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
+        </div>
+        <span class="ba-pill before">Before</span>
+        <span class="ba-pill after">After</span>
+      </div>
+    </div>
+
+    <div class="slider-card">
+      <div class="sl-bar"><h3>Tire &amp; Bay Detail</h3><span class="sl-hint">↔ drag</span></div>
+      <div class="ba-wrap" data-slider>
+        <div class="ba-b tib"><div class="photo-hint">Add your before photo here</div></div>
+        <div class="ba-a tia"><div class="photo-hint">Add your after photo here</div></div>
+        <div class="ba-div" data-div></div>
+        <div class="ba-knob" data-knob>
+          <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
+        </div>
+        <span class="ba-pill before">Before</span>
+        <span class="ba-pill after">After</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="eyebrow">What We Offer</div>
+  <h2 class="display">Services &amp; <em>Pricing</em></h2>
+  <p class="lead" style="margin-bottom:3rem;">Interior, exterior, or both — plus any add-ons you need. Check boxes below to see your total build up live.</p>
+
+  <div class="services-grid">
+
+    <div class="svc-card">
+      <div class="svc-head">
+        <div>
+          <h3>Interior Detail</h3>
+          <p>Full cabin cleaning &amp; care</p>
+        </div>
+        <div class="svc-price"><sup>$</sup>75</div>
+      </div>
+      <div class="svc-body">
+        <ul class="inc-list">
+          <li>Vacuuming seats, floors &amp; crevices</li>
+          <li>Dashboard, console &amp; door panel wipe-down</li>
+          <li>Interior glass cleaning</li>
+          <li>Odor treatment &amp; freshening</li>
+          <li>1–2 hours of careful attention</li>
+        </ul>
+        <div class="addon-head">Add-Ons</div>
+        <div class="addon-row" onclick="tick(this)">
+          <label><input type="checkbox" data-p="30"> Trunk Cleaning</label>
+          <span class="addon-cost">+$30</span>
+        </div>
+        <div class="addon-row" onclick="tick(this)">
+          <label><input type="checkbox" data-p="30"> Carpet Shampoo</label>
+          <span class="addon-cost">+$30</span>
+        </div>
+        <div class="svc-total">
+          <span class="total-lbl">Your Total</span>
+          <span class="total-num" data-base="75">$75</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="svc-card">
+      <div class="svc-head">
+        <div>
+          <h3>Exterior Detail</h3>
+          <p>Full exterior clean &amp; treatment</p>
+        </div>
+        <div class="svc-price"><sup>$</sup>75</div>
+      </div>
+      <div class="svc-body">
+        <ul class="inc-list">
+          <li>Hand wash &amp; rinse</li>
+          <li>Wheel &amp; rim cleaning</li>
+          <li>Window exterior cleaning</li>
+          <li>Door jamb wipe-down</li>
+          <li>1–2 hours of careful attention</li>
+        </ul>
+        <div class="addon-head">Add-Ons</div>
+        <div class="addon-row" onclick="tick(this)">
+          <label><input type="checkbox" data-p="25"> Sticker / Decal Removal</label>
+          <span class="addon-cost">+$25</span>
+        </div>
+        <div class="addon-row" onclick="tick(this)">
+          <label><input type="checkbox" data-p="50"> Wax</label>
+          <span class="addon-cost">+$50</span>
+        </div>
+        <div class="addon-row" onclick="tick(this)">
+          <label><input type="checkbox" data-p="40"> Tire Shine &amp; Bay Cleaning</label>
+          <span class="addon-cost">+$40</span>
+        </div>
+        <div class="addon-row" onclick="tick(this)">
+          <label><input type="checkbox" data-p="50"> Engine Bay Cleaning</label>
+          <span class="addon-cost">+$50</span>
+        </div>
+        <div class="svc-total">
+          <span class="total-lbl">Your Total</span>
+          <span class="total-num" data-base="75">$75</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="combo-card">
+      ✨ <strong>Full Detail Bundle</strong> — Book Interior + Exterior together starting at <strong>$150</strong> for a complete top-to-bottom transformation. Mention it when booking on Booksy or drop a note in the contact form below.
+    </div>
+
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="eyebrow">Previous Work</div>
+  <h2 class="display">Results That <em>Speak</em></h2>
+  <p class="lead">Real cars. Real transformations. Replace placeholders with your own photos as you build your portfolio.</p>
+
+  <div class="gallery-grid">
+    <div class="gal-item">
+      <div class="gal-ph">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        Add photo
+      </div>
+      <div class="gal-cap">Interior Detail</div>
+    </div>
+    <div class="gal-item">
+      <div class="gal-ph">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        Add photo
+      </div>
+      <div class="gal-cap">Exterior Detail</div>
+    </div>
+    <div class="gal-item">
+      <div class="gal-ph">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        Add photo
+      </div>
+      <div class="gal-cap">Tire Shine &amp; Bay</div>
+    </div>
+    <div class="gal-item">
+      <div class="gal-ph">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        Add photo
+      </div>
+      <div class="gal-cap">Headlight Restoration</div>
+    </div>
+    <div class="gal-item">
+      <div class="gal-ph">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        Add photo
+      </div>
+      <div class="gal-cap">Trunk Cleaning</div>
+    </div>
+  </div>
+  <p class="gal-note">📸 <strong>To add photos:</strong> replace each <code>.gal-ph</code> div with <code>&lt;img src="your-photo.jpg"&gt;</code> inside the <code>.gal-item</code>.</p>
+</section>
+
+<!-- BOOKING SECTION -->
+<section id="booking">
+  <div class="eyebrow">Schedule a Visit</div>
+  <h2 class="display">Book Through <em>Booksy</em></h2>
+
+  <div class="booking-layout">
+    <div class="booking-left">
+      <p>Booksy is where you lock in your appointment. See real-time availability, pick your service, and get a confirmation instantly — no back-and-forth needed.</p>
+      <ul class="how-list">
+        <li><div class="how-num">1</div> Tap the button to open Kaiser's Booksy page</li>
+        <li><div class="how-num">2</div> Choose your service — interior, exterior, or add-ons</li>
+        <li><div class="how-num">3</div> Pick a date &amp; time that works for you</li>
+        <li><div class="how-num">4</div> Confirm — you'll get a reminder before your appointment</li>
+      </ul>
+      <p style="margin-top:1rem;">Prefer to talk first? Use the contact form below or email directly.</p>
+    </div>
+
+    <div class="booksy-cta-card">
+      <div class="booksy-logo-area">
+        <div class="b-name">Kaiser's Detail Co.</div>
+        <div class="b-handle">kaiserdetailco.booksy.com/a</div>
+      </div>
+      <p>Click below to open the live booking calendar. See available times and book your detail in under a minute.</p>
+      <div class="booksy-perks">
+        <div class="perk"><span>📅</span> Real-time availability</div>
+        <div class="perk"><span>🔔</span> Appointment reminders</div>
+        <div class="perk"><span>⚡</span> Instant confirmation</div>
+        <div class="perk"><span>🎓</span> Support local</div>
+      </div>
+      <a href="https://kaiserdetailco.booksy.com/a" target="_blank" class="btn-booksy">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M11 1h3v3M14 1l-7 7M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9"/></svg>
+        Open Booksy &amp; Book Now
+      </a>
+      <p class="booksy-note">Free to use · No account needed to view availability</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="eyebrow">Get in Touch</div>
+  <h2 class="display">Say <em>Hello</em></h2>
+  <p class="lead" style="margin-bottom:0;">Questions, custom requests, or just want to chat — I'll get back to you fast.</p>
+
+  <div class="contact-grid">
+    <div>
+      <div class="contact-pill">
+        <div class="c-icon">✉️</div>
+        <div class="c-icon-detail">
+          <h4>Email</h4>
+          <p><a href="mailto:KaoFechner@outlook.com">KaoFechner@outlook.com</a></p>
+        </div>
+      </div>
+      <div class="contact-pill">
+        <div class="c-icon">📍</div>
+        <div class="c-icon-detail">
+          <h4>Service Area</h4>
+          <p>Plainfield, IL &amp; surrounding areas</p>
+        </div>
+      </div>
+      <div class="contact-pill">
+        <div class="c-icon">⏱️</div>
+        <div class="c-icon-detail">
+          <h4>Time Per Car</h4>
+          <p>1–2 hours of focused, careful work</p>
+        </div>
+      </div>
+      <div class="contact-pill">
+        <div class="c-icon">📅</div>
+        <div class="c-icon-detail">
+          <h4>Ready to Book?</h4>
+          <p><a href="https://kaiserdetailco.booksy.com/a" target="_blank">kaiserdetailco.booksy.com/a ↗</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <form id="cform" action="https://formspree.io/f/xnjrqajr" method="POST">
+        <div class="form-2col">
+          <div class="fg">
+            <label>First Name</label>
+            <input type="text" name="first_name" placeholder="John" required>
+          </div>
+          <div class="fg">
+            <label>Last Name</label>
+            <input type="text" name="last_name" placeholder="Smith" required>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="john@example.com" required>
+        </div>
+        <div class="fg">
+          <label>Phone (optional)</label>
+          <input type="tel" name="phone" placeholder="(815) 555-0100">
+        </div>
+        <div class="fg">
+          <label>Service Interested In</label>
+          <select name="service">
+            <option value="">— Select a service —</option>
+            <option>Interior Detail ($75)</option>
+            <option>Exterior Detail ($75)</option>
+            <option>Interior + Exterior ($150)</option>
+            <option>Interior + Trunk Cleaning</option>
+            <option>Interior + Carpet Shampoo</option>
+            <option>Exterior + Wax</option>
+            <option>Exterior + Tire Shine &amp; Bay</option>
+            <option>Exterior + Engine Bay Cleaning</option>
+            <option>Exterior + Sticker Removal</option>
+            <option>Custom / Multiple Add-Ons</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Message</label>
+          <textarea name="message" placeholder="Tell me about your vehicle, what you need, or any questions..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send Message →</button>
+      </form>
+      <div class="form-ok" id="form-ok">
+        ✅ Message sent — I'll be in touch soon!<br>
+        <span style="font-size:0.8rem;color:var(--muted);">Thanks for reaching out — I'll get back to you soon!</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="ft-brand">Kaiser's <span>Detail Co.</span></div>
+    <p class="ft-tag">Professional Auto Detailing · Plainfield, IL<br>Local student, serious work, spotless results.</p>
+  </div>
+  <div class="ft-right">
+    <a href="https://kaiserdetailco.booksy.com/a" target="_blank">Book on Booksy ↗</a>
+    <a href="mailto:KaoFechner@outlook.com">KaoFechner@outlook.com</a>
+    <a href="https://kaiserdetailing.com">kaiserdetailing.com</a>
+    <p>&copy; 2025 Kaiser's Detail Co. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+// Mobile nav
+document.getElementById('ham').addEventListener('click', () => {
+  document.getElementById('mob-nav').classList.toggle('open');
+});
+document.querySelectorAll('.mob-nav a').forEach(a =>
+  a.addEventListener('click', () => document.getElementById('mob-nav').classList.remove('open'))
+);
+
+// Before/After sliders
+document.querySelectorAll('[data-slider]').forEach(w => {
+  const d = w.querySelector('[data-div]');
+  const k = w.querySelector('[data-knob]');
+  const a = w.querySelector('.ba-a');
+  let drag = false;
+  function pos(x) {
+    const r = w.getBoundingClientRect();
+    const p = Math.min(Math.max((x - r.left) / r.width, 0.02), 0.98);
+    d.style.left = k.style.left = (p * 100) + '%';
+    a.style.clipPath = 'inset(0 ' + ((1 - p) * 100) + '% 0 0)';
+  }
+  w.addEventListener('mousedown', e => { drag = true; pos(e.clientX); e.preventDefault(); });
+  window.addEventListener('mousemove', e => { if (drag) pos(e.clientX); });
+  window.addEventListener('mouseup', () => drag = false);
+  w.addEventListener('touchstart', e => { drag = true; pos(e.touches[0].clientX); }, { passive: true });
+  window.addEventListener('touchmove', e => { if (drag) pos(e.touches[0].clientX); }, { passive: true });
+  window.addEventListener('touchend', () => drag = false);
+});
+
+// Addon calculator
+function tick(row) {
+  const cb = row.querySelector('input');
+  cb.checked = !cb.checked;
+  recalc(row.closest('.svc-card'));
+}
+function recalc(card) {
+  let t = parseInt(card.querySelector('[data-base]').dataset.base);
+  card.querySelectorAll('input:checked').forEach(c => t += parseInt(c.dataset.p));
+  card.querySelector('.total-num').textContent = '$' + t;
+}
+document.querySelectorAll('.addon-row input').forEach(cb => {
+  cb.addEventListener('click', e => e.stopPropagation());
+  cb.addEventListener('change', () => recalc(cb.closest('.svc-card')));
+});
+
+// Formspree
+document.getElementById('cform').addEventListener('submit', async e => {
+  e.preventDefault();
+  try {
+    const r = await fetch(e.target.action, {
+      method: 'POST', body: new FormData(e.target),
+      headers: { Accept: 'application/json' }
+    });
+    if (r.ok) {
+      e.target.style.display = 'none';
+      document.getElementById('form-ok').style.display = 'block';
+    }
+  } catch {
+    alert('Something went wrong. Email KaoFechner@outlook.com directly.');
+  }
+});
+</script>
+</body>
+</html>
