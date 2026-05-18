@@ -212,7 +212,9 @@ nav {
   overflow: hidden; cursor: ew-resize; user-select: none;
 }
 .ba-b, .ba-a { position: absolute; inset: 0; background-size: cover; background-position: center; }
-.ba-a { clip-path: inset(0 50% 0 0); }
+.ba-b img, .ba-a img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.ba-b { clip-path: inset(0 50% 0 0); }
+.ba-a { clip-path: inset(0 0 0 50%); }
 .ba-div {
   position: absolute; top: 0; bottom: 0; left: 50%;
   width: 2px; background: var(--gold); transform: translateX(-50%); z-index: 3;
@@ -580,8 +582,8 @@ footer {
     <div class="slider-card">
       <div class="sl-bar"><h3>Interior Detail</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b ib"><div class="photo-hint">Add your before photo here</div></div>
-        <div class="ba-a ia"><div class="photo-hint">Add your after photo here</div></div>
+        <div class="ba-b ib"><img src="BeforeInterior.png"></div>
+        <div class="ba-a ia"><img src="AfterInterior.png"></div>
         <div class="ba-div" data-div></div>
         <div class="ba-knob" data-knob>
           <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
@@ -594,8 +596,8 @@ footer {
     <div class="slider-card">
       <div class="sl-bar"><h3>Headlight Restore</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b hb"><div class="photo-hint">Add your before photo here</div></div>
-        <div class="ba-a ha"><div class="photo-hint">Add your after photo here</div></div>
+        <div class="ba-b hb"><img src="BeforeHeadlight.png"></div>
+        <div class="ba-a ha"><img src="AfterHeadlight.png"></div>
         <div class="ba-div" data-div></div>
         <div class="ba-knob" data-knob>
           <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
@@ -608,8 +610,8 @@ footer {
     <div class="slider-card">
       <div class="sl-bar"><h3>Trunk Cleaning</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b tb"><div class="photo-hint">Add your before photo here</div></div>
-        <div class="ba-a ta"><div class="photo-hint">Add your after photo here</div></div>
+        <div class="ba-b tb"><img src="BeforeTrunk.png"></div>
+        <div class="ba-a ta"><img src="AfterTrunk.png"></div>
         <div class="ba-div" data-div></div>
         <div class="ba-knob" data-knob>
           <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
@@ -620,10 +622,10 @@ footer {
     </div>
 
     <div class="slider-card">
-      <div class="sl-bar"><h3>Tire &amp; Bay Detail</h3><span class="sl-hint">↔ drag</span></div>
+      <div class="sl-bar"><h3>Exterior Detail</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b tib"><div class="photo-hint">Add your before photo here</div></div>
-        <div class="ba-a tia"><div class="photo-hint">Add your after photo here</div></div>
+        <div class="ba-b tib"><img src="BeforeExterior.png"></div>
+        <div class="ba-a tia"><img src="AfterExterior.png"></div>
         <div class="ba-div" data-div></div>
         <div class="ba-knob" data-knob>
           <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
@@ -697,7 +699,7 @@ footer {
           <span class="addon-cost">+$25</span>
         </div>
         <div class="addon-row" onclick="tick(this)">
-          <label><input type="checkbox" data-p="50"> Wax</label>
+          <label><input type="checkbox" data-p="100"> Wax</label>
           <span class="addon-cost">+$50</span>
         </div>
         <div class="addon-row" onclick="tick(this)">
@@ -922,12 +924,14 @@ document.querySelectorAll('[data-slider]').forEach(w => {
   const d = w.querySelector('[data-div]');
   const k = w.querySelector('[data-knob]');
   const a = w.querySelector('.ba-a');
+  const b = w.querySelector('.ba-b');
   let drag = false;
   function pos(x) {
     const r = w.getBoundingClientRect();
     const p = Math.min(Math.max((x - r.left) / r.width, 0.02), 0.98);
     d.style.left = k.style.left = (p * 100) + '%';
-    a.style.clipPath = 'inset(0 ' + ((1 - p) * 100) + '% 0 0)';
+    b.style.clipPath = 'inset(0 ' + ((1 - p) * 100) + '% 0 0)';
+    a.style.clipPath = 'inset(0 0 0 ' + (p * 100) + '%)';
   }
   w.addEventListener('mousedown', e => { drag = true; pos(e.clientX); e.preventDefault(); });
   window.addEventListener('mousemove', e => { if (drag) pos(e.clientX); });
