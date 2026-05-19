@@ -13,7 +13,7 @@ git add .
 git commit -m "update $(date '+%Y-%m-%d %H:%M:%S')"
 
 # Push to GitHub
-git push origin main
+git push origin main --force
 
 echo "------------------------------------"
 echo "✅ Done! Changes pushed to GitHub."
