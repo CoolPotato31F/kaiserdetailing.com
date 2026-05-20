@@ -256,6 +256,7 @@ nav {
 /* ── SERVICES ── */
 #services { padding: 100px 5%; background: var(--white); }
 .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.services-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
 .svc-card {
   border-radius: var(--rl); border: 1px solid var(--rule);
   overflow: hidden; background: var(--cream);
@@ -530,9 +531,9 @@ footer {
       Your Car,<br>
       <em>Spotless.</em>
     </h1>
-    <div class="college-strip">🎓 Supporting a local student — book local, drive clean</div>
+    <div class="college-strip">🎓 Every booking funds college tuition — book local, drive clean</div>
     <p class="hero-sub">
-      Kaiser's Detail Co. delivers meticulous interior &amp; exterior detailing. <strong>Book local, support a student, and drive away spotless.</strong>
+      Kaiser's Detail Co. delivers meticulous interior &amp; exterior detailing. <strong>Every dollar you spend goes directly toward college tuition</strong> — book local, support a student's future, and drive away spotless.
     </p>
     <div class="hero-actions">
       <a href="https://kaiserdetailco.booksy.com/a" target="_blank" class="btn-book">
@@ -546,7 +547,7 @@ footer {
   <div class="hero-right">
     <div class="stat-tile">
       <div class="num">$75</div>
-      <div class="label">Starting price</div>
+      <div class="label">Exterior starting price</div>
     </div>
     <div class="stat-tile">
       <div class="num">1–2hr</div>
@@ -555,8 +556,8 @@ footer {
     <div class="stat-tile span2">
       <div class="num">🎓</div>
       <div>
-        <div class="label">Local student hustle</div>
-        <p>A college student putting in the work to build something real. When you book, you're supporting your community.</p>
+        <div class="label">100% goes to college tuition</div>
+        <p>Every booking directly funds tuition. You get a spotless car — and a local student gets closer to their degree. That's a win-win.</p>
       </div>
     </div>
   </div>
@@ -673,17 +674,18 @@ footer {
 <section id="services">
   <div class="eyebrow">What We Offer</div>
   <h2 class="display">Services &amp; <em>Pricing</em></h2>
-  <p class="lead" style="margin-bottom:3rem;">Interior, exterior, or both — plus any add-ons you need. Check boxes below to see your total build up live.</p>
+  <p class="lead" style="margin-bottom:3rem;">Interior, exterior, or both — plus any add-ons you need. Check boxes below to see your total build up live. Every dollar goes toward college tuition.</p>
 
   <div class="services-grid">
 
+    <!-- INTERIOR MAINTENANCE -->
     <div class="svc-card">
       <div class="svc-head">
         <div>
-          <h3>Interior Detail</h3>
-          <p>Full cabin cleaning &amp; care</p>
+          <h3>Interior Refresh</h3>
+          <p>Maintenance interior detail</p>
         </div>
-        <div class="svc-price"><sup>$</sup>75</div>
+        <div class="svc-price"><sup>$</sup>100</div>
       </div>
       <div class="svc-body">
         <ul class="inc-list">
@@ -691,6 +693,7 @@ footer {
           <li>Dashboard, console &amp; door panel wipe-down</li>
           <li>Interior glass cleaning</li>
           <li>Odor treatment &amp; freshening</li>
+          <li>Door pockets &amp; cup holder clean-out</li>
           <li>1–2 hours of careful attention</li>
         </ul>
         <div class="addon-head">Add-Ons</div>
@@ -699,16 +702,54 @@ footer {
           <span class="addon-cost">+$30</span>
         </div>
         <div class="addon-row" onclick="tick(this)">
-          <label><input type="checkbox" data-p="30"> Carpet Shampoo</label>
-          <span class="addon-cost">+$30</span>
+          <label><input type="checkbox" data-p="85"> Carpet Shampoo</label>
+          <span class="addon-cost">+$85</span>
+        </div>
+        <div class="addon-row" onclick="tick(this)">
+          <label><input type="checkbox" data-p="50"> Headlight Restoration</label>
+          <span class="addon-cost">+$50</span>
         </div>
         <div class="svc-total">
           <span class="total-lbl">Your Total</span>
-          <span class="total-num" data-base="75">$75</span>
+          <span class="total-num" data-base="100">$100</span>
         </div>
       </div>
     </div>
 
+    <!-- INTERIOR DEEP CLEAN -->
+    <div class="svc-card" style="border-color:var(--gold-bd);">
+      <div class="svc-head" style="background:var(--gold-bg);">
+        <div>
+          <h3>Interior Transformation</h3>
+          <p>Deep interior detail — the full works</p>
+        </div>
+        <div class="svc-price"><sup>$</sup>350</div>
+      </div>
+      <div class="svc-body">
+        <div style="display:inline-flex;align-items:center;gap:7px;background:var(--gold);color:#fff;border-radius:100px;padding:4px 12px;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1rem;">⭐ Most Thorough</div>
+        <ul class="inc-list">
+          <li>Everything in the Interior Refresh</li>
+          <li>Deep extraction vacuuming &amp; steam clean</li>
+          <li>Seat &amp; upholstery scrub-down</li>
+          <li>Carpet shampoo &amp; stain treatment included</li>
+          <li>Trunk cleaning included</li>
+          <li>Leather conditioning (if applicable)</li>
+          <li>Air vent &amp; crevice deep clean</li>
+          <li>Full odor elimination treatment</li>
+        </ul>
+        <div class="addon-head">Add-Ons</div>
+        <div class="addon-row" onclick="tick(this)">
+          <label><input type="checkbox" data-p="50"> Headlight Restoration</label>
+          <span class="addon-cost">+$50</span>
+        </div>
+        <div class="svc-total">
+          <span class="total-lbl">Your Total</span>
+          <span class="total-num" data-base="350">$350</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXTERIOR -->
     <div class="svc-card">
       <div class="svc-head">
         <div>
@@ -731,15 +772,19 @@ footer {
           <span class="addon-cost">+$25</span>
         </div>
         <div class="addon-row" onclick="tick(this)">
-          <label><input type="checkbox" data-p="50"> Wax</label>
-          <span class="addon-cost">+$50</span>
+          <label><input type="checkbox" data-p="100"> Wax</label>
+          <span class="addon-cost">+$100</span>
         </div>
         <div class="addon-row" onclick="tick(this)">
           <label><input type="checkbox" data-p="40"> Tire Shine &amp; Bay Cleaning</label>
           <span class="addon-cost">+$40</span>
         </div>
         <div class="addon-row" onclick="tick(this)">
-          <label><input type="checkbox" data-p="50"> Engine Bay Cleaning</label>
+          <label><input type="checkbox" data-p="65"> Engine Bay Cleaning</label>
+          <span class="addon-cost">+$65</span>
+        </div>
+        <div class="addon-row" onclick="tick(this)">
+          <label><input type="checkbox" data-p="50"> Headlight Restoration</label>
           <span class="addon-cost">+$50</span>
         </div>
         <div class="svc-total">
@@ -749,11 +794,16 @@ footer {
       </div>
     </div>
 
-    <div class="combo-card">
-      ✨ <strong>Full Detail Bundle</strong> — Book Interior + Exterior together starting at <strong>$150</strong> for a complete top-to-bottom transformation. Mention it when booking on Booksy or drop a note in the contact form below.
+    <div class="combo-card" style="grid-column:span 1;">
+      🎓 <strong>Supporting College</strong> — Every service you book goes directly toward tuition. You get a spotless car, a local student gets closer to graduation. Thank you for supporting the community.
     </div>
 
   </div>
+
+  <div class="combo-card" style="margin-top:1.2rem;">
+    ✨ <strong>Full Detail Bundle</strong> — Book Interior Refresh + Exterior together starting at <strong>$175</strong>, or Interior Transformation + Exterior starting at <strong>$375</strong>, for a complete top-to-bottom transformation. Mention it when booking on Booksy or drop a note in the contact form below.
+  </div>
+
 </section>
 
 
@@ -761,36 +811,27 @@ footer {
 <section id="booking">
   <div class="eyebrow">Schedule a Visit</div>
   <h2 class="display">Book Through <em>Booksy</em></h2>
+  <p class="lead" style="margin-bottom:2.5rem;">Pick your service, choose a time, and lock it in — right below. Every booking helps fund college. Thank you for supporting a local student.</p>
 
   <div class="booking-layout">
     <div class="booking-left">
-      <p>Booksy is where you lock in your appointment. See real-time availability, pick your service, and get a confirmation instantly — no back-and-forth needed.</p>
+      <p>Use the live Booksy calendar on the right to book directly. See real availability, pick your service and add-ons, and get an instant confirmation — no back-and-forth needed.</p>
       <ul class="how-list">
-        <li><div class="how-num">1</div> Tap the button to open Kaiser's Booksy page</li>
-        <li><div class="how-num">2</div> Choose your service — interior, exterior, or add-ons</li>
-        <li><div class="how-num">3</div> Pick a date &amp; time that works for you</li>
-        <li><div class="how-num">4</div> Confirm — you'll get a reminder before your appointment</li>
+        <li><div class="how-num">1</div> Select your service in the Booksy widget</li>
+        <li><div class="how-num">2</div> Choose a date &amp; time that works for you</li>
+        <li><div class="how-num">3</div> Enter your details &amp; confirm</li>
+        <li><div class="how-num">4</div> You'll get a reminder before your appointment</li>
       </ul>
-      <p style="margin-top:1rem;">Prefer to talk first? Use the contact form below or email directly.</p>
+      <div style="margin-top:1.5rem;padding:1.2rem 1.4rem;background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:var(--rl);font-size:0.88rem;line-height:1.75;color:var(--ink);">
+        🎓 <strong style="color:var(--gold);">Your booking funds college.</strong><br>
+        Every appointment goes directly toward tuition. You're not just getting a clean car — you're investing in a local student's future. That means the world.
+      </div>
+      <p style="margin-top:1.2rem;font-size:0.85rem;color:var(--muted);">Prefer to talk first? Use the contact form below or email <a href="mailto:KaoFechner@outlook.com" style="color:var(--gold);">KaoFechner@outlook.com</a>.</p>
     </div>
 
-    <div class="booksy-cta-card">
-      <div class="booksy-logo-area">
-        <div class="b-name">Kaiser's Detail Co.</div>
-        <div class="b-handle">kaiserdetailco.booksy.com/a</div>
-      </div>
-      <p>Click below to open the live booking calendar. See available times and book your detail in under a minute.</p>
-      <div class="booksy-perks">
-        <div class="perk"><span>📅</span> Real-time availability</div>
-        <div class="perk"><span>🔔</span> Appointment reminders</div>
-        <div class="perk"><span>⚡</span> Instant confirmation</div>
-        <div class="perk"><span>🎓</span> Support local</div>
-      </div>
-      <a href="https://kaiserdetailco.booksy.com/a" target="_blank" class="btn-booksy">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M11 1h3v3M14 1l-7 7M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9"/></svg>
-        Open Booksy &amp; Book Now
-      </a>
-      <p class="booksy-note">Free to use · No account needed to view availability</p>
+    <div class="booksy-cta-card" style="padding:1.5rem;">
+      <script type="text/javascript" src="https://booksy.com/widget/code.js?id=1774487&country=us&lang=en"></script>
+      <p class="booksy-note" style="margin-top:1rem;">Can't see the widget? <a href="https://kaiserdetailco.booksy.com/a" target="_blank" style="color:var(--gold);">Book directly on Booksy ↗</a></p>
     </div>
   </div>
 </section>
@@ -857,15 +898,18 @@ footer {
           <label>Service Interested In</label>
           <select name="service">
             <option value="">— Select a service —</option>
-            <option>Interior Detail ($75)</option>
+            <option>Interior Refresh — Maintenance ($100)</option>
+            <option>Interior Transformation — Deep Clean ($350)</option>
             <option>Exterior Detail ($75)</option>
-            <option>Interior + Exterior ($150)</option>
-            <option>Interior + Trunk Cleaning</option>
-            <option>Interior + Carpet Shampoo</option>
-            <option>Exterior + Wax</option>
-            <option>Exterior + Tire Shine &amp; Bay</option>
-            <option>Exterior + Engine Bay Cleaning</option>
-            <option>Exterior + Sticker Removal</option>
+            <option>Interior Refresh + Exterior ($175)</option>
+            <option>Interior Transformation + Exterior ($375)</option>
+            <option>Add-On: Trunk Cleaning (+$30)</option>
+            <option>Add-On: Carpet Shampoo (+$85)</option>
+            <option>Add-On: Headlight Restoration (+$50)</option>
+            <option>Add-On: Wax (+$100)</option>
+            <option>Add-On: Tire Shine &amp; Bay Cleaning (+$40)</option>
+            <option>Add-On: Engine Bay Cleaning (+$65)</option>
+            <option>Add-On: Sticker / Decal Removal (+$25)</option>
             <option>Custom / Multiple Add-Ons</option>
           </select>
         </div>
@@ -893,7 +937,7 @@ footer {
     <a href="https://kaiserdetailco.booksy.com/a" target="_blank">Book on Booksy ↗</a>
     <a href="mailto:KaoFechner@outlook.com">KaoFechner@outlook.com</a>
     <a href="https://kaiserdetailing.com">kaiserdetailing.com</a>
-    <p>&copy; 2025 Kaiser's Detail Co. All rights reserved.</p>
+    <p>&copy; 2025–2026 Kaiser's Detail Co. All rights reserved.</p>
   </div>
 </footer>
 
