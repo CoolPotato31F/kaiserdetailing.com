@@ -35,7 +35,7 @@ body {
 a { color: inherit; text-decoration: none; }
 img { display: block; width: 100%; image-rendering: auto; transform: translateZ(0); backface-visibility: hidden; }
 
-/* ── TYPOGRAPHY HELPERS ── */
+/* ── TYPOGRAPHY ── */
 .eyebrow {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 0.72rem; font-weight: 600;
@@ -49,7 +49,7 @@ img { display: block; width: 100%; image-rendering: auto; transform: translateZ(
   color: var(--charcoal); margin-bottom: 1rem;
 }
 .display em { font-style: italic; color: var(--gold); }
-.lead { font-size: 1rem; color: var(--muted); line-height: 1.75; max-width: 520px; }
+.lead { font-size: 1rem; color: var(--muted); line-height: 1.75; max-width: 540px; }
 
 /* ── NAV ── */
 nav {
@@ -65,6 +65,7 @@ nav {
   font-family: 'Playfair Display', serif;
   font-size: 1.25rem; font-weight: 700;
   color: var(--charcoal); letter-spacing: 0.3px;
+  display: flex; align-items: center; gap: 10px;
 }
 .nav-brand span { color: var(--gold); }
 .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
@@ -213,7 +214,7 @@ nav {
   overflow: hidden; cursor: ew-resize; user-select: none;
 }
 .ba-b, .ba-a { position: absolute; inset: 0; background-size: cover; background-position: center; }
-.ba-b img, .ba-a img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; image-rendering: auto; -webkit-font-smoothing: antialiased; transform: translateZ(0); backface-visibility: hidden; }
+.ba-b img, .ba-a img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 .ba-b { clip-path: inset(0 50% 0 0); }
 .ba-a { clip-path: inset(0 0 0 50%); }
 .ba-div {
@@ -237,13 +238,6 @@ nav {
 }
 .ba-pill.before { left: 10px; background: rgba(24,24,26,0.65); color: #fff; }
 .ba-pill.after  { right: 10px; background: var(--gold); color: #fff; }
-.photo-hint {
-  position: absolute; inset: 0; z-index: 2; pointer-events: none;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase;
-  color: rgba(24,24,26,0.2); text-align: center; padding: 1rem;
-}
-/* placeholder fills */
 .ib { background: linear-gradient(135deg,#c9b89a,#b8a484 40%,#a89070 70%,#c4aa88); }
 .ia { background: linear-gradient(135deg,#dce4ef,#c8d6e8 40%,#b8ccde 70%,#d4e0ee); }
 .hb { background: linear-gradient(135deg,#d4c494,#c8b870 40%,#bca84e 70%,#d0bc7a); }
@@ -255,69 +249,126 @@ nav {
 
 /* ── SERVICES ── */
 #services { padding: 100px 5%; background: var(--white); }
-.services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-.services-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+
+/* Package grid — main 4 packages in 2x2 */
+.pkg-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.4rem;
+  margin-bottom: 1.4rem;
+}
+/* Stand-alone row for smaller services */
+.pkg-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.4rem;
+  margin-bottom: 1.4rem;
+}
 .svc-card {
   border-radius: var(--rl); border: 1px solid var(--rule);
   overflow: hidden; background: var(--cream);
   transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  display: flex; flex-direction: column;
 }
 .svc-card:hover {
   border-color: var(--gold-bd); transform: translateY(-3px);
   box-shadow: 0 8px 24px rgba(184,116,20,0.1);
 }
+.svc-card.featured { border-color: var(--gold-bd); }
 .svc-head {
-  padding: 1.8rem; background: var(--white);
+  padding: 1.6rem 1.8rem 1.4rem;
+  background: var(--white);
   border-bottom: 1px solid var(--rule);
-  display: flex; justify-content: space-between; align-items: flex-start;
 }
+.svc-card.featured .svc-head { background: var(--gold-bg); }
+.svc-meta { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.3rem; }
 .svc-head h3 {
   font-family: 'Playfair Display', serif;
-  font-size: 1.5rem; font-weight: 700; color: var(--charcoal);
+  font-size: 1.4rem; font-weight: 700; color: var(--charcoal);
 }
-.svc-head p { font-size: 0.8rem; color: var(--muted); margin-top: 3px; }
+.svc-head .sub { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
 .svc-price {
   font-family: 'Playfair Display', serif;
-  font-size: 2rem; font-weight: 700; color: var(--gold); line-height: 1;
+  font-size: 2rem; font-weight: 700; color: var(--gold); line-height: 1; white-space: nowrap;
 }
-.svc-price sup { font-size: 1rem; vertical-align: super; }
-.svc-body { padding: 1.5rem 1.8rem; }
-.inc-list { list-style: none; margin-bottom: 1.4rem; }
+.svc-price sup { font-size: 0.95rem; vertical-align: super; }
+.svc-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--gold); color: #fff;
+  border-radius: 100px; padding: 3px 11px;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; margin-bottom: 0.6rem;
+}
+.duration-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--cream2); border: 1px solid var(--rule);
+  border-radius: 100px; padding: 3px 10px;
+  font-size: 0.68rem; font-weight: 600; color: var(--muted);
+  letter-spacing: 0.5px; margin-top: 0.5rem;
+}
+.svc-body { padding: 1.4rem 1.8rem; flex: 1; display: flex; flex-direction: column; }
+.inc-list { list-style: none; margin-bottom: 1.2rem; flex: 1; }
 .inc-list li {
-  font-size: 0.86rem; color: var(--ink);
-  padding: 6px 0; display: flex; align-items: flex-start; gap: 9px;
+  font-size: 0.85rem; color: var(--ink);
+  padding: 5px 0; display: flex; align-items: flex-start; gap: 9px;
   border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 .inc-list li::before {
   content: '✓'; color: var(--gold); font-weight: 700;
-  flex-shrink: 0; margin-top: 1px;
+  flex-shrink: 0; margin-top: 1px; font-size: 0.8rem;
 }
-.addon-head { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.7rem; }
+
+/* Truck/SUV upsell row */
+.truck-row {
+  background: var(--cream2); border: 1px solid var(--rule);
+  border-radius: var(--r); padding: 10px 13px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; cursor: pointer; transition: 0.15s;
+}
+.truck-row:hover { border-color: var(--gold-bd); }
+.truck-row label {
+  font-size: 0.83rem; color: var(--ink); cursor: pointer;
+  display: flex; align-items: center; gap: 8px; font-weight: 500;
+}
+.truck-row input { accent-color: var(--gold); width: 14px; height: 14px; cursor: pointer; }
+.truck-cost { font-size: 0.82rem; color: var(--gold); font-weight: 600; }
+
+/* Add-on section inside card */
+.addon-head { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.7rem; }
 .addon-row {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 9px 12px; border-radius: var(--r);
+  padding: 8px 12px; border-radius: var(--r);
   background: var(--white); border: 1px solid var(--rule);
-  margin-bottom: 6px; cursor: pointer; transition: 0.15s;
+  margin-bottom: 5px; cursor: pointer; transition: 0.15s;
 }
 .addon-row:hover { border-color: var(--gold-bd); }
-.addon-row label { font-size: 0.84rem; color: var(--ink); cursor: pointer; display: flex; align-items: center; gap: 8px; }
+.addon-row label { font-size: 0.83rem; color: var(--ink); cursor: pointer; display: flex; align-items: center; gap: 8px; }
 .addon-row input { accent-color: var(--gold); width: 14px; height: 14px; cursor: pointer; }
-.addon-cost { font-size: 0.82rem; color: var(--gold); font-weight: 600; }
+.addon-cost { font-size: 0.81rem; color: var(--gold); font-weight: 600; white-space: nowrap; }
+
 .svc-total {
-  margin-top: 1.2rem; padding-top: 1rem;
+  margin-top: 1.1rem; padding-top: 1rem;
   border-top: 1.5px solid var(--rule);
   display: flex; justify-content: space-between; align-items: center;
 }
-.total-lbl { font-size: 0.75rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.total-lbl { font-size: 0.73rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
 .total-num { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 700; color: var(--gold); }
-.combo-card {
-  grid-column: span 2; text-align: center;
-  padding: 1.6rem; border-radius: var(--rl);
-  background: var(--gold-bg); border: 1px solid var(--gold-bd);
-  font-size: 0.9rem; color: var(--ink); line-height: 1.7;
-}
-.combo-card strong { color: var(--gold); }
 
+/* Small-service card variant */
+.svc-card.small .svc-head { padding: 1.2rem 1.4rem 1rem; }
+.svc-card.small .svc-head h3 { font-size: 1.15rem; }
+.svc-card.small .svc-price { font-size: 1.6rem; }
+.svc-card.small .svc-body { padding: 1rem 1.4rem 1.4rem; }
+.svc-card.small .inc-list li { font-size: 0.82rem; }
+
+.combo-banner {
+  background: var(--gold-bg); border: 1px solid var(--gold-bd);
+  border-radius: var(--rl); padding: 1.4rem 1.8rem;
+  text-align: center; font-size: 0.9rem; color: var(--ink); line-height: 1.75;
+}
+.combo-banner strong { color: var(--gold); }
+
+/* ── BEFORE/AFTER ── */
 /* ── GALLERY ── */
 #gallery { padding: 100px 5%; background: var(--cream2); }
 .gallery-grid {
@@ -347,7 +398,7 @@ nav {
 .gal-note { text-align: center; margin-top: 1.4rem; font-size: 0.82rem; color: var(--muted); }
 .gal-note strong { color: var(--charcoal); }
 
-/* ── BOOK SECTION ── */
+/* ── BOOKING SECTION ── */
 #booking { padding: 100px 5%; background: var(--white); }
 .booking-layout {
   display: grid; grid-template-columns: 1fr 1fr; gap: 5rem;
@@ -366,42 +417,12 @@ nav {
   display: flex; align-items: center; justify-content: center;
   font-size: 0.72rem; font-weight: 700; color: var(--gold); flex-shrink: 0;
 }
-.booksy-cta-card {
+.booksy-widget-wrap {
   background: var(--cream); border: 1.5px solid var(--gold-bd);
-  border-radius: var(--rl); padding: 2.5rem;
+  border-radius: var(--rl); padding: 1.5rem;
   text-align: center;
 }
-.booksy-logo-area {
-  margin-bottom: 1.4rem;
-}
-.booksy-logo-area .b-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.5rem; font-weight: 700; color: var(--charcoal);
-}
-.booksy-logo-area .b-handle {
-  font-size: 0.8rem; color: var(--muted); margin-top: 3px;
-}
-.booksy-cta-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.75; margin-bottom: 1.8rem; }
-.booksy-perks {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 2rem;
-}
-.perk {
-  background: var(--white); border: 1px solid var(--rule);
-  border-radius: var(--r); padding: 10px 12px;
-  font-size: 0.78rem; color: var(--ink); font-weight: 500;
-  display: flex; align-items: center; gap: 7px;
-}
-.perk span { font-size: 1rem; }
-.btn-booksy {
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  width: 100%; background: var(--gold); color: var(--white);
-  padding: 16px 28px; border-radius: var(--r);
-  font-weight: 700; font-size: 0.95rem; letter-spacing: 0.5px;
-  transition: background 0.18s, transform 0.15s;
-}
-.btn-booksy:hover { background: var(--gold-h); transform: translateY(-1px); }
-.btn-booksy svg { width: 16px; height: 16px; }
-.booksy-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.8rem; }
+.booksy-note { font-size: 0.72rem; color: var(--muted); margin-top: 1rem; }
 
 /* ── CONTACT ── */
 #contact { padding: 100px 5%; background: var(--cream2); }
@@ -439,7 +460,6 @@ nav {
 .fg input:focus, .fg select:focus, .fg textarea:focus {
   outline: none; border-color: var(--gold); background: var(--white);
 }
-.fg select option { background: var(--white); }
 .fg textarea { resize: vertical; min-height: 100px; }
 .form-submit {
   width: 100%; padding: 14px; border: none; border-radius: var(--r);
@@ -472,10 +492,10 @@ footer {
   #hero { grid-template-columns: 1fr; }
   #hero::after { display: none; }
   .hero-right { margin-top: 1rem; }
+  .pkg-grid { grid-template-columns: 1fr; }
+  .pkg-row { grid-template-columns: 1fr 1fr; }
   .booking-layout { grid-template-columns: 1fr; gap: 3rem; }
   .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
-  .services-grid { grid-template-columns: 1fr; }
-  .combo-card { grid-column: span 1; }
   footer { grid-template-columns: 1fr; }
   .ft-right { text-align: left; }
 }
@@ -485,6 +505,7 @@ footer {
   .gallery-grid { grid-template-columns: 1fr 1fr; }
   .gal-item:nth-child(1), .gal-item:nth-child(4) { grid-column: span 1; }
   #book-banner { flex-direction: column; text-align: center; }
+  .pkg-row { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) {
   .sliders-grid { grid-template-columns: 1fr; }
@@ -492,7 +513,6 @@ footer {
   .form-2col { grid-template-columns: 1fr; }
   .stat-tile.span2 { flex-direction: column; text-align: center; }
   .hero-actions { flex-direction: column; }
-  .booksy-perks { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -500,8 +520,8 @@ footer {
 
 <!-- NAV -->
 <nav>
-  <div class="nav-brand" style="display:flex;align-items:center;gap:10px;">
-    <img src="favicon.png" alt="Logo" style="height:36px;width:auto;display:inline-block;image-rendering:auto;transform:translateZ(0);">
+  <div class="nav-brand">
+    <img src="favicon.png" alt="Logo" style="height:36px;width:auto;display:inline-block;">
     Kaiser's <span>Detail Co.</span>
   </div>
   <ul class="nav-links">
@@ -531,9 +551,9 @@ footer {
       Your Car,<br>
       <em>Spotless.</em>
     </h1>
-    <div class="college-strip">🎓 Every booking funds college tuition — book local, drive clean</div>
+    <div class="college-strip">🎓 Supporting a local student through college — book local, drive clean</div>
     <p class="hero-sub">
-      Kaiser's Detail Co. delivers meticulous interior &amp; exterior detailing. <strong>Every dollar you spend goes directly toward college tuition</strong> — book local, support a student's future, and drive away spotless.
+      Kaiser's Detail Co. delivers meticulous interior &amp; exterior detailing right in Plainfield. <strong>Your booking helps support me through college</strong> — you get a spotless car, and a local student gets a little closer to graduation.
     </p>
     <div class="hero-actions">
       <a href="https://kaiserdetailco.booksy.com/a" target="_blank" class="btn-book">
@@ -546,18 +566,18 @@ footer {
 
   <div class="hero-right">
     <div class="stat-tile">
-      <div class="num">$75</div>
-      <div class="label">Exterior starting price</div>
+      <div class="num">$20</div>
+      <div class="label">Starting price</div>
     </div>
     <div class="stat-tile">
-      <div class="num">1–2hr</div>
-      <div class="label">Per vehicle</div>
+      <div class="num">30min</div>
+      <div class="label">Quick wash turnaround</div>
     </div>
     <div class="stat-tile span2">
       <div class="num">🎓</div>
       <div>
-        <div class="label">100% goes to college tuition</div>
-        <p>Every booking directly funds tuition. You get a spotless car — and a local student gets closer to their degree. That's a win-win.</p>
+        <div class="label">Helping put me through college</div>
+        <p>Every booking helps support me through school. You get a spotless car — and a local student gets a little closer to their degree. That's a real win-win.</p>
       </div>
     </div>
   </div>
@@ -587,84 +607,61 @@ footer {
     <div class="slider-card">
       <div class="sl-bar"><h3>Interior Detail</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b ib"><img src="BeforeInterior.png"></div>
-        <div class="ba-a ia"><img src="AfterInterior.png"></div>
+        <div class="ba-b ib"><img src="BeforeInterior.png" alt="Before interior"></div>
+        <div class="ba-a ia"><img src="AfterInterior.png" alt="After interior"></div>
         <div class="ba-div" data-div></div>
-        <div class="ba-knob" data-knob>
-          <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
-        </div>
-        <span class="ba-pill before">Before</span>
-        <span class="ba-pill after">After</span>
+        <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
+        <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
       </div>
     </div>
-
     <div class="slider-card">
       <div class="sl-bar"><h3>Headlight Restore</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b hb"><img src="BeforeHeadlight.png"></div>
-        <div class="ba-a ha"><img src="AfterHeadlight.png"></div>
+        <div class="ba-b hb"><img src="BeforeHeadlight.png" alt="Before headlights"></div>
+        <div class="ba-a ha"><img src="AfterHeadlight.png" alt="After headlights"></div>
         <div class="ba-div" data-div></div>
-        <div class="ba-knob" data-knob>
-          <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
-        </div>
-        <span class="ba-pill before">Before</span>
-        <span class="ba-pill after">After</span>
+        <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
+        <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
       </div>
     </div>
-
     <div class="slider-card">
       <div class="sl-bar"><h3>Tire Shine</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b hb"><img src="BeforeTire.png"></div>
-        <div class="ba-a ha"><img src="AfterTire.png"></div>
+        <div class="ba-b hb"><img src="BeforeTire.png" alt="Before tires"></div>
+        <div class="ba-a ha"><img src="AfterTire.png" alt="After tires"></div>
         <div class="ba-div" data-div></div>
-        <div class="ba-knob" data-knob>
-          <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
-        </div>
-        <span class="ba-pill before">Before</span>
-        <span class="ba-pill after">After</span>
+        <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
+        <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
       </div>
     </div>
-
     <div class="slider-card">
       <div class="sl-bar"><h3>Carpet Shampoo</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b tb"><img src="BeforeCarpet.png"></div>
-        <div class="ba-a ta"><img src="AfterCarpet.png"></div>
+        <div class="ba-b tb"><img src="BeforeCarpet.png" alt="Before carpet"></div>
+        <div class="ba-a ta"><img src="AfterCarpet.png" alt="After carpet"></div>
         <div class="ba-div" data-div></div>
-        <div class="ba-knob" data-knob>
-          <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
-        </div>
-        <span class="ba-pill before">Before</span>
-        <span class="ba-pill after">After</span>
+        <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
+        <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
       </div>
     </div>
-
     <div class="slider-card">
       <div class="sl-bar"><h3>Exterior Detail</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b tib"><img src="BeforeExterior.png"></div>
-        <div class="ba-a tia"><img src="AfterExterior.png"></div>
+        <div class="ba-b tib"><img src="BeforeExterior.png" alt="Before exterior"></div>
+        <div class="ba-a tia"><img src="AfterExterior.png" alt="After exterior"></div>
         <div class="ba-div" data-div></div>
-        <div class="ba-knob" data-knob>
-          <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
-        </div>
-        <span class="ba-pill before">Before</span>
-        <span class="ba-pill after">After</span>
+        <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
+        <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
       </div>
     </div>
-
     <div class="slider-card">
-      <div class="sl-bar"><h3>Engine Bay Cleaning</h3><span class="sl-hint">↔ drag</span></div>
+      <div class="sl-bar"><h3>Engine Bay</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b tb"><img src="BeforeEngineBay.png"></div>
-        <div class="ba-a ta"><img src="AfterEngineBay.png"></div>
+        <div class="ba-b tb"><img src="BeforeEngineBay.png" alt="Before engine bay"></div>
+        <div class="ba-a ta"><img src="AfterEngineBay.png" alt="After engine bay"></div>
         <div class="ba-div" data-div></div>
-        <div class="ba-knob" data-knob>
-          <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg>
-        </div>
-        <span class="ba-pill before">Before</span>
-        <span class="ba-pill after">After</span>
+        <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
+        <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
       </div>
     </div>
   </div>
@@ -674,146 +671,311 @@ footer {
 <section id="services">
   <div class="eyebrow">What We Offer</div>
   <h2 class="display">Services &amp; <em>Pricing</em></h2>
-  <p class="lead" style="margin-bottom:3rem;">Interior, exterior, or both — plus any add-ons you need. Check boxes below to see your total build up live. Every dollar goes toward college tuition.</p>
+  <p class="lead" style="margin-bottom:3rem;">Choose the service that fits your car's needs. Check any add-ons to see your total update live. Trucks &amp; SUVs add +$25 to applicable packages. Every booking helps support me through college.</p>
 
-  <div class="services-grid">
+  <!-- Main 4 packages: 2x2 grid -->
+  <div class="pkg-grid">
 
-    <!-- INTERIOR REFRESH -->
-    <div class="svc-card">
+    <!-- INTERIOR DETAIL -->
+    <div class="svc-card" id="card-interior">
       <div class="svc-head">
-        <div>
-          <h3>Interior Refresh</h3>
-          <p>Maintenance detail · ~1h 30min</p>
+        <div class="svc-meta">
+          <div>
+            <h3>Interior Detail</h3>
+            <div class="sub">Complete interior · ~1h 30min</div>
+          </div>
+          <div class="svc-price"><sup>$</sup>100</div>
         </div>
-        <div class="svc-price"><sup>$</sup>100</div>
+        <div class="duration-tag">⏱ 1h 30min</div>
       </div>
       <div class="svc-body">
         <ul class="inc-list">
-          <li>Vacuuming every corner, seats &amp; floors</li>
-          <li>Dashboard, console &amp; door panel wipe-down</li>
-          <li>Interior glass cleaning</li>
-          <li>Odor treatment &amp; freshening</li>
-          <li>Door pockets &amp; cup holder clean-out</li>
+          <li>Hand car wash</li>
+          <li>Complete interior vacuum</li>
+          <li>Shampoo carpets &amp; seats</li>
+          <li>Wash floor mats</li>
+          <li>Leather &amp; plastics protected</li>
         </ul>
-        <div class="addon-head">Add-Ons</div>
-        <div class="addon-row" onclick="tick(this)">
-          <label><input type="checkbox" data-p="40"> Trunk Cleaning</label>
-          <span class="addon-cost">+$40</span>
+        <div class="truck-row" onclick="tuck(this,'card-interior')">
+          <label><input type="checkbox" data-p="25" class="truck-cb"> 🚛 Truck / SUV Add-On</label>
+          <span class="truck-cost">+$25</span>
         </div>
-        <div class="addon-row" onclick="tick(this)">
+        <div class="addon-head">Add-Ons</div>
+        <div class="addon-row" onclick="tick(this,'card-interior')">
+          <label><input type="checkbox" data-p="30"> Trunk Cleaning</label>
+          <span class="addon-cost">+$30</span>
+        </div>
+        <div class="addon-row" onclick="tick(this,'card-interior')">
           <label><input type="checkbox" data-p="30"> Carpet Shampoo</label>
           <span class="addon-cost">+$30</span>
         </div>
-        <div class="addon-row" onclick="tick(this)">
-          <label><input type="checkbox" data-p="40"> Headlight Restoration</label>
-          <span class="addon-cost">+$40</span>
-        </div>
         <div class="svc-total">
           <span class="total-lbl">Your Total</span>
-          <span class="total-num" data-base="100">$100</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- INTERIOR TRANSFORMATION -->
-    <div class="svc-card" style="border-color:var(--gold-bd);">
-      <div class="svc-head" style="background:var(--gold-bg);">
-        <div>
-          <h3>Interior Transformation</h3>
-          <p>Complete overhaul · ~3 hours</p>
-        </div>
-        <div class="svc-price"><sup>$</sup>350</div>
-      </div>
-      <div class="svc-body">
-        <div style="display:inline-flex;align-items:center;gap:7px;background:var(--gold);color:#fff;border-radius:100px;padding:4px 12px;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1rem;">⭐ Most Thorough</div>
-        <ul class="inc-list">
-          <li>Everything in the Interior Refresh</li>
-          <li>Deep extraction vacuuming &amp; steam clean</li>
-          <li>Full carpet shampoo &amp; stain treatment</li>
-          <li>Seat &amp; upholstery scrub-down</li>
-          <li>Air vent &amp; crevice deep clean</li>
-          <li>Leather conditioning (if applicable)</li>
-          <li>Full odor elimination treatment</li>
-          <li>Trunk cleaning included</li>
-        </ul>
-        <div class="addon-head">Add-Ons</div>
-        <div class="addon-row" onclick="tick(this)">
-          <label><input type="checkbox" data-p="40"> Headlight Restoration</label>
-          <span class="addon-cost">+$40</span>
-        </div>
-        <div class="svc-total">
-          <span class="total-lbl">Your Total</span>
-          <span class="total-num" data-base="350">$350</span>
+          <span class="total-num" data-base="100" id="total-interior">$100</span>
         </div>
       </div>
     </div>
 
     <!-- EXTERIOR DETAIL -->
-    <div class="svc-card">
+    <div class="svc-card" id="card-exterior">
       <div class="svc-head">
-        <div>
-          <h3>Exterior Detail</h3>
-          <p>Full exterior clean &amp; treatment · ~1h 30min</p>
+        <div class="svc-meta">
+          <div>
+            <h3>Exterior Detail</h3>
+            <div class="sub">Full exterior clean &amp; protection · ~1h 30min</div>
+          </div>
+          <div class="svc-price"><sup>$</sup>75</div>
         </div>
-        <div class="svc-price"><sup>$</sup>75</div>
+        <div class="duration-tag">⏱ 1h 30min</div>
       </div>
       <div class="svc-body">
         <ul class="inc-list">
-          <li>Hand wash &amp; rinse</li>
-          <li>Wheel &amp; rim cleaning</li>
-          <li>Window exterior cleaning</li>
-          <li>Door jamb wipe-down</li>
+          <li>Exterior hand wash</li>
+          <li>Tar &amp; bug removal</li>
+          <li>Clean rims</li>
+          <li>Detail door jambs</li>
+          <li>Clean &amp; polish glass</li>
+          <li>RainX glass treatment</li>
         </ul>
         <div class="addon-head">Add-Ons</div>
-        <div class="addon-row" onclick="tick(this)">
-          <label><input type="checkbox" data-p="15"> Sticker / Decal Removal</label>
-          <span class="addon-cost">+$15</span>
+        <div class="addon-row" onclick="tick(this,'card-exterior')">
+          <label><input type="checkbox" data-p="25"> Sticker / Decal Removal</label>
+          <span class="addon-cost">+$25</span>
         </div>
-        <div class="addon-row" onclick="tick(this)">
+        <div class="addon-row" onclick="tick(this,'card-exterior')">
           <label><input type="checkbox" data-p="100"> Wax</label>
           <span class="addon-cost">+$100</span>
         </div>
-        <div class="addon-row" onclick="tick(this)">
-          <label><input type="checkbox" data-p="55"> Tire Deep Clean</label>
-          <span class="addon-cost">+$55</span>
+        <div class="addon-row" onclick="tick(this,'card-exterior')">
+          <label><input type="checkbox" data-p="40"> Tire Shine &amp; Deep Clean</label>
+          <span class="addon-cost">+$40</span>
         </div>
-        <div class="addon-row" onclick="tick(this)">
+        <div class="addon-row" onclick="tick(this,'card-exterior')">
           <label><input type="checkbox" data-p="50"> Engine Bay Cleaning</label>
           <span class="addon-cost">+$50</span>
         </div>
-        <div class="addon-row" onclick="tick(this)">
-          <label><input type="checkbox" data-p="40"> Headlight Restoration</label>
-          <span class="addon-cost">+$40</span>
-        </div>
         <div class="svc-total">
           <span class="total-lbl">Your Total</span>
-          <span class="total-num" data-base="75">$75</span>
+          <span class="total-num" data-base="75" id="total-exterior">$75</span>
         </div>
       </div>
     </div>
 
-    <div class="combo-card" style="grid-column:span 1;">
-      🎓 <strong>Supporting College</strong> — Every service you book goes directly toward tuition. You get a spotless car, a local student gets closer to graduation. Thank you for supporting the community.
+    <!-- PROFESSIONAL DETAIL -->
+    <div class="svc-card featured" id="card-pro">
+      <div class="svc-head">
+        <div class="svc-badge">⭐ Most Popular</div>
+        <div class="svc-meta">
+          <div>
+            <h3>Professional Detail</h3>
+            <div class="sub">Interior + exterior combo · ~3 hours</div>
+          </div>
+          <div class="svc-price"><sup>$</sup>150</div>
+        </div>
+        <div class="duration-tag">⏱ 3 hours</div>
+      </div>
+      <div class="svc-body">
+        <ul class="inc-list">
+          <li>Hand wash &amp; tar/bug removal</li>
+          <li>Clean rims</li>
+          <li>Wax car</li>
+          <li>Clean glass</li>
+          <li>Vacuum interior</li>
+          <li>Interior plastic clean</li>
+          <li>All leather cleaned &amp; protected</li>
+        </ul>
+        <div class="truck-row" onclick="tuck(this,'card-pro')">
+          <label><input type="checkbox" data-p="25" class="truck-cb"> 🚛 Truck / SUV Add-On</label>
+          <span class="truck-cost">+$25</span>
+        </div>
+        <div class="svc-total">
+          <span class="total-lbl">Your Total</span>
+          <span class="total-num" data-base="150" id="total-pro">$150</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHOWROOM DETAIL -->
+    <div class="svc-card" id="card-showroom">
+      <div class="svc-head">
+        <div class="svc-badge" style="background:var(--charcoal);">✨ Premium</div>
+        <div class="svc-meta">
+          <div>
+            <h3>Showroom Detail</h3>
+            <div class="sub">Top-to-bottom deep detail · ~4 hours</div>
+          </div>
+          <div class="svc-price"><sup>$</sup>225</div>
+        </div>
+        <div class="duration-tag">⏱ 4 hours</div>
+      </div>
+      <div class="svc-body">
+        <ul class="inc-list">
+          <li>Deep car wash</li>
+          <li>Clay service — removes embedded contaminants a normal wash can't reach</li>
+          <li>Rim cleaning</li>
+          <li>Wax</li>
+          <li>Complete vacuum</li>
+          <li>Carpet shampoo</li>
+          <li>Interior plastic cleaned &amp; protected</li>
+          <li>All leather cleaned &amp; protected</li>
+        </ul>
+        <div class="truck-row" onclick="tuck(this,'card-showroom')">
+          <label><input type="checkbox" data-p="25" class="truck-cb"> 🚛 Truck / SUV Add-On</label>
+          <span class="truck-cost">+$25</span>
+        </div>
+        <div class="svc-total">
+          <span class="total-lbl">Your Total</span>
+          <span class="total-num" data-base="225" id="total-showroom">$225</span>
+        </div>
+      </div>
     </div>
 
   </div>
 
-  <div class="combo-card" style="margin-top:1.2rem;">
-    ✨ <strong>Full Detail Bundle</strong> — Book Interior Refresh + Exterior together starting at <strong>$175</strong>, or Interior Transformation + Exterior starting at <strong>$425</strong>, for a complete top-to-bottom transformation. Mention it when booking on Booksy or drop a note in the contact form below.
+  <!-- Smaller / standalone services: 3-col row -->
+  <div class="pkg-row">
+
+    <!-- QUICK WASH -->
+    <div class="svc-card small" id="card-quickwash">
+      <div class="svc-head">
+        <div class="svc-meta">
+          <div>
+            <h3>Quick Wash</h3>
+            <div class="sub">Fast exterior refresh · ~30min</div>
+          </div>
+          <div class="svc-price"><sup>$</sup>20</div>
+        </div>
+        <div class="duration-tag">⏱ 30 min</div>
+      </div>
+      <div class="svc-body">
+        <ul class="inc-list">
+          <li>Quick rinse</li>
+          <li>Foam cannon</li>
+          <li>Hand wipe-down</li>
+          <li>Rinse &amp; dry</li>
+        </ul>
+        <div class="svc-total">
+          <span class="total-lbl">Your Total</span>
+          <span class="total-num" data-base="20">$20</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK INTERIOR -->
+    <div class="svc-card small" id="card-quickint">
+      <div class="svc-head">
+        <div class="svc-meta">
+          <div>
+            <h3>Quick Interior</h3>
+            <div class="sub">Fast interior freshen · ~30min</div>
+          </div>
+          <div class="svc-price"><sup>$</sup>35</div>
+        </div>
+        <div class="duration-tag">⏱ 30 min</div>
+      </div>
+      <div class="svc-body">
+        <ul class="inc-list">
+          <li>Vacuum interior</li>
+          <li>Glass cleaned</li>
+          <li>Dash cleaned &amp; protected</li>
+          <li>Door jambs cleaned</li>
+        </ul>
+        <div class="truck-row" onclick="tuck(this,'card-quickint')">
+          <label><input type="checkbox" data-p="10" class="truck-cb"> 🚛 Truck / SUV Add-On</label>
+          <span class="truck-cost">+$10</span>
+        </div>
+        <div class="svc-total">
+          <span class="total-lbl">Your Total</span>
+          <span class="total-num" data-base="35">$35</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENGINE BAY CLEANING -->
+    <div class="svc-card small" id="card-engine">
+      <div class="svc-head">
+        <div class="svc-meta">
+          <div>
+            <h3>Engine Bay</h3>
+            <div class="sub">Under the hood clean · ~30min</div>
+          </div>
+          <div class="svc-price"><sup>$</sup>35</div>
+        </div>
+        <div class="duration-tag">⏱ 30 min</div>
+      </div>
+      <div class="svc-body">
+        <ul class="inc-list">
+          <li>Vacuum</li>
+          <li>Clean gutter</li>
+          <li>Detail &amp; protect rubber and plastics</li>
+          <li>Wire brush rusty metals</li>
+        </ul>
+        <div class="svc-total">
+          <span class="total-lbl">Your Total</span>
+          <span class="total-num" data-base="35">$35</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- College + bundle note -->
+  <div class="combo-banner">
+    🎓 <strong>Supporting a Local Student</strong> — Every service you book helps support me through college. You get a spotless car, and I get a little closer to graduation. Thank you for supporting the community.<br><br>
+    ✨ <strong>Bundle &amp; Save</strong> — Want Interior + Exterior together? Mention it when booking on Booksy or drop a note in the contact form below for a combined quote.
   </div>
 
 </section>
 
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="eyebrow">The Work</div>
+  <h2 class="display">Recent <em>Results</em></h2>
+  <p class="lead">Real cars, real results — photos from recent details in Plainfield.</p>
+  <div class="gallery-grid">
+    <div class="gal-item">
+      <img src="gallery1.jpg" alt="Detail result 1" onerror="this.style.display='none'">
+      <div class="gal-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Coming soon</div>
+      <div class="gal-cap">Full Interior + Exterior</div>
+    </div>
+    <div class="gal-item">
+      <img src="gallery2.jpg" alt="Detail result 2" onerror="this.style.display='none'">
+      <div class="gal-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Coming soon</div>
+      <div class="gal-cap">Showroom Detail</div>
+    </div>
+    <div class="gal-item">
+      <img src="gallery3.jpg" alt="Detail result 3" onerror="this.style.display='none'">
+      <div class="gal-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Coming soon</div>
+      <div class="gal-cap">Carpet Shampoo</div>
+    </div>
+    <div class="gal-item">
+      <img src="gallery4.jpg" alt="Detail result 4" onerror="this.style.display='none'">
+      <div class="gal-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Coming soon</div>
+      <div class="gal-cap">Headlight Restoration</div>
+    </div>
+    <div class="gal-item">
+      <img src="gallery5.jpg" alt="Detail result 5" onerror="this.style.display='none'">
+      <div class="gal-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Coming soon</div>
+      <div class="gal-cap">Engine Bay Clean</div>
+    </div>
+    <div class="gal-item">
+      <img src="gallery6.jpg" alt="Detail result 6" onerror="this.style.display='none'">
+      <div class="gal-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Coming soon</div>
+      <div class="gal-cap">Professional Detail</div>
+    </div>
+  </div>
+  <p class="gal-note"><strong>Photos coming soon</strong> — follow along as the portfolio grows!</p>
+</section>
 
 <!-- BOOKING SECTION -->
 <section id="booking">
   <div class="eyebrow">Schedule a Visit</div>
   <h2 class="display">Book Through <em>Booksy</em></h2>
-  <p class="lead" style="margin-bottom:2.5rem;">Pick your service, choose a time, and lock it in — right below. Every booking helps fund college. Thank you for supporting a local student.</p>
+  <p class="lead" style="margin-bottom:2.5rem;">Pick your service, choose a time, and lock it in — right below. Every booking helps support me through college. Thank you for supporting a local student.</p>
 
   <div class="booking-layout">
     <div class="booking-left">
-      <p>Use the live Booksy calendar on the right to book directly. See real availability, pick your service and add-ons, and get an instant confirmation — no back-and-forth needed.</p>
+      <p>Use the live Booksy calendar on the right to book directly. See real availability, pick your service, and get an instant confirmation — no back-and-forth needed.</p>
       <ul class="how-list">
         <li><div class="how-num">1</div> Select your service in the Booksy widget</li>
         <li><div class="how-num">2</div> Choose a date &amp; time that works for you</li>
@@ -821,15 +983,15 @@ footer {
         <li><div class="how-num">4</div> You'll get a reminder before your appointment</li>
       </ul>
       <div style="margin-top:1.5rem;padding:1.2rem 1.4rem;background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:var(--rl);font-size:0.88rem;line-height:1.75;color:var(--ink);">
-        🎓 <strong style="color:var(--gold);">Your booking funds college.</strong><br>
-        Every appointment goes directly toward tuition. You're not just getting a clean car — you're investing in a local student's future. That means the world.
+        🎓 <strong style="color:var(--gold);">Your booking supports my college journey.</strong><br>
+        Every appointment helps me work my way through school. You're not just getting a clean car — you're helping a local student move forward. That means the world.
       </div>
       <p style="margin-top:1.2rem;font-size:0.85rem;color:var(--muted);">Prefer to talk first? Use the contact form below or email <a href="mailto:KaoFechner@outlook.com" style="color:var(--gold);">KaoFechner@outlook.com</a>.</p>
     </div>
 
-    <div class="booksy-cta-card" style="padding:1.5rem;">
+    <div class="booksy-widget-wrap">
       <script type="text/javascript" src="https://booksy.com/widget/code.js?id=1774487&country=us&lang=en"></script>
-      <p class="booksy-note" style="margin-top:1rem;">Can't see the widget? <a href="https://kaiserdetailco.booksy.com/a" target="_blank" style="color:var(--gold);">Book directly on Booksy ↗</a></p>
+      <p class="booksy-note">Can't see the widget? <a href="https://kaiserdetailco.booksy.com/a" target="_blank" style="color:var(--gold);">Book directly on Booksy ↗</a></p>
     </div>
   </div>
 </section>
@@ -860,7 +1022,7 @@ footer {
         <div class="c-icon">⏱️</div>
         <div class="c-icon-detail">
           <h4>Time Per Car</h4>
-          <p>1–2 hours of focused, careful work</p>
+          <p>30 min to 4 hours depending on service</p>
         </div>
       </div>
       <div class="contact-pill">
@@ -896,19 +1058,21 @@ footer {
           <label>Service Interested In</label>
           <select name="service">
             <option value="">— Select a service —</option>
-            <option>Interior Refresh ($100)</option>
-            <option>Interior Transformation ($350)</option>
+            <option>Quick Wash ($20)</option>
+            <option>Quick Interior Cleaning ($35)</option>
+            <option>Engine Bay Cleaning ($35)</option>
+            <option>Interior Detail ($100)</option>
             <option>Exterior Detail ($75)</option>
-            <option>Interior Refresh + Exterior ($175)</option>
-            <option>Interior Transformation + Exterior ($425)</option>
-            <option>Add-On: Trunk Cleaning (+$40)</option>
+            <option>Professional Detail ($150)</option>
+            <option>Showroom Detail ($225)</option>
+            <option>Add-On: Trunk Cleaning (+$30)</option>
             <option>Add-On: Carpet Shampoo (+$30)</option>
-            <option>Add-On: Headlight Restoration (+$40)</option>
-            <option>Add-On: Tire Deep Clean (+$55)</option>
-            <option>Add-On: Engine Bay Cleaning (+$50)</option>
+            <option>Add-On: Sticker / Decal Removal (+$25)</option>
             <option>Add-On: Wax (+$100)</option>
-            <option>Add-On: Sticker / Decal Removal (+$15)</option>
-            <option>Custom / Multiple Add-Ons</option>
+            <option>Add-On: Tire Shine &amp; Deep Clean (+$40)</option>
+            <option>Add-On: Engine Bay (+$50)</option>
+            <option>Truck / SUV Upcharge (+$25)</option>
+            <option>Custom / Multiple Services</option>
           </select>
         </div>
         <div class="fg">
@@ -919,7 +1083,7 @@ footer {
       </form>
       <div class="form-ok" id="form-ok">
         ✅ Message sent — I'll be in touch soon!<br>
-        <span style="font-size:0.8rem;color:var(--muted);">Thanks for reaching out — I'll get back to you soon!</span>
+        <span style="font-size:0.8rem;color:var(--muted);">Thanks for reaching out!</span>
       </div>
     </div>
   </div>
@@ -970,20 +1134,37 @@ document.querySelectorAll('[data-slider]').forEach(w => {
   window.addEventListener('touchend', () => drag = false);
 });
 
-// Addon calculator
-function tick(row) {
-  const cb = row.querySelector('input');
+// Add-on price calculator
+function getCardTotal(cardId) {
+  const card = document.getElementById(cardId);
+  if (!card) return;
+  const base = parseInt(card.querySelector('[data-base]').dataset.base);
+  let total = base;
+  card.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+    total += parseInt(cb.dataset.p);
+  });
+  card.querySelector('.total-num').textContent = '$' + total;
+}
+
+function tick(row, cardId) {
+  const cb = row.querySelector('input[type="checkbox"]');
   cb.checked = !cb.checked;
-  recalc(row.closest('.svc-card'));
+  getCardTotal(cardId);
 }
-function recalc(card) {
-  let t = parseInt(card.querySelector('[data-base]').dataset.base);
-  card.querySelectorAll('input:checked').forEach(c => t += parseInt(c.dataset.p));
-  card.querySelector('.total-num').textContent = '$' + t;
+
+function tuck(row, cardId) {
+  const cb = row.querySelector('input[type="checkbox"]');
+  cb.checked = !cb.checked;
+  getCardTotal(cardId);
 }
-document.querySelectorAll('.addon-row input').forEach(cb => {
+
+// Prevent double-fire on direct checkbox click
+document.querySelectorAll('.addon-row input, .truck-row input').forEach(cb => {
   cb.addEventListener('click', e => e.stopPropagation());
-  cb.addEventListener('change', () => recalc(cb.closest('.svc-card')));
+  cb.addEventListener('change', () => {
+    const card = cb.closest('.svc-card');
+    if (card) getCardTotal(card.id);
+  });
 });
 
 // Formspree
@@ -1003,7 +1184,9 @@ document.getElementById('cform').addEventListener('submit', async e => {
   }
 });
 </script>
+
 <script type="text/javascript" src="https://booksy.com/widget/code.js?id=1774487&country=us&lang=en"></script>
+
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6VD5HCKFRD"></script>
 <script>
@@ -1011,8 +1194,6 @@ document.getElementById('cform').addEventListener('submit', async e => {
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-6VD5HCKFRD');
-
-  // Track all booking button clicks
   function trackBook(location) {
     gtag('event', 'book_now_click', {
       event_category: 'engagement',
