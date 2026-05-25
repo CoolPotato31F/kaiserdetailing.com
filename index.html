@@ -260,7 +260,7 @@ nav {
 /* Stand-alone row for smaller services */
 .pkg-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1.4rem;
   margin-bottom: 1.4rem;
 }
@@ -493,7 +493,7 @@ footer {
   #hero::after { display: none; }
   .hero-right { margin-top: 1rem; }
   .pkg-grid { grid-template-columns: 1fr; }
-  .pkg-row { grid-template-columns: 1fr 1fr; }
+  .pkg-row { grid-template-columns: repeat(2, 1fr); }
   .booking-layout { grid-template-columns: 1fr; gap: 3rem; }
   .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
   footer { grid-template-columns: 1fr; }
@@ -917,6 +917,63 @@ footer {
       </div>
     </div>
 
+    <!-- QUICK DETAIL -->
+    <div class="svc-card small" id="card-quickdetail">
+      <div class="svc-head">
+        <div class="svc-meta">
+          <div>
+            <h3>Quick Detail</h3>
+            <div class="sub">Interior &amp; exterior combo · ~1 hour</div>
+          </div>
+          <div class="svc-price"><sup>$</sup>55</div>
+        </div>
+        <div class="duration-tag">⏱ 1 hour</div>
+      </div>
+      <div class="svc-body">
+        <ul class="inc-list">
+          <li>Quick interior vacuum &amp; wipe-down</li>
+          <li>Exterior hand wash &amp; rinse</li>
+          <li>Windows cleaned inside &amp; out</li>
+          <li>Dash &amp; door panels wiped</li>
+        </ul>
+
+        <div class="truck-row" onclick="tuck(this,'card-quickint')">
+          <label><input type="checkbox" data-p="10" class="truck-cb"> 🚛 Truck / SUV Add-On</label>
+          <span class="truck-cost">+$10</span>
+        </div>
+        <div class="svc-total">
+          <span class="total-lbl">Your Total</span>
+          <span class="total-num" data-base="55">$55</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEADLIGHT RESTORATION -->
+    <div class="svc-card small" id="card-headlight">
+      <div class="svc-head">
+        <div class="svc-meta">
+          <div>
+            <h3>Headlight Restoration</h3>
+            <div class="sub">Clarity restored · ~40min</div>
+          </div>
+          <div class="svc-price"><sup>$</sup>40</div>
+        </div>
+        <div class="duration-tag">⏱ 40 min</div>
+      </div>
+      <div class="svc-body">
+        <ul class="inc-list">
+          <li>Oxidation &amp; yellowing removed</li>
+          <li>Lens polished to clarity</li>
+          <li>UV sealant applied for protection</li>
+          <li>Improves visibility &amp; appearance</li>
+        </ul>
+        <div class="svc-total">
+          <span class="total-lbl">Your Total</span>
+          <span class="total-num" data-base="40">$40</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- College + bundle note -->
@@ -944,17 +1001,17 @@ footer {
       <div class="gal-cap">Showroom Detail</div>
     </div>
     <div class="gal-item">
-      <img src="gallery3.jpg" alt="Detail result 3" onerror="this.style.display='none'">
+      <img src="AfterCarpet.png" alt="Detail result 3" onerror="this.style.display='none'">
       <div class="gal-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Coming soon</div>
       <div class="gal-cap">Carpet Shampoo</div>
     </div>
     <div class="gal-item">
-      <img src="gallery4.jpg" alt="Detail result 4" onerror="this.style.display='none'">
+      <img src="AfterHeadlight.png" alt="Detail result 4" onerror="this.style.display='none'">
       <div class="gal-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Coming soon</div>
       <div class="gal-cap">Headlight Restoration</div>
     </div>
     <div class="gal-item">
-      <img src="gallery5.jpg" alt="Detail result 5" onerror="this.style.display='none'">
+      <img src="AfterEngineBay.png" alt="Detail result 5" onerror="this.style.display='none'">
       <div class="gal-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Coming soon</div>
       <div class="gal-cap">Engine Bay Clean</div>
     </div>
@@ -1060,7 +1117,9 @@ footer {
             <option value="">— Select a service —</option>
             <option>Quick Wash ($20)</option>
             <option>Quick Interior Cleaning ($35)</option>
+            <option>Quick Detail ($55)</option>
             <option>Engine Bay Cleaning ($35)</option>
+            <option>Headlight Restoration ($40)</option>
             <option>Interior Detail ($100)</option>
             <option>Exterior Detail ($75)</option>
             <option>Professional Detail ($150)</option>
