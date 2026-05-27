@@ -260,7 +260,7 @@ nav {
 /* Stand-alone row for smaller services */
 .pkg-row {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 1.4rem;
   margin-bottom: 1.4rem;
 }
@@ -739,20 +739,20 @@ footer {
         </ul>
         <div class="addon-head">Add-Ons</div>
         <div class="addon-row" onclick="tick(this,'card-exterior')">
-          <label><input type="checkbox" data-p="25"> Sticker / Decal Removal</label>
-          <span class="addon-cost">+$25</span>
+          <label><input type="checkbox" data-p="30"> Wax</label>
+          <span class="addon-cost">+$30</span>
         </div>
         <div class="addon-row" onclick="tick(this,'card-exterior')">
-          <label><input type="checkbox" data-p="100"> Wax</label>
-          <span class="addon-cost">+$100</span>
+          <label><input type="checkbox" data-p="10"> Tire Shine</label>
+          <span class="addon-cost">+$10</span>
         </div>
         <div class="addon-row" onclick="tick(this,'card-exterior')">
-          <label><input type="checkbox" data-p="40"> Tire Shine &amp; Deep Clean</label>
-          <span class="addon-cost">+$40</span>
+          <label><input type="checkbox" data-p="45"> Clay Service</label>
+          <span class="addon-cost">+$45</span>
         </div>
         <div class="addon-row" onclick="tick(this,'card-exterior')">
-          <label><input type="checkbox" data-p="50"> Engine Bay Cleaning</label>
-          <span class="addon-cost">+$50</span>
+          <label><input type="checkbox" data-p="10"> RainX</label>
+          <span class="addon-cost">+$10</span>
         </div>
         <div class="svc-total">
           <span class="total-lbl">Your Total</span>
@@ -787,6 +787,11 @@ footer {
         <div class="truck-row" onclick="tuck(this,'card-pro')">
           <label><input type="checkbox" data-p="25" class="truck-cb"> 🚛 Truck / SUV Add-On</label>
           <span class="truck-cost">+$25</span>
+        </div>
+        <div class="addon-head">Add-Ons</div>
+        <div class="addon-row" onclick="tick(this,'card-pro')">
+          <label><input type="checkbox" data-p="45"> Clay Service</label>
+          <span class="addon-cost">+$45</span>
         </div>
         <div class="svc-total">
           <span class="total-lbl">Your Total</span>
@@ -854,6 +859,19 @@ footer {
           <li>Hand wipe-down</li>
           <li>Rinse &amp; dry</li>
         </ul>
+        <div class="addon-head">Add-Ons</div>
+        <div class="addon-row" onclick="tick(this,'card-quickwash')">
+          <label><input type="checkbox" data-p="10"> Tire Shine</label>
+          <span class="addon-cost">+$10</span>
+        </div>
+        <div class="addon-row" onclick="tick(this,'card-quickwash')">
+          <label><input type="checkbox" data-p="10"> RainX</label>
+          <span class="addon-cost">+$10</span>
+        </div>
+        <div class="addon-row" onclick="tick(this,'card-quickwash')">
+          <label><input type="checkbox" data-p="30"> Wax</label>
+          <span class="addon-cost">+$30</span>
+        </div>
         <div class="svc-total">
           <span class="total-lbl">Your Total</span>
           <span class="total-num" data-base="20">$20</span>
@@ -883,6 +901,11 @@ footer {
         <div class="truck-row" onclick="tuck(this,'card-quickint')">
           <label><input type="checkbox" data-p="10" class="truck-cb"> 🚛 Truck / SUV Add-On</label>
           <span class="truck-cost">+$10</span>
+        </div>
+        <div class="addon-head">Add-Ons</div>
+        <div class="addon-row" onclick="tick(this,'card-quickint')">
+          <label><input type="checkbox" data-p="30"> Carpet Shampoo</label>
+          <span class="addon-cost">+$30</span>
         </div>
         <div class="svc-total">
           <span class="total-lbl">Your Total</span>
@@ -936,10 +959,22 @@ footer {
           <li>Windows cleaned inside &amp; out</li>
           <li>Dash &amp; door panels wiped</li>
         </ul>
-
-        <div class="truck-row" onclick="tuck(this,'card-quickint')">
-          <label><input type="checkbox" data-p="10" class="truck-cb"> 🚛 Truck / SUV Add-On</label>
-          <span class="truck-cost">+$10</span>
+        <div class="addon-head">Add-Ons (from Quick Wash &amp; Quick Interior)</div>
+        <div class="addon-row" onclick="tick(this,'card-quickdetail')">
+          <label><input type="checkbox" data-p="10"> Tire Shine</label>
+          <span class="addon-cost">+$10</span>
+        </div>
+        <div class="addon-row" onclick="tick(this,'card-quickdetail')">
+          <label><input type="checkbox" data-p="10"> RainX</label>
+          <span class="addon-cost">+$10</span>
+        </div>
+        <div class="addon-row" onclick="tick(this,'card-quickdetail')">
+          <label><input type="checkbox" data-p="30"> Wax</label>
+          <span class="addon-cost">+$30</span>
+        </div>
+        <div class="addon-row" onclick="tick(this,'card-quickdetail')">
+          <label><input type="checkbox" data-p="30"> Carpet Shampoo</label>
+          <span class="addon-cost">+$30</span>
         </div>
         <div class="svc-total">
           <span class="total-lbl">Your Total</span>
@@ -974,6 +1009,30 @@ footer {
       </div>
     </div>
 
+    <div class="svc-card small" id="card-sticker">
+      <div class="svc-head">
+        <div class="svc-meta">
+          <div>
+            <h3>Sticker / Decal Removal</h3>
+            <div class="sub">Clean removal &amp; residue clean-up · ~15min</div>
+          </div>
+          <div class="svc-price"><sup>$</sup>15</div>
+        </div>
+        <div class="duration-tag">⏱ 15 min</div>
+      </div>
+      <div class="svc-body">
+        <ul class="inc-list">
+          <li>Remove sticker or decal</li>
+          <li>Clean up any leftover residue</li>
+          <li>Works even if you tried removing it yourself</li>
+        </ul>
+        <div class="svc-total">
+          <span class="total-lbl">Your Total</span>
+          <span class="total-num" data-base="15">$15</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- College + bundle note -->
@@ -1001,17 +1060,17 @@ footer {
       <div class="gal-cap">Showroom Detail</div>
     </div>
     <div class="gal-item">
-      <img src="AfterCarpet.png" alt="Detail result 3" onerror="this.style.display='none'">
+      <img src="gallery3.jpg" alt="Detail result 3" onerror="this.style.display='none'">
       <div class="gal-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Coming soon</div>
       <div class="gal-cap">Carpet Shampoo</div>
     </div>
     <div class="gal-item">
-      <img src="AfterHeadlight.png" alt="Detail result 4" onerror="this.style.display='none'">
+      <img src="gallery4.jpg" alt="Detail result 4" onerror="this.style.display='none'">
       <div class="gal-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Coming soon</div>
       <div class="gal-cap">Headlight Restoration</div>
     </div>
     <div class="gal-item">
-      <img src="AfterEngineBay.png" alt="Detail result 5" onerror="this.style.display='none'">
+      <img src="gallery5.jpg" alt="Detail result 5" onerror="this.style.display='none'">
       <div class="gal-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Coming soon</div>
       <div class="gal-cap">Engine Bay Clean</div>
     </div>
@@ -1120,17 +1179,18 @@ footer {
             <option>Quick Detail ($55)</option>
             <option>Engine Bay Cleaning ($35)</option>
             <option>Headlight Restoration ($40)</option>
+            <option>Sticker / Decal Removal ($15)</option>
             <option>Interior Detail ($100)</option>
             <option>Exterior Detail ($75)</option>
             <option>Professional Detail ($150)</option>
             <option>Showroom Detail ($225)</option>
             <option>Add-On: Trunk Cleaning (+$30)</option>
             <option>Add-On: Carpet Shampoo (+$30)</option>
-            <option>Add-On: Sticker / Decal Removal (+$25)</option>
-            <option>Add-On: Wax (+$100)</option>
-            <option>Add-On: Tire Shine &amp; Deep Clean (+$40)</option>
-            <option>Add-On: Engine Bay (+$50)</option>
-            <option>Truck / SUV Upcharge (+$25)</option>
+            <option>Add-On: Tire Shine (+$10)</option>
+            <option>Add-On: RainX (+$10)</option>
+            <option>Add-On: Wax (+$30)</option>
+            <option>Add-On: Clay Service (+$45)</option>
+            <option>Truck / SUV Upcharge (+$25 or +$10)</option>
             <option>Custom / Multiple Services</option>
           </select>
         </div>
