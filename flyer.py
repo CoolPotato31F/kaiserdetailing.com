@@ -18,9 +18,9 @@ GOLD_LIGHT = HexColor('#f2f2f2')   # was gold tint → light grey
 GOLD_BD    = HexColor('#999999')   # was gold border → mid grey
 CHARCOAL   = HexColor('#18181a')   # unchanged — already near-black
 INK        = HexColor('#2e2d2b')   # unchanged
-MUTED      = HexColor('#6b6860')   # unchanged
+MUTED      = HexColor("#000000")   # unchanged
 CREAM      = HexColor('#f7f7f7')   # was warm cream → neutral light grey
-RULE       = HexColor('#cccccc')   # was warm rule → neutral grey
+RULE       = HexColor("#000000")   # was warm rule → neutral grey
 WHITE      = white
 
 W, H   = letter          # 612 × 792
@@ -30,7 +30,7 @@ GAP    = 9
 COL    = (INNER - GAP) / 2  # ~267 pt per column
 
 LOGO    = 'favicon.png'
-QR_URL  = 'https://kaiserdetailco.booksy.com/a'
+QR_URL  = 'https://kaiserdetailing.com'
 OUT     = 'kaisers_detail_flyer_bw.pdf'
 
 # ── SERVICE DATA ──────────────────────────────────────────────────────────────
@@ -361,7 +361,7 @@ def draw_back_page(c):
     draw_qr(c, QR_URL, QR_X, QR_Y, QR_SIZE)
     txt(c, 'SCAN TO BOOK', QR_X + QR_SIZE / 2, QR_Y - pad - 10,
         'Helvetica-Bold', 6, HexColor('#aaaaaa'), 'center')
-    txt(c, 'kaiserdetailco.booksy.com', QR_X + QR_SIZE / 2, QR_Y - pad - 21,
+    txt(c, 'kaiserdetailing.com', QR_X + QR_SIZE / 2, QR_Y - pad - 21,
         'Helvetica', 5.5, HexColor('#777777'), 'center')
 
 
