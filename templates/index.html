@@ -1835,6 +1835,7 @@ let bk = {
   vehicle: "",
   largeVehicles: new Set(["Truck","Minivan","SUV"]),
   largeSurcharge: 20,
+  largeVehicleServices: new Set(["interior_detail","professional_detail","showroom_detail","quick_interior","quick_detail"]),
 };
 
 // Populate service dropdown
@@ -1857,6 +1858,7 @@ svcSel.addEventListener("change", () => {
   bk.service = svcSel.value;
   bk.addons.clear();
   renderAddons();
+  renderVehicleSurchargeLabels();
   renderSummary();
 });
 
@@ -1931,6 +1933,7 @@ async function loadAvailability() {
     // Large vehicle surcharge config from server
     bk.largeVehicles = new Set(d.large_vehicles || ["Truck","Minivan","SUV"]);
     bk.largeSurcharge = d.large_vehicle_surcharge || 20;
+    bk.largeVehicleServices = new Set(d.large_vehicle_services || ["interior_detail","professional_detail","showroom_detail","quick_interior","quick_detail"]);
     renderTimes(d.time_slots || []);
     renderVehicleSurchargeLabels();
   } catch (e) {
@@ -1939,6 +1942,7 @@ async function loadAvailability() {
     earliestDate = t.toISOString().slice(0, 10);
     bk.largeVehicles = new Set(["Truck","Minivan","SUV"]);
     bk.largeSurcharge = 20;
+    bk.largeVehicleServices = new Set(["interior_detail","professional_detail","showroom_detail","quick_interior","quick_detail"]);
     renderTimes(["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM"]);
     renderVehicleSurchargeLabels();
   }
@@ -1950,11 +1954,12 @@ async function loadAvailability() {
 }
 
 function renderVehicleSurchargeLabels() {
+  const serviceQualifies = bk.largeVehicleServices.has(bk.service);
   document.querySelectorAll(".bk-vtile").forEach(tile => {
     const v = tile.dataset.v;
     const existing = tile.querySelector(".bk-vsurcharge");
     if (existing) existing.remove();
-    if (bk.largeVehicles && bk.largeVehicles.has(v)) {
+    if (serviceQualifies && bk.largeVehicles && bk.largeVehicles.has(v)) {
       const tag = document.createElement("span");
       tag.className = "bk-vsurcharge";
       tag.textContent = "+$" + bk.largeSurcharge;
@@ -2012,8 +2017,8 @@ function renderSummary() {
   let total = s.price;
   const addonBox = document.getElementById("sum-addons");
   addonBox.innerHTML = "";
-  // Large vehicle surcharge
-  if (bk.vehicle && bk.largeVehicles.has(bk.vehicle)) {
+  // Large vehicle surcharge — only on interior-touching services
+  if (bk.vehicle && bk.largeVehicles.has(bk.vehicle) && bk.largeVehicleServices.has(bk.service)) {
     total += bk.largeSurcharge;
     const row = document.createElement("div");
     row.className = "bk-summary-row";

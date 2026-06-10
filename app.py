@@ -225,6 +225,11 @@ def init_db():
 # ──────────────────────────────────────────────────────────────────────────────
 LARGE_VEHICLES = {"Truck", "Minivan", "SUV"}
 LARGE_VEHICLE_SURCHARGE = 20
+# Only services that involve interior work qualify for the large-vehicle surcharge
+LARGE_VEHICLE_SERVICES = {
+    "interior_detail", "professional_detail", "showroom_detail",
+    "quick_interior", "quick_detail",
+}
 
 
 def compute_total(service_key, addon_keys, vehicle_type=""):
@@ -232,8 +237,8 @@ def compute_total(service_key, addon_keys, vehicle_type=""):
     if service_key not in SERVICES:
         raise ValueError("Unknown service.")
     total = SERVICES[service_key]["price"]
-    # Large vehicle surcharge
-    if vehicle_type in LARGE_VEHICLES:
+    # Large vehicle surcharge — only on services involving interior work
+    if vehicle_type in LARGE_VEHICLES and service_key in LARGE_VEHICLE_SERVICES:
         total += LARGE_VEHICLE_SURCHARGE
     allowed = set(SERVICE_ADDONS.get(service_key, []))
     clean_addons = []
@@ -290,6 +295,7 @@ def availability():
         "time_slots": TIME_SLOTS,
         "large_vehicles": list(LARGE_VEHICLES),
         "large_vehicle_surcharge": LARGE_VEHICLE_SURCHARGE,
+        "large_vehicle_services": list(LARGE_VEHICLE_SERVICES),
     })
 
 
