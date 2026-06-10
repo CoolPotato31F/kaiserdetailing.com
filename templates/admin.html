@@ -53,6 +53,9 @@ tr.past td{opacity:0.5;}
 .create-btn{width:100%;margin-top:0.6rem;padding:13px;border:none;border-radius:var(--r);background:var(--gold);color:#fff;font-family:'Outfit',sans-serif;font-weight:600;font-size:0.9rem;cursor:pointer;}
 .create-btn:hover{background:var(--gold-h);}
 .toggle-create{background:var(--charcoal);color:#fff;border:none;padding:11px 20px;border-radius:var(--r);font-family:'Outfit',sans-serif;font-weight:600;font-size:0.85rem;cursor:pointer;margin-bottom:1.2rem;}
+.test-notif{background:var(--gold);color:#fff;border:none;padding:7px 16px;border-radius:var(--r);font-family:'Outfit',sans-serif;font-weight:600;font-size:0.8rem;cursor:pointer;transition:0.18s;}
+.test-notif:hover{background:var(--gold-h);}
+.test-notif:disabled{opacity:0.6;cursor:not-allowed;}
 .scroll{overflow-x:auto;}
 @media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr;}}
 </style>
@@ -60,7 +63,10 @@ tr.past td{opacity:0.5;}
 <body>
 <header>
   <div class="brand">Kaiser's <span>Detail Co.</span><small>Admin Dashboard</small></div>
-  <a href="{{ url_for('admin_logout') }}" class="logout">Sign Out</a>
+  <div style="display:flex;align-items:center;gap:0.7rem;flex-wrap:wrap;">
+    <button class="test-notif" id="test-notif-btn" onclick="testNotification()">🔔 Test Notification</button>
+    <a href="{{ url_for('admin_logout') }}" class="logout">Sign Out</a>
+  </div>
 </header>
 
 <div class="wrap">
@@ -111,11 +117,11 @@ tr.past td{opacity:0.5;}
         <div class="fg"><label>Vehicle Type</label>
           <select name="vehicle_type" required>
             <option value="">— Select —</option>
-            <option>Sedan</option>
-            <option>Truck</option>
-            <option>Minivan</option>
-            <option>SUV</option>
-            <option>Other</option>
+            <option value="Sedan">Sedan</option>
+            <option value="Truck">Truck (+$20)</option>
+            <option value="Minivan">Minivan (+$20)</option>
+            <option value="SUV">SUV (+$20)</option>
+            <option value="Other">Other</option>
           </select>
         </div>
         <div class="fg"><label>Notes</label><textarea name="notes" rows="2"></textarea></div>
@@ -186,6 +192,26 @@ function renderAdmAddons() {
 }
 admService.addEventListener("change", renderAdmAddons);
 renderAdmAddons();
+
+async function testNotification() {
+  const btn = document.getElementById("test-notif-btn");
+  btn.disabled = true;
+  btn.textContent = "Sending...";
+  try {
+    const r = await fetch("/admin/test-notification", { method: "POST" });
+    const d = await r.json();
+    if (d.ok) {
+      btn.textContent = "✅ Sent!";
+      setTimeout(() => { btn.disabled = false; btn.textContent = "🔔 Test Notification"; }, 3000);
+    } else {
+      btn.textContent = "❌ " + (d.error || "Failed");
+      setTimeout(() => { btn.disabled = false; btn.textContent = "🔔 Test Notification"; }, 4000);
+    }
+  } catch (e) {
+    btn.textContent = "❌ Error";
+    setTimeout(() => { btn.disabled = false; btn.textContent = "🔔 Test Notification"; }, 4000);
+  }
+}
 </script>
 </body>
 </html>
