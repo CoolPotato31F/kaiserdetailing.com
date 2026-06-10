@@ -1,0 +1,16 @@
+[Unit]
+Description=Kaiser's Detail Co. booking server
+After=network.target
+
+[Service]
+# Adjust User and paths to match your VM
+User=kaiser
+WorkingDirectory=/home/kaiser/kaiser-detail
+Environment="ADMIN_PASSWORD=Kaiser556!?!"
+Environment="FLASK_SECRET=CHANGE_ME_TO_A_LONG_RANDOM_STRING"
+ExecStart=/home/kaiser/kaiser-detail/venv/bin/gunicorn -w 2 -b 127.0.0.1:8000 app:app
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

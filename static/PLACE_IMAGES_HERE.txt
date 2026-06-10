@@ -1,0 +1,15 @@
+Place all site images in this folder. The site expects these filenames:
+
+  favicon.png
+  og-image.jpg               (1200x630 social share image)
+
+  BeforeInterior.png   AfterInterior.png
+  BeforeExterior.png   AfterExterior.png
+  BeforeHeadlight.png  AfterHeadlight.png
+  BeforeTire.png       AfterTire.png
+  BeforeCarpet.png     AfterCarpet.png
+  BeforeEngineBay.png  AfterEngineBay.png
+
+Copy your existing images from your current website here. The page references
+them at /static/<filename>, which Flask (and the nginx config) serve from this
+folder.

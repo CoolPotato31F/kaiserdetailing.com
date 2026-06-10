@@ -14,7 +14,7 @@
 <meta property="og:url" content="https://kaiserdetailing.com/">
 <meta property="og:title" content="Kaiser's Detail Co. | Auto Detailing · Plainfield, IL">
 <meta property="og:description" content="Your car, spotless. Professional auto detailing in Plainfield, IL — every booking funds a local student's college tuition. Call or text 815-823-9485.">
-<meta property="og:image" content="https://kaiserdetailing.com/og-image.jpg">
+<meta property="og:image" content="https://kaiserdetailing.com/static/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
@@ -23,7 +23,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Kaiser's Detail Co. | Auto Detailing · Plainfield, IL">
 <meta name="twitter:description" content="Professional auto detailing in Plainfield, IL. Every booking funds college tuition. Call or text 815-823-9485.">
-<meta name="twitter:image" content="https://kaiserdetailing.com/og-image.jpg">
+<meta name="twitter:image" content="https://kaiserdetailing.com/static/og-image.jpg">
 
 <script type="application/ld+json">
 {
@@ -50,12 +50,11 @@
     "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 41.6267, "longitude": -88.2026 },
     "geoRadius": "20000"
   },
-  "priceRange": "$20–$225",
+  "priceRange": "$15–$225",
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
     "name": "Auto Detailing Services",
     "itemListElement": [
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Quick Wash" }, "price": "20", "priceCurrency": "USD" },
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Quick Interior Cleaning" }, "price": "35", "priceCurrency": "USD" },
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Quick Detail" }, "price": "55", "priceCurrency": "USD" },
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Interior Detail" }, "price": "100", "priceCurrency": "USD" },
@@ -69,7 +68,7 @@
 }
 </script>
 
-<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/png" href="/static/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
@@ -594,6 +593,125 @@ footer {
 .ft-right a:hover { color: var(--gold); }
 .ft-right p { font-size: 0.72rem; color: rgba(255,255,255,0.3); margin-top: 0.8rem; }
 
+/* BOOKING SECTION */
+#book-online { padding: 100px 5%; background: var(--white); }
+.booking-wrap { max-width: 760px; margin: 2.5rem auto 0; }
+.booking-card {
+  background: var(--cream); border: 1px solid var(--rule);
+  border-radius: var(--rl); overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+.bk-step { padding: 2rem 2.2rem; border-bottom: 1px solid var(--rule); }
+.bk-step:last-of-type { border-bottom: none; }
+.bk-step-head {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 1.3rem;
+}
+.bk-step-num {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--gold); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+}
+.bk-step-head h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem; font-weight: 700; color: var(--charcoal);
+}
+.bk-label { display: block; font-size: 0.7rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+.bk-input, .bk-select {
+  width: 100%; padding: 12px 14px;
+  background: var(--white); border: 1px solid var(--rule);
+  border-radius: var(--r); color: var(--charcoal);
+  font-family: 'Outfit', sans-serif; font-size: 0.92rem;
+  transition: border-color 0.18s;
+}
+.bk-input:focus, .bk-select:focus { outline: none; border-color: var(--gold); }
+.bk-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.bk-row-3 { display: grid; grid-template-columns: 2fr 1fr 0.8fr; gap: 1rem; margin-bottom: 1rem; }
+.bk-fg { margin-bottom: 1rem; }
+.bk-addons { display: flex; flex-direction: column; gap: 8px; margin-top: 0.6rem; }
+.bk-addon {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 11px 14px; border-radius: var(--r);
+  background: var(--white); border: 1px solid var(--rule);
+  cursor: pointer; transition: 0.15s;
+}
+.bk-addon:hover { border-color: var(--gold-bd); }
+.bk-addon label { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--ink); cursor: pointer; }
+.bk-addon input { accent-color: var(--gold); width: 16px; height: 16px; cursor: pointer; }
+.bk-addon .ac { font-size: 0.88rem; color: var(--gold); font-weight: 600; }
+.bk-times { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.bk-time {
+  padding: 10px; text-align: center; border-radius: var(--r);
+  border: 1px solid var(--rule); background: var(--white);
+  font-size: 0.85rem; font-weight: 500; color: var(--ink);
+  cursor: pointer; transition: 0.15s; user-select: none;
+}
+.bk-time:hover { border-color: var(--gold-bd); }
+.bk-time.sel { background: var(--gold); border-color: var(--gold); color: #fff; font-weight: 600; }
+.contact-toggle { display: flex; gap: 0; margin-bottom: 0.6rem; border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; width: fit-content; }
+.contact-toggle button {
+  padding: 8px 18px; border: none; background: var(--white);
+  font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 500;
+  color: var(--muted); cursor: pointer; transition: 0.15s;
+}
+.contact-toggle button.on { background: var(--gold); color: #fff; font-weight: 600; }
+.bk-summary {
+  background: var(--gold-bg); border: 1px solid var(--gold-bd);
+  border-radius: var(--r); padding: 1.2rem 1.4rem; margin-bottom: 1.2rem;
+}
+.bk-summary-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--ink); padding: 4px 0; }
+.bk-summary-total { border-top: 1px solid var(--gold-bd); margin-top: 8px; padding-top: 10px; }
+.bk-summary-total .lbl { font-weight: 700; color: var(--charcoal); }
+.bk-summary-total .val { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--gold); }
+.bk-terms { display: flex; align-items: flex-start; gap: 10px; font-size: 0.82rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.2rem; }
+.bk-terms input { accent-color: var(--gold); width: 17px; height: 17px; margin-top: 2px; flex-shrink: 0; cursor: pointer; }
+.bk-terms a { color: var(--gold); text-decoration: underline; cursor: pointer; }
+.bk-submit {
+  width: 100%; padding: 15px; border: none; border-radius: var(--r);
+  background: var(--gold); color: #fff;
+  font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.95rem;
+  letter-spacing: 0.5px; cursor: pointer; transition: 0.18s;
+}
+.bk-submit:hover { background: var(--gold-h); }
+.bk-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.bk-msg { margin-top: 1rem; padding: 12px 16px; border-radius: var(--r); font-size: 0.88rem; display: none; }
+.bk-msg.err { display: block; background: #fdeaea; border: 1px solid #e8b4b4; color: #a33; }
+.bk-msg.ok { display: block; background: var(--gold-bg); border: 1px solid var(--gold-bd); color: var(--gold-h); }
+.bk-success {
+  display: none; text-align: center; padding: 3rem 2rem;
+}
+.bk-success .check { font-size: 3rem; margin-bottom: 1rem; }
+.bk-success h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--charcoal); margin-bottom: 0.6rem; }
+.bk-success p { font-size: 0.95rem; color: var(--muted); line-height: 1.7; max-width: 440px; margin: 0 auto 0.5rem; }
+.bk-success .bk-detail { background: var(--gold-bg); border: 1px solid var(--gold-bd); border-radius: var(--r); padding: 1.2rem; margin: 1.5rem auto; max-width: 380px; text-align: left; }
+.bk-onebooking { font-size: 0.82rem; color: var(--muted); text-align: center; margin-top: 1.2rem; line-height: 1.6; }
+
+/* Legal modal */
+.legal-modal {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(24,24,26,0.6); padding: 5vh 5%;
+  align-items: flex-start; justify-content: center; overflow-y: auto;
+}
+.legal-modal.open { display: flex; }
+.legal-box {
+  background: var(--white); border-radius: var(--rl);
+  max-width: 640px; width: 100%; padding: 2.5rem;
+  max-height: 88vh; overflow-y: auto;
+}
+.legal-box h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--charcoal); margin-bottom: 0.4rem; }
+.legal-box h4 { font-size: 0.95rem; color: var(--charcoal); margin: 1.4rem 0 0.4rem; font-weight: 600; }
+.legal-box p, .legal-box li { font-size: 0.85rem; color: var(--ink); line-height: 1.7; }
+.legal-box ul { margin: 0.4rem 0 0.4rem 1.2rem; }
+.legal-close {
+  margin-top: 1.8rem; padding: 12px 28px; border: none; border-radius: var(--r);
+  background: var(--gold); color: #fff; font-family: 'Outfit', sans-serif;
+  font-weight: 600; cursor: pointer; font-size: 0.9rem;
+}
+@media (max-width: 560px) {
+  .bk-row, .bk-row-3 { grid-template-columns: 1fr; }
+  .bk-step { padding: 1.5rem 1.3rem; }
+}
+
 /* RESPONSIVE */
 @media (max-width: 960px) {
   #hero { grid-template-columns: 1fr; }
@@ -629,26 +747,25 @@ footer {
 <!-- NAV -->
 <nav>
   <div class="nav-brand">
-    <img src="favicon.png" alt="Kaiser's Detail Co. Logo">
+    <img src="/static/favicon.png" alt="Kaiser's Detail Co. Logo">
     Kaiser's <span>Detail Co.</span>
   </div>
   <ul class="nav-links">
-    <li><a href="#before-after">Results</a></li>
+    <li><a href="#book-online">Book Online</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#booking">How to Book</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="sms:8158239485" class="nav-call">💬 Text to Book</a></li>
+    <li><a href="#book-online" class="nav-call">📅 Book Now</a></li>
   </ul>
   <div class="ham" id="ham"><span></span><span></span><span></span></div>
 </nav>
 <div class="mob-nav" id="mob-nav">
-  <a href="#before-after">Results</a>
+  <a href="#book-online">Book Online</a>
   <a href="#services">Services</a>
   <a href="#gallery">Gallery</a>
-  <a href="#booking">How to Book</a>
+  <a href="#before-after">Results</a>
   <a href="#contact">Contact</a>
-  <a href="sms:8158239485" class="mob-call">💬 Text to Book — 815-823-9485</a>
+  <a href="#book-online" class="mob-call">📅 Book Now — Online Booking</a>
 </div>
 
 <!-- HERO -->
@@ -665,13 +782,11 @@ footer {
       <strong>Every single dollar you spend goes directly toward college tuition</strong> — you get a spotless car and a local student gets closer to their degree. That's a real win-win.
     </p>
     <div class="hero-actions">
-      <a href="sms:8158239485" class="btn-call">
-        💬 Text to Book — 815-823-9485
-      </a>
-      <a href="tel:8158239485" class="btn-ghost">
-        📞 Prefer to call?
+      <a href="#book-online" class="btn-call">
+        📅 Book Online Now
       </a>
       <a href="#services" class="btn-ghost">View Pricing</a>
+      <a href="tel:8158239485" class="btn-ghost">📞 Questions? Call</a>
     </div>
   </div>
 
@@ -697,12 +812,12 @@ footer {
 <!-- CONTACT BANNER -->
 <div id="contact-banner">
   <div class="contact-banner-text">
-    <h2>Ready to book? Just send a text.</h2>
-    <p>Text me what you need, pick a time, and we'll get your car spotless — quick and easy.</p>
+    <h2>Ready to book? Reserve your day online.</h2>
+    <p>Pick your service, choose an open day, and you're set — quick and easy. Every booking funds college.</p>
   </div>
   <div class="banner-btns">
-    <a href="sms:8158239485" class="btn-white">
-      💬 Text 815-823-9485
+    <a href="#book-online" class="btn-white">
+      📅 Book Online
     </a>
     <a href="tel:8158239485" class="btn-white-outline">
       📞 Or Call
@@ -722,8 +837,8 @@ footer {
     <div class="slider-card">
       <div class="sl-bar"><h3>Interior Detail</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b ib"><img src="BeforeInterior.png" alt="Interior before detailing" loading="lazy"></div>
-        <div class="ba-a ia"><img src="AfterInterior.png" alt="Interior after detailing" loading="lazy"></div>
+        <div class="ba-b ib"><img src="/static/BeforeInterior.png" alt="Interior before detailing" loading="lazy"></div>
+        <div class="ba-a ia"><img src="/static/AfterInterior.png" alt="Interior after detailing" loading="lazy"></div>
         <div class="ba-div" data-div></div>
         <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
         <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
@@ -732,8 +847,8 @@ footer {
     <div class="slider-card">
       <div class="sl-bar"><h3>Headlight Restoration</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b hb"><img src="BeforeHeadlight.png" alt="Cloudy headlight before" loading="lazy"></div>
-        <div class="ba-a ha"><img src="AfterHeadlight.png" alt="Clear headlight after" loading="lazy"></div>
+        <div class="ba-b hb"><img src="/static/BeforeHeadlight.png" alt="Cloudy headlight before" loading="lazy"></div>
+        <div class="ba-a ha"><img src="/static/AfterHeadlight.png" alt="Clear headlight after" loading="lazy"></div>
         <div class="ba-div" data-div></div>
         <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
         <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
@@ -742,8 +857,8 @@ footer {
     <div class="slider-card">
       <div class="sl-bar"><h3>Tire Shine</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b hb"><img src="BeforeTire.png" alt="Dull tire before" loading="lazy"></div>
-        <div class="ba-a ha"><img src="AfterTire.png" alt="Shiny tire after" loading="lazy"></div>
+        <div class="ba-b hb"><img src="/static/BeforeTire.png" alt="Dull tire before" loading="lazy"></div>
+        <div class="ba-a ha"><img src="/static/AfterTire.png" alt="Shiny tire after" loading="lazy"></div>
         <div class="ba-div" data-div></div>
         <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
         <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
@@ -752,8 +867,8 @@ footer {
     <div class="slider-card">
       <div class="sl-bar"><h3>Carpet Shampoo</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b tb"><img src="BeforeCarpet.png" alt="Dirty carpet before" loading="lazy"></div>
-        <div class="ba-a ta"><img src="AfterCarpet.png" alt="Clean carpet after" loading="lazy"></div>
+        <div class="ba-b tb"><img src="/static/BeforeCarpet.png" alt="Dirty carpet before" loading="lazy"></div>
+        <div class="ba-a ta"><img src="/static/AfterCarpet.png" alt="Clean carpet after" loading="lazy"></div>
         <div class="ba-div" data-div></div>
         <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
         <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
@@ -762,8 +877,8 @@ footer {
     <div class="slider-card">
       <div class="sl-bar"><h3>Exterior Detail</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b tib"><img src="BeforeExterior.png" alt="Dirty car exterior before" loading="lazy"></div>
-        <div class="ba-a tia"><img src="AfterExterior.png" alt="Shiny car exterior after" loading="lazy"></div>
+        <div class="ba-b tib"><img src="/static/BeforeExterior.png" alt="Dirty car exterior before" loading="lazy"></div>
+        <div class="ba-a tia"><img src="/static/AfterExterior.png" alt="Shiny car exterior after" loading="lazy"></div>
         <div class="ba-div" data-div></div>
         <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
         <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
@@ -772,8 +887,8 @@ footer {
     <div class="slider-card">
       <div class="sl-bar"><h3>Engine Bay Cleaning</h3><span class="sl-hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
-        <div class="ba-b tb"><img src="BeforeEngineBay.png" alt="Dirty engine bay before" loading="lazy"></div>
-        <div class="ba-a ta"><img src="AfterEngineBay.png" alt="Clean engine bay after" loading="lazy"></div>
+        <div class="ba-b tb"><img src="/static/BeforeEngineBay.png" alt="Dirty engine bay before" loading="lazy"></div>
+        <div class="ba-a ta"><img src="/static/AfterEngineBay.png" alt="Clean engine bay after" loading="lazy"></div>
         <div class="ba-div" data-div></div>
         <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
         <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
@@ -800,63 +915,6 @@ footer {
   <!-- ALL SERVICES -->
   <div class="svc-panel active" id="tab-all">
     <div class="services-grid">
-
-      <div class="svc-card">
-        <div class="svc-head">
-          <div class="svc-head-left"><h3>Quick Wash</h3><div class="dur">~30 minutes</div></div>
-          <div class="svc-price"><sup>$</sup>20</div>
-        </div>
-        <div class="svc-body">
-          <ul class="inc-list">
-            <li>Fast exterior rinse &amp; hand wash</li>
-            <li>Wheel wipe-down</li>
-            <li>Window exterior rinse</li>
-          </ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> Tire Shine <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Wax <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+45min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="20">$20</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
-        </div>
-      </div>
-
-      <div class="svc-card">
-        <div class="svc-head">
-          <div class="svc-head-left"><h3>Quick Interior Cleaning</h3><div class="dur">~30 minutes</div></div>
-          <div class="svc-price"><sup>$</sup>35</div>
-        </div>
-        <div class="svc-body">
-          <ul class="inc-list">
-            <li>Vacuum seats &amp; floors</li>
-            <li>Dashboard &amp; console wipe-down</li>
-            <li>Cup holder &amp; door pocket clean-out</li>
-          </ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Carpet Shampoo <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="35">$35</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
-        </div>
-      </div>
-
-      <div class="svc-card">
-        <div class="svc-head">
-          <div class="svc-head-left"><h3>Quick Detail</h3><div class="dur">~1 hour</div></div>
-          <div class="svc-price"><sup>$</sup>55</div>
-        </div>
-        <div class="svc-body">
-          <ul class="inc-list">
-            <li>Interior vacuum &amp; wipe-down</li>
-            <li>Exterior hand wash &amp; rinse</li>
-            <li>Window clean inside &amp; out</li>
-          </ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> Tire Shine <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="55">$55</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
-        </div>
-      </div>
-
       <div class="svc-card">
         <div class="svc-head">
           <div class="svc-head-left"><h3>Interior Detail</h3><div class="dur">~1 hour 30 min</div></div>
@@ -873,28 +931,7 @@ footer {
           <div class="addon-head">Add-Ons</div>
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Carpet Shampoo <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
           <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="100">$100</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
-        </div>
-      </div>
-
-      <div class="svc-card">
-        <div class="svc-head">
-          <div class="svc-head-left"><h3>Exterior Detail</h3><div class="dur">~1 hour 30 min</div></div>
-          <div class="svc-price"><sup>$</sup>75</div>
-        </div>
-        <div class="svc-body">
-          <ul class="inc-list">
-            <li>Full hand wash &amp; rinse</li>
-            <li>Wheel &amp; rim cleaning</li>
-            <li>Window exterior cleaning</li>
-            <li>Door jamb wipe-down</li>
-          </ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Wax <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+45min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="75">$75</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
         </div>
       </div>
 
@@ -917,7 +954,7 @@ footer {
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
           <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="150">$150</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
         </div>
       </div>
 
@@ -942,7 +979,65 @@ footer {
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
           <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="225">$225</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
+        </div>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-head">
+          <div class="svc-head-left"><h3>Exterior Detail</h3><div class="dur">~1 hour 30 min</div></div>
+          <div class="svc-price"><sup>$</sup>75</div>
+        </div>
+        <div class="svc-body">
+          <ul class="inc-list">
+            <li>Full hand wash &amp; rinse</li>
+            <li>Wheel &amp; rim cleaning</li>
+            <li>Window exterior cleaning</li>
+            <li>Door jamb wipe-down</li>
+          </ul>
+          <div class="addon-head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Wax <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+45min</span></label><span class="addon-cost">+$30</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
+          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="75">$75</span></div>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
+        </div>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-head">
+          <div class="svc-head-left"><h3>Quick Interior Cleaning</h3><div class="dur">~30 minutes</div></div>
+          <div class="svc-price"><sup>$</sup>35</div>
+        </div>
+        <div class="svc-body">
+          <ul class="inc-list">
+            <li>Vacuum seats &amp; floors</li>
+            <li>Dashboard &amp; console wipe-down</li>
+            <li>Cup holder &amp; door pocket clean-out</li>
+          </ul>
+          <div class="addon-head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Carpet Shampoo <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="20"> Quick Wash <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$20</span></div>
+          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="35">$35</span></div>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
+        </div>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-head">
+          <div class="svc-head-left"><h3>Quick Detail</h3><div class="dur">~1 hour</div></div>
+          <div class="svc-price"><sup>$</sup>55</div>
+        </div>
+        <div class="svc-body">
+          <ul class="inc-list">
+            <li>Interior vacuum &amp; wipe-down</li>
+            <li>Exterior hand wash &amp; rinse</li>
+            <li>Window clean inside &amp; out</li>
+          </ul>
+          <div class="addon-head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> Tire Shine <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$10</span></div>
+          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="55">$55</span></div>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
         </div>
       </div>
 
@@ -956,8 +1051,10 @@ footer {
             <li>Degreased &amp; detailed under the hood</li>
             <li>Removes built-up grime &amp; debris</li>
           </ul>
-          <div class="svc-total" style="margin-top:0.5rem;"><span class="total-lbl">Price</span><span class="total-num" data-base="35">$35</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
+          <div class="addon-head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="20"> Quick Wash <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$20</span></div>
+          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="35">$35</span></div>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
         </div>
       </div>
 
@@ -971,8 +1068,10 @@ footer {
             <li>Restores cloudy lenses to like-new clarity</li>
             <li>Improves visibility &amp; appearance</li>
           </ul>
-          <div class="svc-total" style="margin-top:0.5rem;"><span class="total-lbl">Price</span><span class="total-num" data-base="40">$40</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
+          <div class="addon-head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="20"> Quick Wash <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$20</span></div>
+          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="40">$40</span></div>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
         </div>
       </div>
 
@@ -986,8 +1085,10 @@ footer {
             <li>Clean removal without damaging paint</li>
             <li>Residue-free finish</li>
           </ul>
-          <div class="svc-total" style="margin-top:0.5rem;"><span class="total-lbl">Price</span><span class="total-num" data-base="15">$15</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
+          <div class="addon-head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="20"> Quick Wash <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$20</span></div>
+          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="15">$15</span></div>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
         </div>
       </div>
 
@@ -1001,25 +1102,14 @@ footer {
   <div class="svc-panel" id="tab-quick">
     <div class="services-grid">
       <div class="svc-card">
-        <div class="svc-head"><div class="svc-head-left"><h3>Quick Wash</h3><div class="dur">~30 minutes</div></div><div class="svc-price"><sup>$</sup>20</div></div>
-        <div class="svc-body">
-          <ul class="inc-list"><li>Fast exterior rinse &amp; hand wash</li><li>Wheel wipe-down</li><li>Window exterior rinse</li></ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> Tire Shine <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Wax <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+45min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="20">$20</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
-        </div>
-      </div>
-      <div class="svc-card">
         <div class="svc-head"><div class="svc-head-left"><h3>Quick Interior Cleaning</h3><div class="dur">~30 minutes</div></div><div class="svc-price"><sup>$</sup>35</div></div>
         <div class="svc-body">
           <ul class="inc-list"><li>Vacuum seats &amp; floors</li><li>Dashboard &amp; console wipe-down</li><li>Cup holder &amp; door pocket clean-out</li></ul>
           <div class="addon-head">Add-Ons</div>
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Carpet Shampoo <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="20"> Quick Wash <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$20</span></div>
           <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="35">$35</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
         </div>
       </div>
       <div class="svc-card">
@@ -1029,7 +1119,7 @@ footer {
           <div class="addon-head">Add-Ons</div>
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> Tire Shine <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$10</span></div>
           <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="55">$55</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
         </div>
       </div>
     </div>
@@ -1045,7 +1135,7 @@ footer {
           <div class="addon-head">Add-Ons</div>
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Carpet Shampoo <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
           <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="100">$100</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
         </div>
       </div>
     </div>
@@ -1063,7 +1153,7 @@ footer {
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
           <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="75">$75</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
         </div>
       </div>
     </div>
@@ -1082,7 +1172,7 @@ footer {
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
           <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="150">$150</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
         </div>
       </div>
       <div class="svc-card featured">
@@ -1094,7 +1184,7 @@ footer {
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
           <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
           <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="225">$225</span></div>
-          <a href="sms:8158239485" class="svc-book-btn">💬 Text to Book</a>
+          <a href="#book-online" class="svc-book-btn">Book Now</a>
         </div>
       </div>
     </div>
@@ -1108,16 +1198,149 @@ footer {
       <div class="extra-card"><div><h4>Engine Bay Cleaning</h4><p>~30 minutes · Degreased &amp; detailed under the hood</p></div><div class="extra-price"><sup>$</sup>35</div></div>
       <div class="extra-card"><div><h4>Headlight Restoration</h4><p>~40 minutes · Restores cloudy lenses to like-new clarity</p></div><div class="extra-price"><sup>$</sup>40</div></div>
       <div class="extra-card"><div><h4>Sticker / Decal Removal</h4><p>~15 minutes · Clean removal without damaging paint</p></div><div class="extra-price"><sup>$</sup>15</div></div>
+      <div class="extra-card"><div><h4>Quick Wash</h4><p>+30 min · Add to Quick Interior, Engine Bay, Headlight &amp; Decal Removal</p></div><div class="extra-price"><sup>$</sup>20</div></div>
       <div class="extra-card"><div><h4>Carpet Shampoo</h4><p>+30 min · Available on Interior, Professional &amp; Quick Interior</p></div><div class="extra-price"><sup>$</sup>30</div></div>
-      <div class="extra-card"><div><h4>Wax</h4><p>+45 min · Available on Exterior Detail &amp; Quick Wash</p></div><div class="extra-price"><sup>$</sup>30</div></div>
+      <div class="extra-card"><div><h4>Wax</h4><p>+45 min · Available on Exterior Detail</p></div><div class="extra-price"><sup>$</sup>30</div></div>
       <div class="extra-card"><div><h4>Clay Service</h4><p>+35 min · Available on Exterior, Professional &amp; Showroom</p></div><div class="extra-price"><sup>$</sup>45</div></div>
-      <div class="extra-card"><div><h4>RainX Treatment</h4><p>+15 min · Available on Exterior, Professional, Showroom &amp; Quick Wash</p></div><div class="extra-price"><sup>$</sup>10</div></div>
-      <div class="extra-card"><div><h4>Tire Shine</h4><p>+30 min · Available on Quick Wash &amp; Quick Detail</p></div><div class="extra-price"><sup>$</sup>10</div></div>
+      <div class="extra-card"><div><h4>RainX Treatment</h4><p>+15 min · Available on Exterior, Professional &amp; Showroom</p></div><div class="extra-price"><sup>$</sup>10</div></div>
+      <div class="extra-card"><div><h4>Tire Shine</h4><p>+30 min · Available on Quick Detail</p></div><div class="extra-price"><sup>$</sup>10</div></div>
     </div>
-    <div class="info-strip" style="margin-top:1.8rem;">✨ <strong>Want to mix and match?</strong> Call or text <a href="tel:8158239485" style="color:var(--gold);font-weight:600;">815-823-9485</a> and I'll build the perfect package for you.</div>
+    <div class="info-strip" style="margin-top:1.8rem;">✨ <strong>Want to mix and match?</strong> Head to <a href="#booking" style="color:var(--gold);font-weight:600;">online booking</a> and build your detail — or text <a href="tel:8158239485" style="color:var(--gold);font-weight:600;">815-823-9485</a> with questions.</div>
   </div>
 
 </section>
+
+<!-- ONLINE BOOKING -->
+<section id="book-online">
+  <div class="eyebrow">Reserve Your Spot</div>
+  <h2 class="display">Book <em>Online</em></h2>
+  <p class="lead" style="margin-bottom:0.5rem;">Pick a service, choose an open day and arrival time, and you're set. I take <strong>one booking per day</strong> so every car gets full attention.</p>
+  <p class="lead" style="font-size:0.9rem;">🎓 Every booking goes directly toward a local Plainfield student's college tuition. Thank you for supporting that.</p>
+
+  <div class="booking-wrap">
+    <div class="booking-card" id="booking-form">
+
+      <!-- Step 1: Service -->
+      <div class="bk-step">
+        <div class="bk-step-head"><div class="bk-step-num">1</div><h3>Choose Your Service</h3></div>
+        <div class="bk-fg">
+          <label class="bk-label">Service</label>
+          <select class="bk-select" id="bk-service"></select>
+        </div>
+        <div id="bk-addons-wrap" style="display:none;">
+          <label class="bk-label">Add-Ons (optional)</label>
+          <div class="bk-addons" id="bk-addons"></div>
+        </div>
+      </div>
+
+      <!-- Step 2: Date & Time -->
+      <div class="bk-step">
+        <div class="bk-step-head"><div class="bk-step-num">2</div><h3>Pick a Day &amp; Arrival Time</h3></div>
+        <div class="bk-fg">
+          <label class="bk-label">Date <span style="text-transform:none;letter-spacing:0;color:var(--muted);">(next day or later — taken days are blocked)</span></label>
+          <input type="date" class="bk-input" id="bk-date">
+        </div>
+        <div class="bk-fg">
+          <label class="bk-label">Arrival Time</label>
+          <div class="bk-times" id="bk-times"></div>
+        </div>
+      </div>
+
+      <!-- Step 3: Your Info -->
+      <div class="bk-step">
+        <div class="bk-step-head"><div class="bk-step-num">3</div><h3>Your Details</h3></div>
+        <div class="bk-fg">
+          <label class="bk-label">Full Name</label>
+          <input type="text" class="bk-input" id="bk-name" placeholder="John Smith">
+        </div>
+        <div class="bk-fg">
+          <label class="bk-label">Contact</label>
+          <div class="contact-toggle">
+            <button type="button" id="bk-toggle-phone" class="on" onclick="setContact('phone')">📞 Phone</button>
+            <button type="button" id="bk-toggle-email" onclick="setContact('email')">✉️ Email</button>
+          </div>
+          <input type="text" class="bk-input" id="bk-contact" placeholder="(815) 555-0100">
+        </div>
+        <label class="bk-label">Service Address</label>
+        <div class="bk-fg">
+          <input type="text" class="bk-input" id="bk-street" placeholder="Street address (e.g. 123 Main St)">
+        </div>
+        <div class="bk-row">
+          <input type="text" class="bk-input" id="bk-city" placeholder="City (e.g. Plainfield)">
+          <input type="text" class="bk-input" id="bk-state" placeholder="State (e.g. IL)" maxlength="2" value="IL">
+        </div>
+        <div class="bk-fg">
+          <label class="bk-label">Additional Notes (optional)</label>
+          <textarea class="bk-input" id="bk-notes" rows="3" placeholder="Vehicle type, gate codes, specific concerns..."></textarea>
+        </div>
+      </div>
+
+      <!-- Step 4: Confirm -->
+      <div class="bk-step">
+        <div class="bk-step-head"><div class="bk-step-num">4</div><h3>Review &amp; Confirm</h3></div>
+        <div class="bk-summary" id="bk-summary">
+          <div class="bk-summary-row"><span id="sum-service">—</span><span id="sum-service-price"></span></div>
+          <div id="sum-addons"></div>
+          <div class="bk-summary-row"><span>Date &amp; Time</span><span id="sum-datetime">—</span></div>
+          <div class="bk-summary-row bk-summary-total"><span class="lbl">Total</span><span class="val" id="sum-total">$0</span></div>
+        </div>
+        <div class="bk-terms">
+          <input type="checkbox" id="bk-agree">
+          <label for="bk-agree">I agree to the <a onclick="openLegal()">Terms of Service, Cancellation &amp; Liability Policy</a>, and confirm the information above is accurate. Payment is due at the time of service.</label>
+        </div>
+        <button class="bk-submit" id="bk-submit" onclick="submitBooking()">Confirm Booking</button>
+        <div class="bk-msg" id="bk-msg"></div>
+        <p class="bk-onebooking">📅 Only one appointment is taken per day. If your preferred day is unavailable, please choose another. Questions? Text <a href="tel:8158239485" style="color:var(--gold);">815-823-9485</a>.</p>
+      </div>
+    </div>
+
+    <!-- Success state -->
+    <div class="booking-card bk-success" id="booking-success">
+      <div class="check">✅</div>
+      <h3>You're Booked!</h3>
+      <p>Thank you for booking with Kaiser's Detail Co. — and for helping fund a local student's education. 🎓</p>
+      <div class="bk-detail" id="success-detail"></div>
+      <p style="font-size:0.85rem;">I'll reach out to confirm details. Need to make a change? Text <strong>815-823-9485</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LEGAL MODAL -->
+<div class="legal-modal" id="legal-modal">
+  <div class="legal-box">
+    <h2>Terms of Service &amp; Policies</h2>
+    <p style="color:var(--muted);">Kaiser's Detail Co. · Plainfield, IL · Last updated 2026</p>
+
+    <h4>1. Booking &amp; Scheduling</h4>
+    <p>Kaiser's Detail Co. accepts one appointment per day. Submitting a booking reserves that date pending confirmation. We will contact you using the phone number or email you provide to confirm the appointment and finalize details. A booking is not guaranteed until confirmed.</p>
+
+    <h4>2. Payment</h4>
+    <p>Payment is due in full at the time of service unless otherwise agreed in advance. Prices listed include the selected service and any chosen add-ons. The total shown at booking is an estimate; final pricing may vary if the vehicle's actual condition differs substantially from what was described (e.g. excessive soiling, pet hair, or biohazards may require an adjusted quote, discussed before work begins).</p>
+
+    <h4>3. Cancellations &amp; Rescheduling</h4>
+    <p>Please provide at least 24 hours' notice to cancel or reschedule. Same-day cancellations or no-shows may be subject to a fee at the operator's discretion. To cancel or reschedule, text or call 815-823-9485.</p>
+
+    <h4>4. Access &amp; Vehicle Preparation</h4>
+    <p>You are responsible for providing safe, legal access to the vehicle and a suitable location for the work (including water/power access where applicable). Please remove personal belongings and valuables before your appointment. Kaiser's Detail Co. is not responsible for personal items left in the vehicle.</p>
+
+    <h4>5. Liability</h4>
+    <p>Kaiser's Detail Co. takes great care with every vehicle. However, by booking you acknowledge that detailing involves inherent risks. We are not liable for pre-existing damage, wear, defects, or conditions (including but not limited to faded paint, clear-coat failure, loose trim, prior scratches, mechanical or electrical issues, or aftermarket modifications) that may become more apparent after cleaning. We are not responsible for damage resulting from undisclosed vehicle conditions. Our maximum liability for any claim is limited to the amount paid for the service.</p>
+
+    <h4>6. Results</h4>
+    <p>While we strive for excellent results, some stains, odors, oxidation, scratches, or damage may be permanent and cannot be fully removed. Outcomes vary based on a vehicle's condition, materials, and age.</p>
+
+    <h4>7. Photography</h4>
+    <p>We may photograph vehicles before and after service for quality records and marketing (e.g. website gallery). Identifying details such as license plates are not published. Let us know at your appointment if you prefer your vehicle not be photographed for marketing.</p>
+
+    <h4>8. Privacy</h4>
+    <p>The contact and address information you provide is used solely to schedule, perform, and follow up on your service. We do not sell or share your personal information with third parties.</p>
+
+    <h4>9. Charitable Purpose</h4>
+    <p>Kaiser's Detail Co. is a sole-operator business. Proceeds support the operator's college tuition. This is a personal small business, not a registered nonprofit or charity, and payments are not tax-deductible donations.</p>
+
+    <button class="legal-close" onclick="closeLegal()">I Understand — Close</button>
+  </div>
+</div>
 
 <!-- GALLERY -->
 <section id="gallery">
@@ -1127,12 +1350,12 @@ footer {
     <p class="lead">Photos from real jobs in Plainfield, IL and surrounding areas.</p>
   </div>
   <div class="gallery-grid">
-    <div class="gal-item"><img src="AfterInterior.png" alt="Clean car interior after Kaiser's Detail Co." loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Interior Detail</div><div class="gal-cap">Interior Detail — Plainfield, IL</div></div>
-    <div class="gal-item"><img src="AfterExterior.png" alt="Shiny clean car exterior" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Exterior Detail</div><div class="gal-cap">Exterior Detail</div></div>
-    <div class="gal-item"><img src="AfterHeadlight.png" alt="Restored headlight" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Headlight Restoration</div><div class="gal-cap">Headlight Restoration</div></div>
-    <div class="gal-item"><img src="AfterCarpet.png" alt="Clean carpet after shampooing" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Carpet Shampoo</div><div class="gal-cap">Carpet Shampoo Add-On</div></div>
-    <div class="gal-item"><img src="AfterEngineBay.png" alt="Clean engine bay" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Engine Bay</div><div class="gal-cap">Engine Bay Cleaning</div></div>
-    <div class="gal-item"><img src="AfterTire.png" alt="Shiny tire after tire shine" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Tire Shine</div><div class="gal-cap">Tire Shine Add-On</div></div>
+    <div class="gal-item"><img src="/static/AfterInterior.png" alt="Clean car interior after Kaiser's Detail Co." loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Interior Detail</div><div class="gal-cap">Interior Detail — Plainfield, IL</div></div>
+    <div class="gal-item"><img src="/static/AfterExterior.png" alt="Shiny clean car exterior" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Exterior Detail</div><div class="gal-cap">Exterior Detail</div></div>
+    <div class="gal-item"><img src="/static/AfterHeadlight.png" alt="Restored headlight" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Headlight Restoration</div><div class="gal-cap">Headlight Restoration</div></div>
+    <div class="gal-item"><img src="/static/AfterCarpet.png" alt="Clean carpet after shampooing" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Carpet Shampoo</div><div class="gal-cap">Carpet Shampoo Add-On</div></div>
+    <div class="gal-item"><img src="/static/AfterEngineBay.png" alt="Clean engine bay" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Engine Bay</div><div class="gal-cap">Engine Bay Cleaning</div></div>
+    <div class="gal-item"><img src="/static/AfterTire.png" alt="Shiny tire after tire shine" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Tire Shine</div><div class="gal-cap">Tire Shine Add-On</div></div>
   </div>
   <p class="gal-note"><strong>Every photo is from a real job.</strong> Want your car looking like this? Text 815-823-9485 to book.</p>
 </section>
@@ -1140,15 +1363,15 @@ footer {
 <!-- HOW TO BOOK -->
 <section id="booking">
   <div class="eyebrow">Getting Started</div>
-  <h2 class="display">How to <em>Book</em></h2>
-  <p class="lead" style="margin-bottom:2.5rem;">No app, no account, no hassle. Just call or text and we'll get your car on the schedule.</p>
+  <h2 class="display">How <em>Booking</em> Works</h2>
+  <p class="lead" style="margin-bottom:2.5rem;">The fastest way to book is right here on the site — <a href="#book-online" style="color:var(--gold);font-weight:600;">reserve your day online</a> in about a minute. Prefer to reach out directly? That works too.</p>
 
   <div class="booking-layout">
     <div class="booking-left">
-      <p>Booking is simple — reach out directly and I'll get back to you fast. Tell me what service you want, where you're located in the Plainfield area, and what day works best. That's it.</p>
+      <p>Booking online is simple: pick your service, choose an open day and arrival time, and add your details. I take one appointment per day so every car gets full attention. Prefer to text, call, or email instead? Just reach out and I'll get you on the schedule.</p>
       <ul class="how-list">
-        <li><div class="how-num">1</div> Text <strong>815-823-9485</strong> with your service &amp; location (or call if you prefer)</li>
-        <li><div class="how-num">2</div> We'll confirm a day and time that works for you</li>
+        <li><div class="how-num">1</div> <strong><a href="#book-online" style="color:var(--gold);">Book online</a></strong> — or text/call <strong>815-823-9485</strong> with your service &amp; location</li>
+        <li><div class="how-num">2</div> I'll confirm your day and time</li>
         <li><div class="how-num">3</div> I come to you — no drop-off needed</li>
         <li><div class="how-num">4</div> You come back to a spotless car</li>
       </ul>
@@ -1251,7 +1474,6 @@ footer {
           <select name="service">
             <option value="">— Select a service —</option>
             <optgroup label="Quick Services">
-              <option>Quick Wash ($20)</option>
               <option>Quick Interior Cleaning ($35)</option>
               <option>Quick Detail ($55)</option>
             </optgroup>
@@ -1267,6 +1489,7 @@ footer {
               <option>Sticker / Decal Removal ($15)</option>
             </optgroup>
             <optgroup label="Add-Ons">
+              <option>Add-On: Quick Wash (+$20)</option>
               <option>Add-On: Carpet Shampoo (+$30)</option>
               <option>Add-On: Tire Shine (+$10)</option>
               <option>Add-On: Wax (+$30)</option>
@@ -1294,8 +1517,8 @@ footer {
     <p class="ft-tag">Professional Auto Detailing · Plainfield, IL<br>Local student, serious work, spotless results.<br>Every booking funds college tuition. 🎓</p>
   </div>
   <div class="ft-right">
-    <a href="sms:8158239485">💬 Text to Book — 815-823-9485</a>
-    <a href="tel:8158239485" style="font-size:0.75rem;opacity:0.7;">📞 Or call the same number</a>
+    <a href="#book-online">📅 Book Online — kaiserdetailing.com</a>
+    <a href="sms:8158239485" style="font-size:0.75rem;opacity:0.7;">💬 Or text/call 815-823-9485</a>
     <a href="mailto:KaoFechner@outlook.com">KaoFechner@outlook.com</a>
     <a href="https://kaiserdetailing.com">kaiserdetailing.com</a>
     <p>&copy; 2025–2026 Kaiser's Detail Co. All rights reserved.</p>
@@ -1375,6 +1598,274 @@ document.getElementById('cform').addEventListener('submit', async e => {
 });
 
 // GA
+</script>
+
+<!-- BOOKING LOGIC -->
+<script>
+// ── Catalog (mirrors server; server re-validates all prices) ──
+const SERVICES = {
+  interior_detail:     { name: "Interior Detail",         price: 100, dur: "1h 30m" },
+  exterior_detail:     { name: "Exterior Detail",         price: 75,  dur: "1h 30m" },
+  professional_detail: { name: "Professional Detail",     price: 150, dur: "3h" },
+  showroom_detail:     { name: "Showroom Detail",         price: 225, dur: "4h" },
+  engine_bay:          { name: "Engine Bay Cleaning",     price: 35,  dur: "30m" },
+  quick_interior:      { name: "Quick Interior Cleaning", price: 35,  dur: "30m" },
+  quick_detail:        { name: "Quick Detail",            price: 55,  dur: "1h" },
+  headlight:           { name: "Headlight Restoration",   price: 40,  dur: "40m" },
+  decal_removal:       { name: "Sticker / Decal Removal", price: 15,  dur: "15m" },
+};
+const ADDONS = {
+  tire_shine:     { name: "Tire Shine",     price: 10 },
+  carpet_shampoo: { name: "Carpet Shampoo", price: 30 },
+  wax:            { name: "Wax",            price: 30 },
+  clay:           { name: "Clay Service",   price: 45 },
+  rainx:          { name: "RainX",          price: 10 },
+  quick_wash:     { name: "Quick Wash",     price: 20 },
+};
+const SERVICE_ADDONS = {
+  interior_detail:     ["carpet_shampoo"],
+  exterior_detail:     ["wax", "clay", "rainx"],
+  professional_detail: ["carpet_shampoo", "clay", "rainx"],
+  showroom_detail:     ["clay", "rainx"],
+  engine_bay:          ["quick_wash"],
+  quick_interior:      ["carpet_shampoo", "quick_wash"],
+  quick_detail:        ["tire_shine"],
+  headlight:           ["quick_wash"],
+  decal_removal:       ["quick_wash"],
+};
+
+let bk = {
+  service: "interior_detail",
+  addons: new Set(),
+  time: null,
+  contactType: "phone",
+};
+
+// Populate service dropdown
+const svcSel = document.getElementById("bk-service");
+Object.entries(SERVICES).forEach(([k, v]) => {
+  const o = document.createElement("option");
+  o.value = k;
+  o.textContent = `${v.name} — $${v.price} (${v.dur})`;
+  svcSel.appendChild(o);
+});
+
+// Read ?service= from URL or hash for deep-linking from cards
+(function preselect() {
+  const params = new URLSearchParams(location.search);
+  const s = params.get("service");
+  if (s && SERVICES[s]) { bk.service = s; svcSel.value = s; }
+})();
+
+svcSel.addEventListener("change", () => {
+  bk.service = svcSel.value;
+  bk.addons.clear();
+  renderAddons();
+  renderSummary();
+});
+
+function renderAddons() {
+  const wrap = document.getElementById("bk-addons-wrap");
+  const box = document.getElementById("bk-addons");
+  const list = SERVICE_ADDONS[bk.service] || [];
+  box.innerHTML = "";
+  if (!list.length) { wrap.style.display = "none"; return; }
+  wrap.style.display = "block";
+  list.forEach(key => {
+    const a = ADDONS[key];
+    const row = document.createElement("div");
+    row.className = "bk-addon";
+    row.innerHTML = `<label><input type="checkbox" data-key="${key}"> ${a.name}</label><span class="ac">+$${a.price}</span>`;
+    row.querySelector("input").addEventListener("change", e => {
+      if (e.target.checked) bk.addons.add(key); else bk.addons.delete(key);
+      renderSummary();
+    });
+    row.addEventListener("click", e => {
+      if (e.target.tagName !== "INPUT") {
+        const cb = row.querySelector("input"); cb.checked = !cb.checked;
+        cb.dispatchEvent(new Event("change"));
+      }
+    });
+    box.appendChild(row);
+  });
+}
+
+// Date setup: min = tomorrow (no same-day booking)
+const dateInput = document.getElementById("bk-date");
+let takenDates = [];
+let earliestDate = null;
+
+function nextOpenDate() {
+  // First date >= earliest that isn't already taken
+  let d = new Date(earliestDate + "T00:00:00");
+  for (let i = 0; i < 365; i++) {
+    const iso = d.toISOString().slice(0, 10);
+    if (!takenDates.includes(iso)) return iso;
+    d.setDate(d.getDate() + 1);
+  }
+  return earliestDate;
+}
+
+async function loadAvailability() {
+  try {
+    const r = await fetch("/api/availability");
+    const d = await r.json();
+    takenDates = d.taken || [];
+    earliestDate = d.earliest;
+    renderTimes(d.time_slots || []);
+  } catch (e) {
+    // Fallback: tomorrow
+    const t = new Date(); t.setDate(t.getDate() + 1);
+    earliestDate = t.toISOString().slice(0, 10);
+    renderTimes(["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM"]);
+  }
+  dateInput.min = earliestDate;
+  // Pre-fill the earliest available open day so the picker opens on it
+  if (!dateInput.value) {
+    dateInput.value = nextOpenDate();
+    renderSummary();
+  }
+}
+
+dateInput.addEventListener("change", () => {
+  if (!dateInput.value) return;
+  if (dateInput.value < earliestDate) {
+    showMsg("Bookings start the next day. Earliest available date selected.", "err");
+    dateInput.value = nextOpenDate();
+  } else if (takenDates.includes(dateInput.value)) {
+    showMsg("Sorry — that day is already booked. Showing the next open day.", "err");
+    dateInput.value = nextOpenDate();
+  } else {
+    clearMsg();
+  }
+  renderSummary();
+});
+
+function renderTimes(slots) {
+  const box = document.getElementById("bk-times");
+  box.innerHTML = "";
+  slots.forEach(t => {
+    const el = document.createElement("div");
+    el.className = "bk-time";
+    el.textContent = t;
+    el.addEventListener("click", () => {
+      document.querySelectorAll(".bk-time").forEach(x => x.classList.remove("sel"));
+      el.classList.add("sel");
+      bk.time = t;
+      renderSummary();
+    });
+    box.appendChild(el);
+  });
+}
+
+// Contact toggle
+function setContact(type) {
+  bk.contactType = type;
+  document.getElementById("bk-toggle-phone").classList.toggle("on", type === "phone");
+  document.getElementById("bk-toggle-email").classList.toggle("on", type === "email");
+  const inp = document.getElementById("bk-contact");
+  inp.placeholder = type === "phone" ? "(815) 555-0100" : "you@example.com";
+  inp.type = type === "phone" ? "tel" : "email";
+  inp.value = "";
+}
+
+function renderSummary() {
+  const s = SERVICES[bk.service];
+  document.getElementById("sum-service").textContent = s.name;
+  document.getElementById("sum-service-price").textContent = "$" + s.price;
+  let total = s.price;
+  const addonBox = document.getElementById("sum-addons");
+  addonBox.innerHTML = "";
+  bk.addons.forEach(k => {
+    total += ADDONS[k].price;
+    const row = document.createElement("div");
+    row.className = "bk-summary-row";
+    row.innerHTML = `<span style="color:var(--muted);">+ ${ADDONS[k].name}</span><span style="color:var(--muted);">+$${ADDONS[k].price}</span>`;
+    addonBox.appendChild(row);
+  });
+  const dt = (dateInput.value ? fmtDate(dateInput.value) : "—") + (bk.time ? " · " + bk.time : "");
+  document.getElementById("sum-datetime").textContent = dt;
+  document.getElementById("sum-total").textContent = "$" + total;
+}
+
+function fmtDate(s) {
+  const [y, m, d] = s.split("-");
+  return new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+}
+
+function showMsg(text, type) {
+  const m = document.getElementById("bk-msg");
+  m.textContent = text;
+  m.className = "bk-msg " + type;
+}
+function clearMsg() { document.getElementById("bk-msg").className = "bk-msg"; }
+
+// Legal modal
+function openLegal() { document.getElementById("legal-modal").classList.add("open"); }
+function closeLegal() { document.getElementById("legal-modal").classList.remove("open"); }
+document.getElementById("legal-modal").addEventListener("click", e => {
+  if (e.target.id === "legal-modal") closeLegal();
+});
+
+async function submitBooking() {
+  clearMsg();
+  const name = document.getElementById("bk-name").value.trim();
+  const contact = document.getElementById("bk-contact").value.trim();
+  const street = document.getElementById("bk-street").value.trim();
+  const city = document.getElementById("bk-city").value.trim();
+  const state = document.getElementById("bk-state").value.trim();
+  const notes = document.getElementById("bk-notes").value.trim();
+  const agree = document.getElementById("bk-agree").checked;
+
+  if (!dateInput.value) return showMsg("Please choose a date.", "err");
+  if (!bk.time) return showMsg("Please choose an arrival time.", "err");
+  if (!name) return showMsg("Please enter your name.", "err");
+  if (!contact) return showMsg("Please enter your phone or email.", "err");
+  if (!street || !city || !state) return showMsg("Please enter your full address.", "err");
+  if (!agree) return showMsg("Please agree to the terms to continue.", "err");
+
+  const btn = document.getElementById("bk-submit");
+  btn.disabled = true; btn.textContent = "Booking...";
+
+  try {
+    const r = await fetch("/api/book", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        date: dateInput.value,
+        time: bk.time,
+        service: bk.service,
+        addons: Array.from(bk.addons),
+        name,
+        contact_type: bk.contactType,
+        contact_value: contact,
+        street, city, state, notes,
+        agreed_terms: true,
+      }),
+    });
+    const d = await r.json();
+    if (d.ok) {
+      document.getElementById("booking-form").style.display = "none";
+      const succ = document.getElementById("booking-success");
+      document.getElementById("success-detail").innerHTML =
+        `<strong>${d.service}</strong><br>${fmtDate(d.date)} at ${d.time}<br>Total: <strong>$${d.total}</strong> (due at service)`;
+      succ.style.display = "block";
+      succ.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      showMsg(d.error || "Something went wrong. Please try again.", "err");
+      if (r.status === 409) loadAvailability(); // refresh taken days
+      btn.disabled = false; btn.textContent = "Confirm Booking";
+    }
+  } catch (e) {
+    showMsg("Connection error. Please try again or text 815-823-9485.", "err");
+    btn.disabled = false; btn.textContent = "Confirm Booking";
+  }
+}
+
+// Init
+renderAddons();
+renderSummary();
+loadAvailability();
 </script>
 
 <!-- Google Analytics -->

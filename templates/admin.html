@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin Dashboard — Kaiser's Detail Co.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#faf7f2;--cream2:#f2ede4;--charcoal:#18181a;--ink:#2e2d2b;--muted:#6b6860;--rule:#e0d9ce;--gold:#b87414;--gold-h:#9a600e;--gold-bg:#fdf3e0;--gold-bd:#e8c47a;--r:6px;--rl:12px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);font-family:'Outfit',sans-serif;color:var(--charcoal);line-height:1.5;}
+header{background:var(--charcoal);padding:1.1rem 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.brand{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:#fff;}
+.brand span{color:var(--gold);}
+.brand small{display:block;font-family:'Outfit',sans-serif;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-top:2px;}
+.logout{color:rgba(255,255,255,0.7);font-size:0.8rem;text-decoration:none;border:1px solid rgba(255,255,255,0.3);padding:7px 16px;border-radius:var(--r);transition:0.15s;}
+.logout:hover{color:#fff;border-color:#fff;}
+.wrap{max-width:1200px;margin:0 auto;padding:2rem 5% 4rem;}
+.flash{padding:12px 18px;border-radius:var(--r);margin-bottom:1.5rem;font-size:0.88rem;}
+.flash.ok{background:var(--gold-bg);border:1px solid var(--gold-bd);color:var(--gold-h);}
+.flash.err{background:#fdeaea;border:1px solid #e8b4b4;color:#a33;}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
+.stat{background:#fff;border:1px solid var(--rule);border-radius:var(--rl);padding:1.3rem 1.5rem;}
+.stat .n{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gold);line-height:1;}
+.stat .l{font-size:0.78rem;color:var(--muted);margin-top:0.4rem;}
+h2{font-family:'Playfair Display',serif;font-size:1.4rem;margin-bottom:1.2rem;}
+.section{margin-bottom:2.5rem;}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--rule);border-radius:var(--rl);overflow:hidden;}
+th{background:var(--cream2);text-align:left;font-size:0.7rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:12px 14px;font-weight:600;}
+td{padding:13px 14px;font-size:0.86rem;border-top:1px solid var(--rule);vertical-align:top;}
+tr.past td{opacity:0.5;}
+.tag{display:inline-block;background:var(--gold-bg);border:1px solid var(--gold-bd);color:var(--gold-h);font-size:0.7rem;padding:2px 8px;border-radius:100px;margin:1px;}
+.src{font-size:0.65rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.date-cell{font-weight:600;white-space:nowrap;}
+.contact-cell a{color:var(--gold);text-decoration:none;}
+.total-cell{font-weight:700;color:var(--gold);white-space:nowrap;}
+.del{background:none;border:1px solid var(--rule);color:#a33;font-size:0.72rem;padding:5px 10px;border-radius:var(--r);cursor:pointer;transition:0.15s;}
+.del:hover{background:#fdeaea;border-color:#e8b4b4;}
+.empty{text-align:center;padding:3rem;color:var(--muted);font-size:0.9rem;}
+.create-card{background:#fff;border:1px solid var(--rule);border-radius:var(--rl);padding:1.8rem 2rem;}
+.create-card label{display:block;font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;}
+.create-card input,.create-card select,.create-card textarea{width:100%;padding:10px 12px;background:var(--cream);border:1px solid var(--rule);border-radius:var(--r);font-family:'Outfit',sans-serif;font-size:0.88rem;}
+.create-card input:focus,.create-card select:focus,.create-card textarea:focus{outline:none;border-color:var(--gold);}
+.fg{margin-bottom:1rem;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+.addon-checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:0.4rem;}
+.addon-checks label{display:flex;align-items:center;gap:6px;font-size:0.82rem;text-transform:none;letter-spacing:0;color:var(--ink);background:var(--cream);border:1px solid var(--rule);padding:7px 11px;border-radius:var(--r);cursor:pointer;margin:0;}
+.addon-checks input{width:auto;}
+.create-btn{width:100%;margin-top:0.6rem;padding:13px;border:none;border-radius:var(--r);background:var(--gold);color:#fff;font-family:'Outfit',sans-serif;font-weight:600;font-size:0.9rem;cursor:pointer;}
+.create-btn:hover{background:var(--gold-h);}
+.toggle-create{background:var(--charcoal);color:#fff;border:none;padding:11px 20px;border-radius:var(--r);font-family:'Outfit',sans-serif;font-weight:600;font-size:0.85rem;cursor:pointer;margin-bottom:1.2rem;}
+.scroll{overflow-x:auto;}
+@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Kaiser's <span>Detail Co.</span><small>Admin Dashboard</small></div>
+  <a href="{{ url_for('admin_logout') }}" class="logout">Sign Out</a>
+</header>
+
+<div class="wrap">
+  {% if flash %}<div class="flash {{ 'ok' if flash.ok else 'err' }}">{{ flash.msg }}</div>{% endif %}
+
+  {% set upcoming = bookings | selectattr('is_past', 'equalto', False) | list %}
+  {% set revenue = upcoming | sum(attribute='total_price') %}
+  <div class="stats">
+    <div class="stat"><div class="n">{{ upcoming | length }}</div><div class="l">Upcoming Bookings</div></div>
+    <div class="stat"><div class="n">{{ bookings | length }}</div><div class="l">Total Bookings</div></div>
+    <div class="stat"><div class="n">${{ revenue }}</div><div class="l">Upcoming Revenue</div></div>
+  </div>
+
+  <!-- CREATE BOOKING -->
+  <div class="section">
+    <button class="toggle-create" onclick="document.getElementById('create-form').style.display = document.getElementById('create-form').style.display==='none'?'block':'none'">➕ Create a Booking</button>
+    <div class="create-card" id="create-form" style="display:none;">
+      <h2 style="font-size:1.15rem;">New Booking</h2>
+      <form method="POST" action="{{ url_for('admin_create') }}">
+        <div class="grid2">
+          <div class="fg"><label>Date</label><input type="date" name="date" min="{{ today }}" required></div>
+          <div class="fg"><label>Arrival Time</label>
+            <select name="time" required>
+              {% for t in time_slots %}<option>{{ t }}</option>{% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="fg"><label>Service</label>
+          <select name="service" id="adm-service" required>
+            {% for key, s in services.items() %}<option value="{{ key }}">{{ s.name }} — ${{ s.price }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="fg"><label>Add-Ons</label>
+          <div class="addon-checks" id="adm-addons"></div>
+        </div>
+        <div class="fg"><label>Customer Name</label><input type="text" name="name" required></div>
+        <div class="grid2">
+          <div class="fg"><label>Contact Type</label>
+            <select name="contact_type"><option value="phone">Phone</option><option value="email">Email</option></select>
+          </div>
+          <div class="fg"><label>Phone or Email</label><input type="text" name="contact_value" required></div>
+        </div>
+        <div class="fg"><label>Street Address</label><input type="text" name="street" required></div>
+        <div class="grid2">
+          <div class="fg"><label>City</label><input type="text" name="city" required></div>
+          <div class="fg"><label>State</label><input type="text" name="state" value="IL" maxlength="2" required></div>
+        </div>
+        <div class="fg"><label>Notes</label><textarea name="notes" rows="2"></textarea></div>
+        <button class="create-btn" type="submit">Create Booking</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- BOOKINGS TABLE -->
+  <div class="section">
+    <h2>All Bookings</h2>
+    {% if bookings %}
+    <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th><th>Time</th><th>Customer</th><th>Contact</th>
+          <th>Service &amp; Add-Ons</th><th>Address</th><th>Notes</th><th>Total</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bookings %}
+        <tr class="{{ 'past' if b.is_past else '' }}">
+          <td class="date-cell">{{ b.booking_date }}<br><span class="src">{{ b.source }}</span></td>
+          <td>{{ b.arrival_time }}</td>
+          <td>{{ b.customer_name }}</td>
+          <td class="contact-cell">
+            {% if b.contact_type == 'phone' %}<a href="tel:{{ b.contact_value }}">{{ b.contact_value }}</a>
+            {% else %}<a href="mailto:{{ b.contact_value }}">{{ b.contact_value }}</a>{% endif %}
+            <br><span class="src">{{ b.contact_type }}</span>
+          </td>
+          <td><strong>{{ b.service_name }}</strong>{% if b.addon_names %}<br>{% for a in b.addon_names %}<span class="tag">{{ a }}</span>{% endfor %}{% endif %}</td>
+          <td>{{ b.street }}<br>{{ b.city }}, {{ b.state }}</td>
+          <td style="max-width:180px;font-size:0.8rem;color:var(--muted);">{{ b.notes or '—' }}</td>
+          <td class="total-cell">${{ b.total_price }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('admin_delete', booking_id=b.id) }}" onsubmit="return confirm('Delete this booking?');">
+              <button class="del" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="create-card empty">No bookings yet. They'll appear here as customers reserve days.</div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+// Add-on options per service for the admin create form
+const SERVICE_ADDONS = {{ service_addons | tojson }};
+const ADDONS = {{ addons | tojson }};
+const admService = document.getElementById("adm-service");
+const admAddons = document.getElementById("adm-addons");
+function renderAdmAddons() {
+  const list = SERVICE_ADDONS[admService.value] || [];
+  admAddons.innerHTML = "";
+  if (!list.length) { admAddons.innerHTML = '<span style="font-size:0.8rem;color:var(--muted);">No add-ons for this service.</span>'; return; }
+  list.forEach(k => {
+    const lbl = document.createElement("label");
+    lbl.innerHTML = `<input type="checkbox" name="addons" value="${k}"> ${ADDONS[k].name} (+$${ADDONS[k].price})`;
+    admAddons.appendChild(lbl);
+  });
+}
+admService.addEventListener("change", renderAdmAddons);
+renderAdmAddons();
+</script>
+</body>
+</html>
