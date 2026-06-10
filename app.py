@@ -4,7 +4,7 @@ Flask app that serves the public site, handles bookings (one per day),
 and serves a password-protected admin panel.
 
 Run locally:   python app.py
-Production:     gunicorn -w 2 -b 0.0.0.0:8000 app:app
+Production:     gunicorn -w 1 -b 0.0.0.0:8000 app:app
 """
 
 import os
@@ -133,6 +133,7 @@ def notify(booking):
         addons_line = "\n+ " + ", ".join(booking["addon_names"])
 
     contact_label = "📞" if booking.get("contact_type") == "phone" else "✉️"
+    vehicle_line = f"\n🚗 {booking['vehicle_type']}" if booking.get("vehicle_type") else ""
     notes_line = f"\nNotes: {booking['notes']}" if booking.get("notes") else ""
     source_tag = " [admin]" if booking.get("source") == "admin" else ""
 
@@ -143,6 +144,7 @@ def notify(booking):
         f"{pretty_date} at {booking['arrival_time']} · ${booking['total_price']}\n"
         f"{booking['street']}, {booking['city']} {booking['state']}\n"
         f"{contact_label} {booking['contact_value']}"
+        f"{vehicle_line}"
         f"{notes_line}"
     )
 
@@ -196,6 +198,7 @@ def init_db():
             customer_name TEXT NOT NULL,
             contact_type  TEXT NOT NULL,          -- 'phone' or 'email'
             contact_value TEXT NOT NULL,
+            vehicle_type  TEXT NOT NULL DEFAULT '',
             street        TEXT NOT NULL,
             city          TEXT NOT NULL,
             state         TEXT NOT NULL,
@@ -206,6 +209,12 @@ def init_db():
         );
     """)
     conn.commit()
+    # Migration: add vehicle_type column to existing databases without losing data
+    try:
+        conn.execute("ALTER TABLE bookings ADD COLUMN vehicle_type TEXT NOT NULL DEFAULT ''")
+        conn.commit()
+    except Exception:
+        pass  # column already exists — safe to ignore
     conn.close()
 
 
@@ -288,6 +297,7 @@ def book():
     street       = (data.get("street") or "").strip()
     city         = (data.get("city") or "").strip()
     state        = (data.get("state") or "").strip()
+    vehicle_type = (data.get("vehicle_type") or "").strip()
     notes        = (data.get("notes") or "").strip()
     agreed       = bool(data.get("agreed_terms"))
 
@@ -308,6 +318,8 @@ def book():
         return jsonify({"ok": False, "error": "Please enter a valid phone number."}), 400
     if not (street and city and state):
         return jsonify({"ok": False, "error": "Full address (street, city, state) is required."}), 400
+    if not vehicle_type:
+        return jsonify({"ok": False, "error": "Please select a vehicle type."}), 400
     if not agreed:
         return jsonify({"ok": False, "error": "You must agree to the terms to book."}), 400
 
@@ -324,17 +336,16 @@ def book():
             INSERT INTO bookings
             (booking_date, arrival_time, service_key, service_name, addons_json,
              total_price, customer_name, contact_type, contact_value,
-             street, city, state, notes, agreed_terms, source, created_at)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+             vehicle_type, street, city, state, notes, agreed_terms, source, created_at)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """, (
             booking_date, arrival_time, service_key, service_name,
             json.dumps(clean_addons), total, name, contact_type, contact_val,
-            street, city, state, notes, 1, "web",
+            vehicle_type, street, city, state, notes, 1, "web",
             datetime.now().isoformat(timespec="seconds"),
         ))
         conn.commit()
     except sqlite3.IntegrityError:
-        # UNIQUE constraint on booking_date — someone took this day already
         conn.close()
         return jsonify({
             "ok": False,
@@ -353,6 +364,7 @@ def book():
         "total_price":   total,
         "contact_type":  contact_type,
         "contact_value": contact_val,
+        "vehicle_type":  vehicle_type,
         "street": street, "city": city, "state": state,
         "notes":  notes,
         "source": "web",
@@ -430,6 +442,7 @@ def admin_create():
     street       = (f.get("street") or "").strip()
     city         = (f.get("city") or "").strip()
     state        = (f.get("state") or "").strip()
+    vehicle_type = (f.get("vehicle_type") or "").strip()
     notes        = (f.get("notes") or "").strip()
 
     if not valid_future_date(booking_date):
@@ -438,6 +451,8 @@ def admin_create():
         return _admin_redirect("Invalid time.")
     if not name or not contact_val or not (street and city and state):
         return _admin_redirect("Name, contact, and full address are required.")
+    if not vehicle_type:
+        return _admin_redirect("Vehicle type is required.")
     try:
         total, clean_addons = compute_total(service_key, addon_keys)
     except ValueError as e:
@@ -449,12 +464,12 @@ def admin_create():
             INSERT INTO bookings
             (booking_date, arrival_time, service_key, service_name, addons_json,
              total_price, customer_name, contact_type, contact_value,
-             street, city, state, notes, agreed_terms, source, created_at)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+             vehicle_type, street, city, state, notes, agreed_terms, source, created_at)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """, (
             booking_date, arrival_time, service_key, SERVICES[service_key]["name"],
             json.dumps(clean_addons), total, name, contact_type, contact_val,
-            street, city, state, notes, 1, "admin",
+            vehicle_type, street, city, state, notes, 1, "admin",
             datetime.now().isoformat(timespec="seconds"),
         ))
         conn.commit()
@@ -474,6 +489,7 @@ def admin_create():
         "total_price":   total,
         "contact_type":  contact_type,
         "contact_value": contact_val,
+        "vehicle_type":  vehicle_type,
         "street": street, "city": city, "state": state,
         "notes":  notes,
         "source": "admin",

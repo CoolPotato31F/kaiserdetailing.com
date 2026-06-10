@@ -712,6 +712,19 @@ footer {
   .bk-step { padding: 1.5rem 1.3rem; }
 }
 
+.bk-vehicle-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.bk-vtile {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 5px; padding: 12px 6px; border-radius: var(--r);
+  border: 1.5px solid var(--rule); background: var(--white);
+  cursor: pointer; transition: 0.15s; font-size: 1.4rem; text-align: center;
+}
+.bk-vtile span { font-size: 0.75rem; font-weight: 500; color: var(--muted); }
+.bk-vtile:hover { border-color: var(--gold-bd); }
+.bk-vtile.sel { border-color: var(--gold); background: var(--gold-bg); }
+.bk-vtile.sel span { color: var(--gold-h); font-weight: 600; }
+@media (max-width: 440px) { .bk-vehicle-grid { grid-template-columns: repeat(3, 1fr); } }
+
 /* RESPONSIVE */
 @media (max-width: 960px) {
   #hero { grid-template-columns: 1fr; }
@@ -1270,8 +1283,19 @@ footer {
           <input type="text" class="bk-input" id="bk-state" placeholder="State (e.g. IL)" maxlength="2" value="IL">
         </div>
         <div class="bk-fg">
+          <label class="bk-label">Vehicle Type</label>
+          <div class="bk-vehicle-grid" id="bk-vehicle-grid">
+            <div class="bk-vtile" data-v="Sedan" onclick="setVehicle(this)">🚗<span>Sedan</span></div>
+            <div class="bk-vtile" data-v="Truck" onclick="setVehicle(this)">🛻<span>Truck</span></div>
+            <div class="bk-vtile" data-v="Minivan" onclick="setVehicle(this)">🚐<span>Minivan</span></div>
+            <div class="bk-vtile" data-v="SUV" onclick="setVehicle(this)">🚙<span>SUV</span></div>
+            <div class="bk-vtile" data-v="other" onclick="setVehicle(this)">✏️<span>Other</span></div>
+          </div>
+          <input type="text" class="bk-input" id="bk-vehicle-other" placeholder="Describe your vehicle..." style="display:none;margin-top:8px;">
+        </div>
+        <div class="bk-fg">
           <label class="bk-label">Additional Notes (optional)</label>
-          <textarea class="bk-input" id="bk-notes" rows="3" placeholder="Vehicle type, gate codes, specific concerns..."></textarea>
+          <textarea class="bk-input" id="bk-notes" rows="3" placeholder="Gate codes, specific concerns, vehicle color..."></textarea>
         </div>
       </div>
 
@@ -1282,11 +1306,12 @@ footer {
           <div class="bk-summary-row"><span id="sum-service">—</span><span id="sum-service-price"></span></div>
           <div id="sum-addons"></div>
           <div class="bk-summary-row"><span>Date &amp; Time</span><span id="sum-datetime">—</span></div>
+          <div class="bk-summary-row" id="sum-vehicle" style="display:none;color:var(--muted);"></div>
           <div class="bk-summary-row bk-summary-total"><span class="lbl">Total</span><span class="val" id="sum-total">$0</span></div>
         </div>
         <div class="bk-terms">
           <input type="checkbox" id="bk-agree">
-          <label for="bk-agree">I agree to the <a onclick="openLegal()">Terms of Service, Cancellation &amp; Liability Policy</a>, and confirm the information above is accurate. Payment is due at the time of service.</label>
+          <label for="bk-agree">I have read and agree to the <a onclick="openLegal()">Terms of Service, Privacy Policy &amp; Liability Terms</a>. I understand that <strong>payment is due in full upon completion of the service</strong>, before the operator leaves my location.</label>
         </div>
         <button class="bk-submit" id="bk-submit" onclick="submitBooking()">Confirm Booking</button>
         <div class="bk-msg" id="bk-msg"></div>
@@ -1309,34 +1334,48 @@ footer {
 <div class="legal-modal" id="legal-modal">
   <div class="legal-box">
     <h2>Terms of Service &amp; Policies</h2>
-    <p style="color:var(--muted);">Kaiser's Detail Co. · Plainfield, IL · Last updated 2026</p>
+    <p style="color:var(--muted);font-size:0.82rem;">Kaiser's Detail Co. · Plainfield, IL · Last updated June 2026<br>Please read these terms carefully before booking. By submitting a booking you agree to all terms below.</p>
 
     <h4>1. Booking &amp; Scheduling</h4>
-    <p>Kaiser's Detail Co. accepts one appointment per day. Submitting a booking reserves that date pending confirmation. We will contact you using the phone number or email you provide to confirm the appointment and finalize details. A booking is not guaranteed until confirmed.</p>
+    <p>Kaiser's Detail Co. accepts one appointment per day. Submitting a booking online reserves that date pending confirmation. We will contact you using the phone number or email you provide to confirm the appointment and finalize details. <strong>A booking is not guaranteed until you receive a confirmation from us.</strong> We reserve the right to decline or cancel any booking at our discretion. If we cancel a booking we have accepted, any advance payment collected will be refunded in full.</p>
 
     <h4>2. Payment</h4>
-    <p>Payment is due in full at the time of service unless otherwise agreed in advance. Prices listed include the selected service and any chosen add-ons. The total shown at booking is an estimate; final pricing may vary if the vehicle's actual condition differs substantially from what was described (e.g. excessive soiling, pet hair, or biohazards may require an adjusted quote, discussed before work begins).</p>
+    <p><strong>Payment is due in full upon completion of the service</strong>, before we leave your location. We do not require payment in advance. Accepted payment methods will be confirmed at booking. The total shown during online booking is an estimate based on your selected service and add-ons. Final pricing may differ if the vehicle's actual condition varies substantially from what was described — for example, excessive soiling, heavy pet hair, mold, or biohazard conditions may require an adjusted quote, which will be discussed and agreed upon <em>before</em> any additional work begins. No payment card data is collected through this website; all payments are handled in person.</p>
 
     <h4>3. Cancellations &amp; Rescheduling</h4>
-    <p>Please provide at least 24 hours' notice to cancel or reschedule. Same-day cancellations or no-shows may be subject to a fee at the operator's discretion. To cancel or reschedule, text or call 815-823-9485.</p>
+    <p>Please provide at least <strong>24 hours' notice</strong> to cancel or reschedule. Same-day cancellations or no-shows may be subject to a cancellation fee at the operator's discretion. To cancel or reschedule, text or call <strong>815-823-9485</strong> or email KaoFechner@outlook.com.</p>
 
-    <h4>4. Access &amp; Vehicle Preparation</h4>
-    <p>You are responsible for providing safe, legal access to the vehicle and a suitable location for the work (including water/power access where applicable). Please remove personal belongings and valuables before your appointment. Kaiser's Detail Co. is not responsible for personal items left in the vehicle.</p>
+    <h4>4. Weather &amp; Force Majeure</h4>
+    <p>Mobile detailing is weather-dependent. If severe weather, unsafe conditions, illness, or other circumstances beyond our control prevent us from performing your service, we will contact you as soon as possible to reschedule at no penalty to either party. We are not liable for delays or cancellations caused by events outside our reasonable control.</p>
 
-    <h4>5. Liability</h4>
-    <p>Kaiser's Detail Co. takes great care with every vehicle. However, by booking you acknowledge that detailing involves inherent risks. We are not liable for pre-existing damage, wear, defects, or conditions (including but not limited to faded paint, clear-coat failure, loose trim, prior scratches, mechanical or electrical issues, or aftermarket modifications) that may become more apparent after cleaning. We are not responsible for damage resulting from undisclosed vehicle conditions. Our maximum liability for any claim is limited to the amount paid for the service.</p>
+    <h4>5. Access &amp; Vehicle Preparation</h4>
+    <p>You are responsible for providing safe, lawful access to the vehicle and a suitable location for the work. Please remove personal belongings and valuables from the vehicle before your appointment. Kaiser's Detail Co. is not responsible for personal items left in the vehicle. You confirm that you are the vehicle owner or have the owner's permission to authorize this service.</p>
 
-    <h4>6. Results</h4>
-    <p>While we strive for excellent results, some stains, odors, oxidation, scratches, or damage may be permanent and cannot be fully removed. Outcomes vary based on a vehicle's condition, materials, and age.</p>
+    <h4>6. Right to Refuse Service</h4>
+    <p>We reserve the right to refuse or discontinue service at any time for any reason, including but not limited to unsafe working conditions, vehicle conditions that present a health or safety risk, or conduct we deem inappropriate. If service is refused before work begins, no charge applies. If service is discontinued partway through due to a condition not disclosed at booking, a partial charge reflecting work completed may apply.</p>
 
-    <h4>7. Photography</h4>
-    <p>We may photograph vehicles before and after service for quality records and marketing (e.g. website gallery). Identifying details such as license plates are not published. Let us know at your appointment if you prefer your vehicle not be photographed for marketing.</p>
+    <h4>7. Liability</h4>
+    <p>Kaiser's Detail Co. takes great care with every vehicle. However, by booking you acknowledge that detailing involves inherent risks. We are not liable for pre-existing damage, wear, defects, or conditions — including but not limited to faded or peeling paint, clear-coat failure, loose trim, prior scratches or dents, mechanical or electrical issues, or aftermarket modifications — that may become more visible after cleaning. We are not responsible for damage resulting from undisclosed vehicle conditions. <strong>Our maximum liability for any claim arising from our services is limited to the total amount paid for the service in question.</strong></p>
 
-    <h4>8. Privacy</h4>
-    <p>The contact and address information you provide is used solely to schedule, perform, and follow up on your service. We do not sell or share your personal information with third parties.</p>
+    <h4>8. Results</h4>
+    <p>While we strive for excellent results, some stains, odors, oxidation, scratches, or other damage may be permanent and cannot be fully removed by detailing. Expected outcomes vary based on the vehicle's age, condition, materials, and prior care. We make no guarantee of specific results beyond our reasonable professional effort.</p>
 
-    <h4>9. Charitable Purpose</h4>
-    <p>Kaiser's Detail Co. is a sole-operator business. Proceeds support the operator's college tuition. This is a personal small business, not a registered nonprofit or charity, and payments are not tax-deductible donations.</p>
+    <h4>9. Photography</h4>
+    <p>We may photograph vehicles before and after service for quality records and portfolio or marketing purposes (e.g. the gallery on this website). We do not publish identifying details such as license plates or street addresses. If you prefer your vehicle not be photographed for marketing use, please let us know at your appointment and we will respect that request.</p>
+
+    <h4>10. Age &amp; Eligibility</h4>
+    <p>This service is intended for individuals who are 18 years of age or older, or minors (under 18) booking with the knowledge and consent of a parent or legal guardian. By submitting a booking you confirm you meet this requirement. We do not knowingly collect personal information from children under 13 without verifiable parental consent. If you believe a booking has been submitted by a child under 13 without parental consent, please contact us immediately at KaoFechner@outlook.com.</p>
+
+    <h4>11. Business Disclosure</h4>
+    <p>Kaiser's Detail Co. is a sole-proprietorship operated by a single individual in Plainfield, Illinois. It is not a licensed commercial fleet operation, a franchise, or a bonded/insured detailing company unless expressly stated otherwise. Proceeds support the operator's college tuition. This is a personal small business — not a registered nonprofit or charity — and payments are not tax-deductible donations.</p>
+
+    <h4>12. Privacy Policy</h4>
+    <p>We collect only the information you voluntarily provide when submitting a booking or contact form: your name, phone number or email address, and service address. This information is used solely to schedule, perform, confirm, and follow up on your service appointment. We do not sell, rent, or share your personal information with any third party. We retain your booking information only as long as reasonably necessary for business records. You may request deletion of your information at any time by contacting us at KaoFechner@outlook.com. We implement reasonable security measures to protect your data, consistent with Illinois law. This website does not use tracking cookies, third-party advertising networks, or behavioral profiling.</p>
+
+    <h4>13. Governing Law &amp; Disputes</h4>
+    <p>These terms are governed by and construed in accordance with the laws of the State of Illinois, without regard to conflict-of-law principles. Any dispute arising out of or relating to these terms or our services shall be resolved in the state or federal courts located in <strong>Will County, Illinois</strong>, and you consent to personal jurisdiction in those courts. If any provision of these terms is found unenforceable, the remaining provisions continue in full force.</p>
+
+    <p style="margin-top:1.4rem;font-size:0.78rem;color:var(--muted);border-top:1px solid var(--rule);padding-top:1rem;">These terms were last updated in June 2026. Kaiser's Detail Co. reserves the right to update these terms at any time. The version displayed at the time of your booking applies to that booking. For questions, contact KaoFechner@outlook.com.</p>
 
     <button class="legal-close" onclick="closeLegal()">I Understand — Close</button>
   </div>
@@ -1521,6 +1560,10 @@ footer {
     <a href="sms:8158239485" style="font-size:0.75rem;opacity:0.7;">💬 Or text/call 815-823-9485</a>
     <a href="mailto:KaoFechner@outlook.com">KaoFechner@outlook.com</a>
     <a href="https://kaiserdetailing.com">kaiserdetailing.com</a>
+    <div style="margin-top:0.6rem;display:flex;gap:1rem;justify-content:flex-end;flex-wrap:wrap;">
+      <a href="javascript:void(0)" onclick="openLegal()" style="font-size:0.72rem;opacity:0.6;">Terms of Service</a>
+      <a href="javascript:void(0)" onclick="openLegal()" style="font-size:0.72rem;opacity:0.6;">Privacy Policy</a>
+    </div>
     <p>&copy; 2025–2026 Kaiser's Detail Co. All rights reserved.</p>
   </div>
 </footer>
@@ -1639,6 +1682,7 @@ let bk = {
   addons: new Set(),
   time: null,
   contactType: "phone",
+  vehicle: "",
 };
 
 // Populate service dropdown
@@ -1689,6 +1733,26 @@ function renderAddons() {
     box.appendChild(row);
   });
 }
+
+// Vehicle type selector
+function setVehicle(el) {
+  document.querySelectorAll(".bk-vtile").forEach(t => t.classList.remove("sel"));
+  el.classList.add("sel");
+  const otherInput = document.getElementById("bk-vehicle-other");
+  if (el.dataset.v === "other") {
+    otherInput.style.display = "block";
+    otherInput.focus();
+    bk.vehicle = otherInput.value.trim() || "";
+  } else {
+    otherInput.style.display = "none";
+    bk.vehicle = el.dataset.v;
+  }
+  renderSummary();
+}
+document.getElementById("bk-vehicle-other").addEventListener("input", function() {
+  bk.vehicle = this.value.trim();
+  renderSummary();
+});
 
 // Date setup: min = tomorrow (no same-day booking)
 const dateInput = document.getElementById("bk-date");
@@ -1785,6 +1849,13 @@ function renderSummary() {
   });
   const dt = (dateInput.value ? fmtDate(dateInput.value) : "—") + (bk.time ? " · " + bk.time : "");
   document.getElementById("sum-datetime").textContent = dt;
+  const vRow = document.getElementById("sum-vehicle");
+  if (bk.vehicle) {
+    vRow.textContent = "🚗 " + bk.vehicle;
+    vRow.style.display = "";
+  } else {
+    vRow.style.display = "none";
+  }
   document.getElementById("sum-total").textContent = "$" + total;
 }
 
@@ -1816,12 +1887,18 @@ async function submitBooking() {
   const state = document.getElementById("bk-state").value.trim();
   const notes = document.getElementById("bk-notes").value.trim();
   const agree = document.getElementById("bk-agree").checked;
+  // vehicle: if "other" tile selected, read from text input
+  const otherInput = document.getElementById("bk-vehicle-other");
+  const vehicle = otherInput.style.display !== "none"
+    ? otherInput.value.trim()
+    : bk.vehicle;
 
   if (!dateInput.value) return showMsg("Please choose a date.", "err");
   if (!bk.time) return showMsg("Please choose an arrival time.", "err");
   if (!name) return showMsg("Please enter your name.", "err");
   if (!contact) return showMsg("Please enter your phone or email.", "err");
   if (!street || !city || !state) return showMsg("Please enter your full address.", "err");
+  if (!vehicle) return showMsg("Please select your vehicle type.", "err");
   if (!agree) return showMsg("Please agree to the terms to continue.", "err");
 
   const btn = document.getElementById("bk-submit");
@@ -1840,6 +1917,7 @@ async function submitBooking() {
         contact_type: bk.contactType,
         contact_value: contact,
         street, city, state, notes,
+        vehicle_type: vehicle,
         agreed_terms: true,
       }),
     });
