@@ -11,6 +11,8 @@ import os
 import sqlite3
 import secrets
 import json
+import urllib.request
+import urllib.parse
 from datetime import datetime, date, timedelta
 from functools import wraps
 
@@ -31,6 +33,14 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Kaiser556!?!")
 # Secret key for sessions. Set FLASK_SECRET in production; otherwise random
 # (random means admin sessions reset on restart — fine for a single operator).
 SECRET_KEY = os.environ.get("FLASK_SECRET", secrets.token_hex(32))
+
+# ── Pushover ──────────────────────────────────────────────────────────────────
+# PUSHOVER_USER  — your user key (the one from your dashboard)
+# PUSHOVER_TOKEN — the application token you register at pushover.net/apps/build
+#                  It's free. Name it "Kaiser Detail Co." and copy the token here.
+# Set both as environment variables in deploy/kaiser.service, or paste them below.
+PUSHOVER_USER  = os.environ.get("PUSHOVER_USER",  "ubaux1odxuxcxsf43sa65f8uics4xz")
+PUSHOVER_TOKEN = os.environ.get("PUSHOVER_TOKEN", "")   # ← paste your app token here
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = SECRET_KEY
@@ -78,6 +88,76 @@ TIME_SLOTS = [
     "9:00 AM", "10:00 AM", "11:00 AM",
     "12:00 PM", "1:00 PM", "2:00 PM",
 ]
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Pushover notifications
+# ──────────────────────────────────────────────────────────────────────────────
+def notify(booking):
+    """
+    Fire a Pushover push notification for a new booking.
+    Runs in the same thread — fast enough (Pushover responds in ~200ms).
+    Silently logs and continues if it fails; a notification error must never
+    break the booking confirmation the customer is waiting for.
+
+    booking is a dict with keys: customer_name, service_name, addon_names,
+    booking_date, arrival_time, total_price, contact_type, contact_value,
+    street, city, state, notes, source.
+    """
+    if not PUSHOVER_TOKEN:
+        app.logger.warning("Pushover: PUSHOVER_TOKEN not set — skipping notification.")
+        return
+
+    # Format date nicely: "2026-06-14" → "Sat Jun 14"
+    try:
+        from datetime import datetime as _dt
+        d = _dt.strptime(booking["booking_date"], "%Y-%m-%d")
+        pretty_date = d.strftime("%a %b %-d")
+    except Exception:
+        pretty_date = booking["booking_date"]
+
+    addons_line = ""
+    if booking.get("addon_names"):
+        addons_line = "\n+ " + ", ".join(booking["addon_names"])
+
+    contact_label = "📞" if booking.get("contact_type") == "phone" else "✉️"
+    notes_line = f"\nNotes: {booking['notes']}" if booking.get("notes") else ""
+    source_tag = " [admin]" if booking.get("source") == "admin" else ""
+
+    title   = f"📅 New Booking{source_tag} — {booking['service_name']}"
+    message = (
+        f"{booking['customer_name']}\n"
+        f"{booking['service_name']}{addons_line}\n"
+        f"{pretty_date} at {booking['arrival_time']} · ${booking['total_price']}\n"
+        f"{booking['street']}, {booking['city']} {booking['state']}\n"
+        f"{contact_label} {booking['contact_value']}"
+        f"{notes_line}"
+    )
+
+    payload = urllib.parse.urlencode({
+        "token":   PUSHOVER_TOKEN,
+        "user":    PUSHOVER_USER,
+        "title":   title,
+        "message": message,
+        "sound":   "cashregister",   # satisfying sound for a new booking
+        "priority": "0",             # normal priority
+    }).encode()
+
+    try:
+        req = urllib.request.Request(
+            "https://api.pushover.net/1/messages.json",
+            data=payload,
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            result = json.loads(resp.read())
+            if result.get("status") != 1:
+                app.logger.error(f"Pushover error: {result}")
+            else:
+                app.logger.info("Pushover notification sent.")
+    except Exception as e:
+        # Never let a notification failure crash the booking response
+        app.logger.error(f"Pushover failed: {e}")
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -250,6 +330,22 @@ def book():
         }), 409
     conn.close()
 
+    # Fire push notification (non-blocking on failure)
+    addon_names = [ADDONS[a]["name"] for a in clean_addons if a in ADDONS]
+    notify({
+        "customer_name": name,
+        "service_name":  service_name,
+        "addon_names":   addon_names,
+        "booking_date":  booking_date,
+        "arrival_time":  arrival_time,
+        "total_price":   total,
+        "contact_type":  contact_type,
+        "contact_value": contact_val,
+        "street": street, "city": city, "state": state,
+        "notes":  notes,
+        "source": "web",
+    })
+
     return jsonify({
         "ok": True,
         "message": "Booking confirmed!",
@@ -354,6 +450,23 @@ def admin_create():
         conn.close()
         return _admin_redirect("That date already has a booking.")
     conn.close()
+
+    # Fire push notification (non-blocking on failure)
+    addon_names = [ADDONS[a]["name"] for a in clean_addons if a in ADDONS]
+    notify({
+        "customer_name": name,
+        "service_name":  SERVICES[service_key]["name"],
+        "addon_names":   addon_names,
+        "booking_date":  booking_date,
+        "arrival_time":  arrival_time,
+        "total_price":   total,
+        "contact_type":  contact_type,
+        "contact_value": contact_val,
+        "street": street, "city": city, "state": state,
+        "notes":  notes,
+        "source": "admin",
+    })
+
     return _admin_redirect("Booking created.", ok=True)
 
 
