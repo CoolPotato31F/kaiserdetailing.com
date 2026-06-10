@@ -707,52 +707,196 @@ footer {
   background: var(--gold); color: #fff; font-family: 'Outfit', sans-serif;
   font-weight: 600; cursor: pointer; font-size: 0.9rem;
 }
-@media (max-width: 560px) {
-  .bk-row, .bk-row-3 { grid-template-columns: 1fr; }
-  .bk-step { padding: 1.5rem 1.3rem; }
-}
-
+/* Vehicle type tiles */
 .bk-vehicle-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
 .bk-vtile {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 5px; padding: 12px 6px; border-radius: var(--r);
   border: 1.5px solid var(--rule); background: var(--white);
   cursor: pointer; transition: 0.15s; font-size: 1.4rem; text-align: center;
+  user-select: none; -webkit-tap-highlight-color: transparent;
 }
 .bk-vtile span { font-size: 0.75rem; font-weight: 500; color: var(--muted); }
 .bk-vtile:hover { border-color: var(--gold-bd); }
 .bk-vtile.sel { border-color: var(--gold); background: var(--gold-bg); }
 .bk-vtile.sel span { color: var(--gold-h); font-weight: 600; }
-@media (max-width: 440px) { .bk-vehicle-grid { grid-template-columns: repeat(3, 1fr); } }
 
-/* RESPONSIVE */
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────────── */
+
+/* Tablet: 960px */
 @media (max-width: 960px) {
-  #hero { grid-template-columns: 1fr; }
+  #hero { grid-template-columns: 1fr; padding: 90px 5% 60px; }
   #hero::after { display: none; }
-  .hero-right { margin-top: 1rem; }
+  .hero-right { margin-top: 1.5rem; }
   .booking-layout { grid-template-columns: 1fr; gap: 3rem; }
   .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
   .extras-grid { grid-template-columns: 1fr; }
   footer { grid-template-columns: 1fr; }
   .ft-right { text-align: left; }
+  .ft-right div { justify-content: flex-start !important; }
 }
+
+/* Mobile: 768px */
 @media (max-width: 768px) {
+  /* Nav */
   .nav-links { display: none; }
   .ham { display: flex; }
+
+  /* Hero */
+  .hero-title { font-size: clamp(2.4rem, 10vw, 3.8rem); }
+  .college-strip { font-size: 0.72rem; padding: 6px 13px; }
+  .hero-actions { flex-direction: column; gap: 0.7rem; }
+  .hero-actions a { width: 100%; justify-content: center; text-align: center; }
+  .hero-right { grid-template-columns: 1fr 1fr; }
+
+  /* Contact banner */
+  #contact-banner { flex-direction: column; text-align: center; padding: 2.2rem 5%; }
+  .banner-btns { justify-content: center; width: 100%; }
+  .banner-btns a { flex: 1; justify-content: center; }
+
+  /* Before/after */
+  .sliders-grid { grid-template-columns: 1fr; }
+
+  /* Services */
+  .services-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .svc-head { padding: 1.2rem 1.3rem; }
+  .svc-body { padding: 1.1rem 1.3rem; }
+  .svc-price { font-size: 1.7rem; }
+  .svc-tabs { gap: 0.35rem; flex-wrap: wrap; }
+  .svc-tab { padding: 7px 14px; font-size: 0.78rem; }
+  .extras-grid { grid-template-columns: 1fr; }
+  .extra-card { flex-direction: row; justify-content: space-between; }
+
+  /* Gallery */
   .gallery-grid { grid-template-columns: 1fr 1fr; }
   .gal-item:nth-child(1), .gal-item:nth-child(4) { grid-column: span 1; }
-  #contact-banner { flex-direction: column; text-align: center; }
-  .banner-btns { justify-content: center; }
-}
-@media (max-width: 520px) {
-  .sliders-grid { grid-template-columns: 1fr; }
-  .gallery-grid { grid-template-columns: 1fr; }
+
+  /* Booking section */
+  #book-online { padding: 70px 4% 60px; }
+  .booking-wrap { margin-top: 1.8rem; }
+  .bk-step { padding: 1.4rem 1.2rem; }
+  .bk-step-head h3 { font-size: 1.1rem; }
+  .bk-label { font-size: 0.68rem; }
+  .bk-input, .bk-select { font-size: 0.95rem; padding: 13px 12px; }
+  .bk-row, .bk-row-3 { grid-template-columns: 1fr; gap: 0.7rem; }
+
+  /* Time slots — bigger tap targets on mobile */
+  .bk-times { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .bk-time { padding: 13px 6px; font-size: 0.88rem; }
+
+  /* Vehicle grid */
+  .bk-vehicle-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .bk-vtile { padding: 14px 6px; font-size: 1.5rem; }
+  .bk-vtile span { font-size: 0.72rem; }
+
+  /* Contact toggle — full width on mobile */
+  .contact-toggle { width: 100%; }
+  .contact-toggle button { flex: 1; padding: 11px; font-size: 0.88rem; }
+
+  /* Add-ons */
+  .bk-addon { padding: 13px 12px; }
+  .bk-addon label { font-size: 0.88rem; gap: 8px; }
+
+  /* Summary */
+  .bk-summary { padding: 1rem 1.1rem; }
+  .bk-summary-row { font-size: 0.88rem; }
+  .bk-summary-total .val { font-size: 1.4rem; }
+
+  /* Submit button */
+  .bk-submit { padding: 16px; font-size: 1rem; }
+
+  /* Terms */
+  .bk-terms { font-size: 0.8rem; gap: 10px; }
+
+  /* Legal modal */
+  .legal-box { padding: 1.6rem 1.4rem; }
+  .legal-box h2 { font-size: 1.35rem; }
+  .legal-box h4 { font-size: 0.9rem; }
+  .legal-box p, .legal-box li { font-size: 0.82rem; }
+
+  /* Booking/contact sections */
+  .booking-layout { gap: 2.5rem; }
+  .bcc-head { padding: 1.4rem 1.5rem; }
+  .bcc-body { padding: 1.4rem 1.5rem; }
+  .contact-form { padding: 1.6rem 1.4rem; }
   .form-2col { grid-template-columns: 1fr; }
-  .stat-tile.span2 { flex-direction: column; text-align: center; }
-  .hero-actions { flex-direction: column; }
-  .svc-tabs { gap: 0.4rem; }
-  .extras-grid { grid-template-columns: 1fr; }
+
+  /* How-to list */
+  .how-list li { font-size: 0.85rem; gap: 10px; }
+
+  /* Footer */
+  .ft-tag { font-size: 0.75rem; }
 }
+
+/* Small mobile: 480px */
+@media (max-width: 480px) {
+  /* Nav */
+  .nav-brand { font-size: 1.05rem; }
+  .nav-brand img { height: 28px; }
+
+  /* Sections — tighter padding */
+  #hero { padding: 80px 4% 50px; }
+  #before-after, #services, #gallery, #booking, #contact { padding: 60px 4%; }
+  #book-online { padding: 60px 4% 50px; }
+
+  /* Hero */
+  .hero-title { font-size: clamp(2rem, 12vw, 3rem); line-height: 1.08; }
+  .stat-tile.span2 { flex-direction: column; text-align: center; gap: 0.6rem; }
+  .stat-tile .num { font-size: 2rem; }
+  .hero-right { gap: 0.7rem; }
+
+  /* Display headings */
+  .display { font-size: clamp(1.8rem, 8vw, 2.6rem); }
+
+  /* Service tabs — scroll horizontally if needed */
+  .svc-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+  .svc-tab { white-space: nowrap; flex-shrink: 0; padding: 7px 12px; font-size: 0.75rem; }
+
+  /* Service cards */
+  .svc-head-left h3 { font-size: 1.1rem; }
+  .svc-price { font-size: 1.5rem; }
+  .badge { font-size: 0.62rem; padding: 2px 9px; }
+  .inc-list li { font-size: 0.83rem; padding: 5px 0; }
+  .addon-cost { font-size: 0.78rem; }
+  .svc-book-btn { padding: 13px; font-size: 0.82rem; }
+
+  /* Booking form */
+  .bk-step { padding: 1.2rem 1rem; }
+  .bk-step-num { width: 26px; height: 26px; font-size: 0.78rem; }
+  .bk-step-head h3 { font-size: 1rem; }
+  .bk-step-head { gap: 9px; margin-bottom: 1rem; }
+  .bk-input, .bk-select { font-size: 0.92rem; padding: 12px 11px; }
+  textarea.bk-input { font-size: 0.92rem; }
+
+  /* Time slots — 2 per row on very small screens */
+  .bk-times { grid-template-columns: repeat(2, 1fr); gap: 7px; }
+  .bk-time { padding: 14px 4px; font-size: 0.85rem; }
+
+  /* Vehicle grid — 3 across stays, just smaller */
+  .bk-vtile { padding: 12px 4px; font-size: 1.3rem; }
+  .bk-vtile span { font-size: 0.68rem; }
+
+  /* Summary */
+  .bk-summary-total .val { font-size: 1.3rem; }
+
+  /* Success */
+  .bk-success { padding: 2rem 1.2rem; }
+  .bk-success h3 { font-size: 1.5rem; }
+
+  /* Extras and gallery */
+  .extra-card { flex-direction: column; gap: 0.6rem; }
+  .extra-price { font-size: 1.5rem; }
+  .gallery-grid { grid-template-columns: 1fr; }
+  .gal-item { aspect-ratio: 4/3; }
+
+  /* Prevent iOS auto-zoom on input focus (requires font-size >= 16px) */
+  .bk-input, .bk-select, textarea.bk-input,
+  .fg input, .fg select, .fg textarea { font-size: 16px; }
+
+  /* Footer */
+  .ft-right a { font-size: 0.78rem; }
+}
+
 </style>
 </head>
 <body>
