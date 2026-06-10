@@ -12,16 +12,14 @@ cd $APP_DIR
 echo "📥 Pulling latest code..."
 git pull origin main
 
-echo "🐍 Activating virtual environment..."
-source $VENV_DIR/bin/activate
-
 echo "📦 Installing requirements..."
-pip install -r requirements.txt
+$VENV_DIR/bin/pip install -r requirements.txt
 
-echo "🔄 Restarting Gunicorn (systemd)..."
-sudo systemctl restart gunicorn
+echo "🔄 Restarting kaiser service..."
+sudo systemctl restart kaiser
 
 echo "🌐 Reloading Nginx..."
 sudo systemctl reload nginx
 
 echo "✅ Deployment complete!"
+echo "   Status: $(sudo systemctl is-active kaiser)"
