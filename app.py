@@ -52,7 +52,7 @@ else:
 #                  It's free. Name it "Kaiser Detail Co." and copy the token here.
 # Set both as environment variables in deploy/kaiser.service, or paste them below.
 PUSHOVER_USER  = os.environ.get("PUSHOVER_USER",  "ubaux1odxuxcxsf43sa65f8uics4xz")
-PUSHOVER_TOKEN = os.environ.get("PUSHOVER_TOKEN", "a6gtcbyyxj924ihs22gtej3gb3p2z7")   # ← paste your app token here
+PUSHOVER_TOKEN = os.environ.get("PUSHOVER_TOKEN", "")   # ← paste your app token here
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = SECRET_KEY
@@ -134,6 +134,8 @@ def notify(booking):
 
     contact_label = "📞" if booking.get("contact_type") == "phone" else "✉️"
     vehicle_line = f"\n🚗 {booking['vehicle_type']}" if booking.get("vehicle_type") else ""
+    if booking.get("vehicle_type") in LARGE_VEHICLES:
+        vehicle_line += f" (+${LARGE_VEHICLE_SURCHARGE} large vehicle)"
     notes_line = f"\nNotes: {booking['notes']}" if booking.get("notes") else ""
     source_tag = " [admin]" if booking.get("source") == "admin" else ""
 
@@ -221,11 +223,18 @@ def init_db():
 # ──────────────────────────────────────────────────────────────────────────────
 # Helpers
 # ──────────────────────────────────────────────────────────────────────────────
-def compute_total(service_key, addon_keys):
+LARGE_VEHICLES = {"Truck", "Minivan", "SUV"}
+LARGE_VEHICLE_SURCHARGE = 20
+
+
+def compute_total(service_key, addon_keys, vehicle_type=""):
     """Server-side price calc. Raises ValueError on invalid input."""
     if service_key not in SERVICES:
         raise ValueError("Unknown service.")
     total = SERVICES[service_key]["price"]
+    # Large vehicle surcharge
+    if vehicle_type in LARGE_VEHICLES:
+        total += LARGE_VEHICLE_SURCHARGE
     allowed = set(SERVICE_ADDONS.get(service_key, []))
     clean_addons = []
     for a in addon_keys:
@@ -279,6 +288,8 @@ def availability():
         "taken": taken,
         "earliest": earliest,
         "time_slots": TIME_SLOTS,
+        "large_vehicles": list(LARGE_VEHICLES),
+        "large_vehicle_surcharge": LARGE_VEHICLE_SURCHARGE,
     })
 
 
@@ -324,7 +335,7 @@ def book():
         return jsonify({"ok": False, "error": "You must agree to the terms to book."}), 400
 
     try:
-        total, clean_addons = compute_total(service_key, addon_keys)
+        total, clean_addons = compute_total(service_key, addon_keys, vehicle_type)
     except ValueError as e:
         return jsonify({"ok": False, "error": str(e)}), 400
 
@@ -454,7 +465,7 @@ def admin_create():
     if not vehicle_type:
         return _admin_redirect("Vehicle type is required.")
     try:
-        total, clean_addons = compute_total(service_key, addon_keys)
+        total, clean_addons = compute_total(service_key, addon_keys, vehicle_type)
     except ValueError as e:
         return _admin_redirect(str(e))
 
