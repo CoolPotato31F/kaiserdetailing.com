@@ -20,6 +20,7 @@ from flask import (
     Flask, request, jsonify, render_template,
     session, redirect, url_for, abort
 )
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Config
@@ -56,6 +57,14 @@ PUSHOVER_TOKEN = os.environ.get("PUSHOVER_TOKEN", "")   # ← paste your app tok
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = SECRET_KEY
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+# Session cookie settings — required for login to work over HTTPS via nginx
+app.config.update(
+    SESSION_COOKIE_SECURE=True,       # only send cookie over HTTPS
+    SESSION_COOKIE_HTTPONLY=True,     # JS can't read the cookie
+    SESSION_COOKIE_SAMESITE="Lax",    # cookie survives normal navigation
+)
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Service / add-on catalog (server-side source of truth for prices)
