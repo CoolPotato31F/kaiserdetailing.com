@@ -51,8 +51,8 @@ else:
 # PUSHOVER_TOKEN — the application token you register at pushover.net/apps/build
 #                  It's free. Name it "Kaiser Detail Co." and copy the token here.
 # Set both as environment variables in deploy/kaiser.service, or paste them below.
-PUSHOVER_USER  = os.environ.get("PUSHOVER_USER",  "iphone")
-PUSHOVER_TOKEN = os.environ.get("PUSHOVER_TOKEN", "ubaux1odxuxcxsf43sa65f8uics4xz")   # ← paste your app token here
+PUSHOVER_USER  = os.environ.get("PUSHOVER_USER",  "ubaux1odxuxcxsf43sa65f8uics4xz")
+PUSHOVER_TOKEN = os.environ.get("PUSHOVER_TOKEN", "a6gtcbyyxj924ihs22gtej3gb3p2z7")   # ← paste your app token here
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = SECRET_KEY
