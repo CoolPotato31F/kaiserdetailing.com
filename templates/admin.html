@@ -108,6 +108,16 @@ tr.past td{opacity:0.5;}
           <div class="fg"><label>City</label><input type="text" name="city" required></div>
           <div class="fg"><label>State</label><input type="text" name="state" value="IL" maxlength="2" required></div>
         </div>
+        <div class="fg"><label>Vehicle Type</label>
+          <select name="vehicle_type" required>
+            <option value="">— Select —</option>
+            <option>Sedan</option>
+            <option>Truck</option>
+            <option>Minivan</option>
+            <option>SUV</option>
+            <option>Other</option>
+          </select>
+        </div>
         <div class="fg"><label>Notes</label><textarea name="notes" rows="2"></textarea></div>
         <button class="create-btn" type="submit">Create Booking</button>
       </form>
@@ -122,7 +132,7 @@ tr.past td{opacity:0.5;}
     <table>
       <thead>
         <tr>
-          <th>Date</th><th>Time</th><th>Customer</th><th>Contact</th>
+          <th>Date</th><th>Time</th><th>Customer</th><th>Vehicle</th><th>Contact</th>
           <th>Service &amp; Add-Ons</th><th>Address</th><th>Notes</th><th>Total</th><th></th>
         </tr>
       </thead>
@@ -132,6 +142,7 @@ tr.past td{opacity:0.5;}
           <td class="date-cell">{{ b.booking_date }}<br><span class="src">{{ b.source }}</span></td>
           <td>{{ b.arrival_time }}</td>
           <td>{{ b.customer_name }}</td>
+          <td style="font-size:0.85rem;">{{ b.vehicle_type or '—' }}</td>
           <td class="contact-cell">
             {% if b.contact_type == 'phone' %}<a href="tel:{{ b.contact_value }}">{{ b.contact_value }}</a>
             {% else %}<a href="mailto:{{ b.contact_value }}">{{ b.contact_value }}</a>{% endif %}
