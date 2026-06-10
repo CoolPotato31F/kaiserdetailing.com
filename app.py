@@ -30,9 +30,21 @@ DB_PATH = os.path.join(BASE_DIR, "bookings.db")
 # Admin password. Override with the ADMIN_PASSWORD env var in production.
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Kaiser556!?!")
 
-# Secret key for sessions. Set FLASK_SECRET in production; otherwise random
-# (random means admin sessions reset on restart — fine for a single operator).
-SECRET_KEY = os.environ.get("FLASK_SECRET", secrets.token_hex(32))
+# Secret key for sessions.
+# If FLASK_SECRET is set in the environment, use it (recommended for production).
+# Otherwise, generate one once and write it to a file so all gunicorn workers
+# and server restarts share the same key. Without a stable key, sessions are
+# invalidated on every restart or across multiple workers, breaking admin login.
+_secret_file = os.path.join(BASE_DIR, ".flask_secret")
+if os.environ.get("FLASK_SECRET"):
+    SECRET_KEY = os.environ["FLASK_SECRET"]
+elif os.path.exists(_secret_file):
+    with open(_secret_file) as _f:
+        SECRET_KEY = _f.read().strip()
+else:
+    SECRET_KEY = secrets.token_hex(32)
+    with open(_secret_file, "w") as _f:
+        _f.write(SECRET_KEY)
 
 # ── Pushover ──────────────────────────────────────────────────────────────────
 # PUSHOVER_USER  — your user key (the one from your dashboard)
