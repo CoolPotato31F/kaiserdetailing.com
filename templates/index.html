@@ -720,6 +720,12 @@ footer {
 .bk-vtile:hover { border-color: var(--gold-bd); }
 .bk-vtile.sel { border-color: var(--gold); background: var(--gold-bg); }
 .bk-vtile.sel span { color: var(--gold-h); font-weight: 600; }
+.bk-vsurcharge {
+  font-size: 0.62rem; font-weight: 700; color: var(--gold-h);
+  background: var(--gold-bg); border: 1px solid var(--gold-bd);
+  border-radius: 100px; padding: 1px 5px; margin-top: 2px;
+  line-height: 1.4;
+}
 
 /* ── RESPONSIVE ─────────────────────────────────────────────────────────────── */
 
@@ -1827,6 +1833,8 @@ let bk = {
   time: null,
   contactType: "phone",
   vehicle: "",
+  largeVehicles: new Set(["Truck","Minivan","SUV"]),
+  largeSurcharge: 20,
 };
 
 // Populate service dropdown
@@ -1920,19 +1928,39 @@ async function loadAvailability() {
     const d = await r.json();
     takenDates = d.taken || [];
     earliestDate = d.earliest;
+    // Large vehicle surcharge config from server
+    bk.largeVehicles = new Set(d.large_vehicles || ["Truck","Minivan","SUV"]);
+    bk.largeSurcharge = d.large_vehicle_surcharge || 20;
     renderTimes(d.time_slots || []);
+    renderVehicleSurchargeLabels();
   } catch (e) {
-    // Fallback: tomorrow
+    // Fallback
     const t = new Date(); t.setDate(t.getDate() + 1);
     earliestDate = t.toISOString().slice(0, 10);
+    bk.largeVehicles = new Set(["Truck","Minivan","SUV"]);
+    bk.largeSurcharge = 20;
     renderTimes(["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM"]);
+    renderVehicleSurchargeLabels();
   }
   dateInput.min = earliestDate;
-  // Pre-fill the earliest available open day so the picker opens on it
   if (!dateInput.value) {
     dateInput.value = nextOpenDate();
     renderSummary();
   }
+}
+
+function renderVehicleSurchargeLabels() {
+  document.querySelectorAll(".bk-vtile").forEach(tile => {
+    const v = tile.dataset.v;
+    const existing = tile.querySelector(".bk-vsurcharge");
+    if (existing) existing.remove();
+    if (bk.largeVehicles && bk.largeVehicles.has(v)) {
+      const tag = document.createElement("span");
+      tag.className = "bk-vsurcharge";
+      tag.textContent = "+$" + bk.largeSurcharge;
+      tile.appendChild(tag);
+    }
+  });
 }
 
 dateInput.addEventListener("change", () => {
@@ -1984,6 +2012,14 @@ function renderSummary() {
   let total = s.price;
   const addonBox = document.getElementById("sum-addons");
   addonBox.innerHTML = "";
+  // Large vehicle surcharge
+  if (bk.vehicle && bk.largeVehicles.has(bk.vehicle)) {
+    total += bk.largeSurcharge;
+    const row = document.createElement("div");
+    row.className = "bk-summary-row";
+    row.innerHTML = `<span style="color:var(--muted);">Large vehicle surcharge</span><span style="color:var(--muted);">+$${bk.largeSurcharge}</span>`;
+    addonBox.appendChild(row);
+  }
   bk.addons.forEach(k => {
     total += ADDONS[k].price;
     const row = document.createElement("div");
