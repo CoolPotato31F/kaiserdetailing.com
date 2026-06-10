@@ -630,15 +630,32 @@ footer {
 .bk-fg { margin-bottom: 1rem; }
 .bk-addons { display: flex; flex-direction: column; gap: 8px; margin-top: 0.6rem; }
 .bk-addon {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 11px 14px; border-radius: var(--r);
-  background: var(--white); border: 1px solid var(--rule);
-  cursor: pointer; transition: 0.15s;
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 14px; border-radius: var(--r);
+  background: var(--white); border: 1.5px solid var(--rule);
+  cursor: pointer; transition: border-color 0.15s, background 0.15s;
+  user-select: none; -webkit-tap-highlight-color: transparent;
 }
 .bk-addon:hover { border-color: var(--gold-bd); }
-.bk-addon label { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: var(--ink); cursor: pointer; }
-.bk-addon input { accent-color: var(--gold); width: 16px; height: 16px; cursor: pointer; }
-.bk-addon .ac { font-size: 0.88rem; color: var(--gold); font-weight: 600; }
+.bk-addon.checked { border-color: var(--gold); background: var(--gold-bg); }
+.bk-addon-check {
+  width: 20px; height: 20px; border-radius: 4px; flex-shrink: 0;
+  border: 2px solid var(--rule); background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  transition: 0.15s;
+}
+.bk-addon.checked .bk-addon-check {
+  background: var(--gold); border-color: var(--gold);
+}
+.bk-addon.checked .bk-addon-check::after {
+  content: ''; display: block;
+  width: 5px; height: 9px;
+  border: 2px solid #fff; border-top: none; border-left: none;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+.bk-addon-name { flex: 1; font-size: 0.9rem; color: var(--ink); }
+.bk-addon.checked .bk-addon-name { color: var(--charcoal); font-weight: 500; }
+.bk-addon .ac { font-size: 0.88rem; color: var(--gold); font-weight: 600; white-space: nowrap; }
 .bk-times { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
 .bk-time {
   padding: 10px; text-align: center; border-radius: var(--r);
@@ -800,8 +817,9 @@ footer {
   .contact-toggle button { flex: 1; padding: 11px; font-size: 0.88rem; }
 
   /* Add-ons */
-  .bk-addon { padding: 13px 12px; }
-  .bk-addon label { font-size: 0.88rem; gap: 8px; }
+  .bk-addon { padding: 15px 12px; gap: 12px; }
+  .bk-addon-name { font-size: 0.9rem; }
+  .bk-addon-check { width: 22px; height: 22px; }
 
   /* Summary */
   .bk-summary { padding: 1rem 1.1rem; }
@@ -1873,17 +1891,19 @@ function renderAddons() {
     const a = ADDONS[key];
     const row = document.createElement("div");
     row.className = "bk-addon";
-    row.innerHTML = `<label><input type="checkbox" data-key="${key}"> ${a.name}</label><span class="ac">+$${a.price}</span>`;
-    row.querySelector("input").addEventListener("change", e => {
-      if (e.target.checked) bk.addons.add(key); else bk.addons.delete(key);
+    row.setAttribute("role", "checkbox");
+    row.setAttribute("aria-checked", "false");
+    row.setAttribute("tabindex", "0");
+    row.innerHTML = `<span class="bk-addon-check" aria-hidden="true"></span><span class="bk-addon-name">${a.name}</span><span class="ac">+$${a.price}</span>`;
+    const toggle = () => {
+      const checked = row.getAttribute("aria-checked") === "true";
+      row.setAttribute("aria-checked", !checked);
+      row.classList.toggle("checked", !checked);
+      if (!checked) bk.addons.add(key); else bk.addons.delete(key);
       renderSummary();
-    });
-    row.addEventListener("click", e => {
-      if (e.target.tagName !== "INPUT") {
-        const cb = row.querySelector("input"); cb.checked = !cb.checked;
-        cb.dispatchEvent(new Event("change"));
-      }
-    });
+    };
+    row.addEventListener("click", toggle);
+    row.addEventListener("keydown", e => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggle(); } });
     box.appendChild(row);
   });
 }
