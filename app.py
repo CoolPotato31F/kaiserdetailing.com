@@ -174,15 +174,18 @@ def notify(booking):
             data=payload,
             method="POST",
         )
-        with urllib.request.urlopen(req, timeout=5) as resp:
+        with urllib.request.urlopen(req, timeout=10) as resp:
             result = json.loads(resp.read())
             if result.get("status") != 1:
                 app.logger.error(f"Pushover error: {result}")
+                return False, str(result)
             else:
                 app.logger.info("Pushover notification sent.")
+                return True, None
     except Exception as e:
         # Never let a notification failure crash the booking response
         app.logger.error(f"Pushover failed: {e}")
+        return False, str(e)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -217,6 +220,18 @@ def init_db():
             agreed_terms  INTEGER NOT NULL DEFAULT 0,
             source        TEXT NOT NULL DEFAULT 'web', -- 'web' or 'admin'
             created_at    TEXT NOT NULL
+        );
+    """)
+    conn.commit()
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS blocked_times (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            block_date   TEXT NOT NULL,          -- YYYY-MM-DD
+            block_type   TEXT NOT NULL,           -- 'full_day' or 'before' or 'after' or 'range'
+            before_time  TEXT DEFAULT NULL,       -- block all slots before this time
+            after_time   TEXT DEFAULT NULL,       -- block all slots after this time
+            note         TEXT DEFAULT '',         -- admin note e.g. "Family trip"
+            created_at   TEXT NOT NULL
         );
     """)
     conn.commit()
@@ -296,8 +311,26 @@ def availability():
         "SELECT booking_date FROM bookings WHERE booking_date >= ?",
         (earliest,)
     ).fetchall()
-    conn.close()
     taken = [r["booking_date"] for r in rows]
+
+    # Blocked times
+    block_rows = conn.execute(
+        "SELECT * FROM blocked_times WHERE block_date >= ?",
+        (earliest,)
+    ).fetchall()
+    conn.close()
+
+    blocks = []
+    for b in block_rows:
+        blocks.append({
+            "id":          b["id"],
+            "date":        b["block_date"],
+            "type":        b["block_type"],
+            "before_time": b["before_time"],
+            "after_time":  b["after_time"],
+            "note":        b["note"],
+        })
+
     return jsonify({
         "taken": taken,
         "earliest": earliest,
@@ -305,6 +338,7 @@ def availability():
         "large_vehicles": list(LARGE_VEHICLES),
         "large_vehicle_surcharge": LARGE_VEHICLE_SURCHARGE,
         "large_vehicle_services": list(LARGE_VEHICLE_SERVICES),
+        "blocks": blocks,
     })
 
 
@@ -353,6 +387,22 @@ def book():
         total, clean_addons = compute_total(service_key, addon_keys, vehicle_type)
     except ValueError as e:
         return jsonify({"ok": False, "error": str(e)}), 400
+
+    # Check if the requested date/time is blocked
+    conn = get_db()
+    block_rows = conn.execute(
+        "SELECT * FROM blocked_times WHERE block_date = ?", (booking_date,)
+    ).fetchall()
+    conn.close()
+    for b in block_rows:
+        if b["block_type"] == "full_day":
+            return jsonify({"ok": False, "error": "Sorry — that day is not available for booking."}), 400
+        if b["block_type"] == "before" and b["before_time"]:
+            if TIME_SLOTS.index(arrival_time) < TIME_SLOTS.index(b["before_time"]):
+                return jsonify({"ok": False, "error": f"Sorry — arrivals before {b['before_time']} are not available that day."}), 400
+        if b["block_type"] == "after" and b["after_time"]:
+            if TIME_SLOTS.index(arrival_time) > TIME_SLOTS.index(b["after_time"]):
+                return jsonify({"ok": False, "error": f"Sorry — arrivals after {b['after_time']} are not available that day."}), 400
 
     service_name = SERVICES[service_key]["name"]
 
@@ -433,7 +483,6 @@ def admin_dashboard():
     rows = conn.execute(
         "SELECT * FROM bookings ORDER BY booking_date ASC, arrival_time ASC"
     ).fetchall()
-    conn.close()
 
     bookings = []
     for r in rows:
@@ -443,9 +492,17 @@ def admin_dashboard():
         b["is_past"] = b["booking_date"] < date.today().isoformat()
         bookings.append(b)
 
+    # Blocked times — query before closing connection
+    block_rows = conn.execute(
+        "SELECT * FROM blocked_times ORDER BY block_date ASC"
+    ).fetchall()
+    conn.close()
+    blocks = [dict(b) for b in block_rows]
+
     return render_template(
         "admin.html",
         bookings=bookings,
+        blocks=blocks,
         services=SERVICES,
         addons=ADDONS,
         service_addons=SERVICE_ADDONS,
@@ -524,29 +581,68 @@ def admin_create():
     return _admin_redirect("Booking created.", ok=True)
 
 
+@app.route("/admin/block", methods=["POST"])
+@login_required
+def admin_add_block():
+    f = request.form
+    block_date  = (f.get("block_date") or "").strip()
+    block_type  = (f.get("block_type") or "full_day").strip()
+    before_time = (f.get("before_time") or "").strip() or None
+    after_time  = (f.get("after_time") or "").strip() or None
+    note        = (f.get("note") or "").strip()
+
+    if not block_date:
+        return _admin_redirect("Please select a date to block.")
+    try:
+        from datetime import datetime as _dt
+        _dt.strptime(block_date, "%Y-%m-%d")
+    except ValueError:
+        return _admin_redirect("Invalid date.")
+
+    conn = get_db()
+    conn.execute("""
+        INSERT INTO blocked_times (block_date, block_type, before_time, after_time, note, created_at)
+        VALUES (?,?,?,?,?,?)
+    """, (block_date, block_type, before_time, after_time, note,
+          datetime.now().isoformat(timespec="seconds")))
+    conn.commit()
+    conn.close()
+    return _admin_redirect("Date/time blocked.", ok=True)
+
+
+@app.route("/admin/block/delete/<int:block_id>", methods=["POST"])
+@login_required
+def admin_delete_block(block_id):
+    conn = get_db()
+    conn.execute("DELETE FROM blocked_times WHERE id = ?", (block_id,))
+    conn.commit()
+    conn.close()
+    return _admin_redirect("Block removed.", ok=True)
+
+
 @app.route("/admin/test-notification", methods=["POST"])
 @login_required
 def admin_test_notification():
     if not PUSHOVER_TOKEN:
         return jsonify({"ok": False, "error": "PUSHOVER_TOKEN not set."})
-    try:
-        notify({
-            "customer_name": "Test — Kaiser's Detail Co.",
-            "service_name":  "Test Notification",
-            "addon_names":   [],
-            "booking_date":  date.today().isoformat(),
-            "arrival_time":  "Now",
-            "total_price":   0,
-            "contact_type":  "phone",
-            "contact_value": "815-823-9485",
-            "vehicle_type":  "Sedan",
-            "street": "123 Main St", "city": "Plainfield", "state": "IL",
-            "notes":  "This is a test notification from the admin panel.",
-            "source": "admin",
-        })
+    ok, err = notify({
+        "customer_name": "Test — Kaiser's Detail Co.",
+        "service_name":  "Test Notification",
+        "addon_names":   [],
+        "booking_date":  date.today().isoformat(),
+        "arrival_time":  "Now",
+        "total_price":   0,
+        "contact_type":  "phone",
+        "contact_value": "815-823-9485",
+        "vehicle_type":  "Sedan",
+        "street": "123 Main St", "city": "Plainfield", "state": "IL",
+        "notes":  "This is a test notification from the admin panel.",
+        "source": "admin",
+    })
+    if ok:
         return jsonify({"ok": True})
-    except Exception as e:
-        return jsonify({"ok": False, "error": str(e)})
+    else:
+        return jsonify({"ok": False, "error": err or "Pushover request failed"})
 
 
 @app.route("/admin/delete/<int:booking_id>", methods=["POST"])

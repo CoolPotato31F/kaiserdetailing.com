@@ -56,8 +56,21 @@ tr.past td{opacity:0.5;}
 .test-notif{background:var(--gold);color:#fff;border:none;padding:7px 16px;border-radius:var(--r);font-family:'Outfit',sans-serif;font-weight:600;font-size:0.8rem;cursor:pointer;transition:0.18s;}
 .test-notif:hover{background:var(--gold-h);}
 .test-notif:disabled{opacity:0.6;cursor:not-allowed;}
-.scroll{overflow-x:auto;}
-@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr;}}
+.block-form{background:#fff;border:1px solid var(--rule);border-radius:var(--rl);padding:1.5rem 1.8rem;margin-bottom:1.2rem;}
+.block-form label{font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:0.4rem;}
+.block-form input,.block-form select{padding:9px 12px;background:var(--cream);border:1px solid var(--rule);border-radius:var(--r);font-family:'Outfit',sans-serif;font-size:0.88rem;}
+.block-form input:focus,.block-form select:focus{outline:none;border-color:var(--gold);}
+.block-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:0.8rem;align-items:end;flex-wrap:wrap;}
+.block-submit{padding:10px 18px;border:none;border-radius:var(--r);background:var(--charcoal);color:#fff;font-family:'Outfit',sans-serif;font-weight:600;font-size:0.85rem;cursor:pointer;white-space:nowrap;}
+.block-submit:hover{background:#333;}
+.block-list{display:flex;flex-direction:column;gap:8px;}
+.block-item{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:12px 16px;background:#fff;border:1px solid var(--rule);border-radius:var(--r);flex-wrap:wrap;}
+.block-info{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.block-date{font-weight:700;font-size:0.9rem;color:var(--charcoal);}
+.block-type{font-size:0.75rem;background:var(--cream2);border:1px solid var(--rule);border-radius:100px;padding:2px 10px;color:var(--muted);}
+.block-note{font-size:0.8rem;color:var(--muted);}
+.block-past{opacity:0.45;}
+@media(max-width:700px){.block-grid{grid-template-columns:1fr 1fr;}.grid2,.grid3{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -78,6 +91,76 @@ tr.past td{opacity:0.5;}
     <div class="stat"><div class="n">{{ upcoming | length }}</div><div class="l">Upcoming Bookings</div></div>
     <div class="stat"><div class="n">{{ bookings | length }}</div><div class="l">Total Bookings</div></div>
     <div class="stat"><div class="n">${{ revenue }}</div><div class="l">Upcoming Revenue</div></div>
+  </div>
+
+  <!-- BLOCKED TIMES -->
+  <div class="section">
+    <h2>🚫 Block Dates &amp; Times</h2>
+    <div class="block-form">
+      <form method="POST" action="{{ url_for('admin_add_block') }}">
+        <div class="block-grid">
+          <div>
+            <label>Date</label>
+            <input type="date" name="block_date" min="{{ today }}" required>
+          </div>
+          <div>
+            <label>Block Type</label>
+            <select name="block_type" id="block-type-sel" onchange="toggleBlockFields()">
+              <option value="full_day">Full Day</option>
+              <option value="before">Before a time</option>
+              <option value="after">After a time</option>
+            </select>
+          </div>
+          <div id="before-field" style="display:none;">
+            <label>Block slots before</label>
+            <select name="before_time">
+              {% for t in time_slots %}<option>{{ t }}</option>{% endfor %}
+            </select>
+          </div>
+          <div id="after-field" style="display:none;">
+            <label>Block slots after</label>
+            <select name="after_time">
+              {% for t in time_slots %}<option value="{{ t }}" {% if loop.last %}selected{% endif %}>{{ t }}</option>{% endfor %}
+            </select>
+          </div>
+          <div>
+            <label>Note (optional)</label>
+            <input type="text" name="note" placeholder="e.g. Family trip">
+          </div>
+          <div>
+            <label>&nbsp;</label>
+            <button class="block-submit" type="submit">Block</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    {% if blocks %}
+    <div class="block-list">
+      {% for b in blocks %}
+      {% set is_past = b.block_date < today %}
+      <div class="block-item {{ 'block-past' if is_past else '' }}">
+        <div class="block-info">
+          <span class="block-date">{{ b.block_date }}</span>
+          {% if b.block_type == 'full_day' %}
+            <span class="block-type">Full Day</span>
+          {% elif b.block_type == 'before' %}
+            <span class="block-type">Before {{ b.before_time }}</span>
+          {% elif b.block_type == 'after' %}
+            <span class="block-type">After {{ b.after_time }}</span>
+          {% endif %}
+          {% if b.note %}<span class="block-note">{{ b.note }}</span>{% endif %}
+          {% if is_past %}<span class="block-note">(past)</span>{% endif %}
+        </div>
+        <form method="POST" action="{{ url_for('admin_delete_block', block_id=b.id) }}" onsubmit="return confirm('Remove this block?');">
+          <button class="del" type="submit">Remove</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p style="font-size:0.85rem;color:var(--muted);">No blocked dates. Use the form above to block days or time windows.</p>
+    {% endif %}
   </div>
 
   <!-- CREATE BOOKING -->
@@ -193,6 +276,12 @@ function renderAdmAddons() {
 admService.addEventListener("change", renderAdmAddons);
 renderAdmAddons();
 
+function toggleBlockFields() {
+  const t = document.getElementById("block-type-sel").value;
+  document.getElementById("before-field").style.display = t === "before" ? "block" : "none";
+  document.getElementById("after-field").style.display  = t === "after"  ? "block" : "none";
+}
+
 async function testNotification() {
   const btn = document.getElementById("test-notif-btn");
   btn.disabled = true;
@@ -202,7 +291,7 @@ async function testNotification() {
     const d = await r.json();
     if (d.ok) {
       btn.textContent = "✅ Sent!";
-      setTimeout(() => { btn.disabled = false; btn.textContent = "🔔 Test Notification"; }, 10);
+      setTimeout(() => { btn.disabled = false; btn.textContent = "🔔 Test Notification"; }, 3000);
     } else {
       btn.textContent = "❌ " + (d.error || "Failed");
       setTimeout(() => { btn.disabled = false; btn.textContent = "🔔 Test Notification"; }, 4000);

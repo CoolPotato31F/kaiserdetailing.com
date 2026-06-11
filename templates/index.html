@@ -1951,16 +1951,48 @@ document.getElementById("bk-vehicle-other").addEventListener("input", function()
 const dateInput = document.getElementById("bk-date");
 let takenDates = [];
 let earliestDate = null;
+let blockedTimes = [];
+
+function isFullyBlocked(dateStr) {
+  return blockedTimes.some(b => b.date === dateStr && b.type === "full_day");
+}
 
 function nextOpenDate() {
-  // First date >= earliest that isn't already taken
   let d = new Date(earliestDate + "T00:00:00");
   for (let i = 0; i < 365; i++) {
     const iso = d.toISOString().slice(0, 10);
-    if (!takenDates.includes(iso)) return iso;
+    if (!takenDates.includes(iso) && !isFullyBlocked(iso)) return iso;
     d.setDate(d.getDate() + 1);
   }
   return earliestDate;
+}
+
+function updateTimeSlotsForDate(dateStr) {
+  // Grey out / disable time slots that are blocked for this date
+  const dayBlocks = blockedTimes.filter(b => b.date === dateStr);
+  document.querySelectorAll(".bk-time").forEach(el => {
+    const t = el.textContent.trim();
+    let blocked = false;
+    for (const b of dayBlocks) {
+      if (b.type === "full_day") { blocked = true; break; }
+      if (b.type === "before" && b.before_time) {
+        const slots = ["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM"];
+        if (slots.indexOf(t) < slots.indexOf(b.before_time)) { blocked = true; break; }
+      }
+      if (b.type === "after" && b.after_time) {
+        const slots = ["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM"];
+        if (slots.indexOf(t) > slots.indexOf(b.after_time)) { blocked = true; break; }
+      }
+    }
+    el.style.opacity = blocked ? "0.35" : "";
+    el.style.pointerEvents = blocked ? "none" : "";
+    el.style.textDecoration = blocked ? "line-through" : "";
+    if (blocked && el.classList.contains("sel")) {
+      el.classList.remove("sel");
+      bk.time = null;
+      renderSummary();
+    }
+  });
 }
 
 async function loadAvailability() {
@@ -1969,16 +2001,16 @@ async function loadAvailability() {
     const d = await r.json();
     takenDates = d.taken || [];
     earliestDate = d.earliest;
-    // Large vehicle surcharge config from server
+    blockedTimes = d.blocks || [];
     bk.largeVehicles = new Set(d.large_vehicles || ["Truck","Minivan","SUV"]);
     bk.largeSurcharge = d.large_vehicle_surcharge || 20;
     bk.largeVehicleServices = new Set(d.large_vehicle_services || ["interior_detail","professional_detail","showroom_detail","quick_interior","quick_detail"]);
     renderTimes(d.time_slots || []);
     renderVehicleSurchargeLabels();
   } catch (e) {
-    // Fallback
     const t = new Date(); t.setDate(t.getDate() + 1);
     earliestDate = t.toISOString().slice(0, 10);
+    blockedTimes = [];
     bk.largeVehicles = new Set(["Truck","Minivan","SUV"]);
     bk.largeSurcharge = 20;
     bk.largeVehicleServices = new Set(["interior_detail","professional_detail","showroom_detail","quick_interior","quick_detail"]);
@@ -1989,6 +2021,7 @@ async function loadAvailability() {
   if (!dateInput.value) {
     dateInput.value = nextOpenDate();
     renderSummary();
+    updateTimeSlotsForDate(dateInput.value);
   }
 }
 
@@ -2015,9 +2048,13 @@ dateInput.addEventListener("change", () => {
   } else if (takenDates.includes(dateInput.value)) {
     showMsg("Sorry — that day is already booked. Showing the next open day.", "err");
     dateInput.value = nextOpenDate();
+  } else if (isFullyBlocked(dateInput.value)) {
+    showMsg("Sorry — that day is not available. Showing the next open day.", "err");
+    dateInput.value = nextOpenDate();
   } else {
     clearMsg();
   }
+  updateTimeSlotsForDate(dateInput.value);
   renderSummary();
 });
 
@@ -2036,6 +2073,8 @@ function renderTimes(slots) {
     });
     box.appendChild(el);
   });
+  // Apply blocks for currently selected date
+  if (dateInput.value) updateTimeSlotsForDate(dateInput.value);
 }
 
 // Contact toggle
