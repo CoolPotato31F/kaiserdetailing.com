@@ -202,7 +202,7 @@ async function testNotification() {
     const d = await r.json();
     if (d.ok) {
       btn.textContent = "✅ Sent!";
-      setTimeout(() => { btn.disabled = false; btn.textContent = "🔔 Test Notification"; }, 3000);
+      setTimeout(() => { btn.disabled = false; btn.textContent = "🔔 Test Notification"; }, 10);
     } else {
       btn.textContent = "❌ " + (d.error || "Failed");
       setTimeout(() => { btn.disabled = false; btn.textContent = "🔔 Test Notification"; }, 4000);
