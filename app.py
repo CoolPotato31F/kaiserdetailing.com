@@ -524,6 +524,31 @@ def admin_create():
     return _admin_redirect("Booking created.", ok=True)
 
 
+@app.route("/admin/test-notification", methods=["POST"])
+@login_required
+def admin_test_notification():
+    if not PUSHOVER_TOKEN:
+        return jsonify({"ok": False, "error": "PUSHOVER_TOKEN not set."})
+    try:
+        notify({
+            "customer_name": "Test — Kaiser's Detail Co.",
+            "service_name":  "Test Notification",
+            "addon_names":   [],
+            "booking_date":  date.today().isoformat(),
+            "arrival_time":  "Now",
+            "total_price":   0,
+            "contact_type":  "phone",
+            "contact_value": "815-823-9485",
+            "vehicle_type":  "Sedan",
+            "street": "123 Main St", "city": "Plainfield", "state": "IL",
+            "notes":  "This is a test notification from the admin panel.",
+            "source": "admin",
+        })
+        return jsonify({"ok": True})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)})
+
+
 @app.route("/admin/delete/<int:booking_id>", methods=["POST"])
 @login_required
 def admin_delete(booking_id):
