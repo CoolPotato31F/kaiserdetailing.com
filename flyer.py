@@ -270,7 +270,7 @@ def draw_footer(c):
     mid = (FOOTER_H - 3) / 2
     txt(c, 'Book in 60 seconds — visit or scan:', W/2, mid + 18,
         'Helvetica-Bold', 12, WHITE, 'center')
-    txt(c, 'kaiserdetailco.booksy.com  ·  kaiserdetailing.com  ·  KaoFechner@outlook.com',
+    txt(c, 'kaiserdetailing.com  ·  815-823-9485  ·  KaoFechner@outlook.com',
         W/2, mid + 3, 'Helvetica', 8, HexColor('#cccccc'), 'center')
     txt(c, 'Plainfield, IL & surrounding areas  ·  Every booking funds college tuition',
         W/2, mid - 12, 'Helvetica', 7.5, WHITE, 'center')
