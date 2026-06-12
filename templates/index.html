@@ -1462,6 +1462,10 @@ footer {
           <input type="text" class="bk-input" id="bk-vehicle-other" placeholder="Describe your vehicle..." style="display:none;margin-top:8px;">
         </div>
         <div class="bk-fg">
+          <label class="bk-label">Year / Make / Model <span style="color:var(--muted);font-weight:400;text-transform:none;">(optional)</span></label>
+          <input type="text" class="bk-input" id="bk-vehicle-details" placeholder="e.g. 2019 Honda Civic">
+        </div>
+        <div class="bk-fg">
           <label class="bk-label">Additional Notes (optional)</label>
           <textarea class="bk-input" id="bk-notes" rows="3" placeholder="Gate codes, specific concerns, vehicle color..."></textarea>
         </div>
@@ -2155,6 +2159,7 @@ async function submitBooking() {
   const vehicle = otherInput.style.display !== "none"
     ? otherInput.value.trim()
     : bk.vehicle;
+  const vehicleDetails = document.getElementById("bk-vehicle-details").value.trim();
 
   if (!dateInput.value) return showMsg("Please choose a date.", "err");
   if (!bk.time) return showMsg("Please choose an arrival time.", "err");
@@ -2181,6 +2186,7 @@ async function submitBooking() {
         contact_value: contact,
         street, city, state, notes,
         vehicle_type: vehicle,
+        vehicle_details: vehicleDetails,
         agreed_terms: true,
       }),
     });

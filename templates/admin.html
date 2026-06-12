@@ -207,6 +207,9 @@ tr.past td{opacity:0.5;}
             <option value="Other">Other</option>
           </select>
         </div>
+        <div class="fg"><label>Year / Make / Model (optional)</label>
+          <input type="text" name="vehicle_details" placeholder="e.g. 2019 Honda Civic">
+        </div>
         <div class="fg"><label>Notes</label><textarea name="notes" rows="2"></textarea></div>
         <button class="create-btn" type="submit">Create Booking</button>
       </form>
@@ -231,7 +234,7 @@ tr.past td{opacity:0.5;}
           <td class="date-cell">{{ b.booking_date }}<br><span class="src">{{ b.source }}</span></td>
           <td>{{ b.arrival_time }}</td>
           <td>{{ b.customer_name }}</td>
-          <td style="font-size:0.85rem;">{{ b.vehicle_type or '—' }}</td>
+          <td style="font-size:0.85rem;">{{ b.vehicle_type or '—' }}{% if b.vehicle_details %}<br><span style="color:var(--muted);font-size:0.78rem;">{{ b.vehicle_details }}</span>{% endif %}</td>
           <td class="contact-cell">
             {% if b.contact_type == 'phone' %}<a href="tel:{{ b.contact_value }}">{{ b.contact_value }}</a>
             {% else %}<a href="mailto:{{ b.contact_value }}">{{ b.contact_value }}</a>{% endif %}

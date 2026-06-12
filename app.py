@@ -143,6 +143,8 @@ def notify(booking):
 
     contact_label = "📞" if booking.get("contact_type") == "phone" else "✉️"
     vehicle_line = f"\n🚗 {booking['vehicle_type']}" if booking.get("vehicle_type") else ""
+    if booking.get("vehicle_details"):
+        vehicle_line += f" — {booking['vehicle_details']}"
     if booking.get("vehicle_type") in LARGE_VEHICLES:
         vehicle_line += f" (+${LARGE_VEHICLE_SURCHARGE} large vehicle)"
     notes_line = f"\nNotes: {booking['notes']}" if booking.get("notes") else ""
@@ -213,6 +215,7 @@ def init_db():
             contact_type  TEXT NOT NULL,          -- 'phone' or 'email'
             contact_value TEXT NOT NULL,
             vehicle_type  TEXT NOT NULL DEFAULT '',
+            vehicle_details TEXT NOT NULL DEFAULT '',
             street        TEXT NOT NULL,
             city          TEXT NOT NULL,
             state         TEXT NOT NULL,
@@ -238,6 +241,11 @@ def init_db():
     # Migration: add vehicle_type column to existing databases without losing data
     try:
         conn.execute("ALTER TABLE bookings ADD COLUMN vehicle_type TEXT NOT NULL DEFAULT ''")
+        conn.commit()
+    except Exception:
+        pass  # column already exists — safe to ignore
+    try:
+        conn.execute("ALTER TABLE bookings ADD COLUMN vehicle_details TEXT NOT NULL DEFAULT ''")
         conn.commit()
     except Exception:
         pass  # column already exists — safe to ignore
@@ -358,6 +366,7 @@ def book():
     city         = (data.get("city") or "").strip()
     state        = (data.get("state") or "").strip()
     vehicle_type = (data.get("vehicle_type") or "").strip()
+    vehicle_details = (data.get("vehicle_details") or "").strip()[:120]  # cap length
     notes        = (data.get("notes") or "").strip()
     agreed       = bool(data.get("agreed_terms"))
 
@@ -412,12 +421,12 @@ def book():
             INSERT INTO bookings
             (booking_date, arrival_time, service_key, service_name, addons_json,
              total_price, customer_name, contact_type, contact_value,
-             vehicle_type, street, city, state, notes, agreed_terms, source, created_at)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+             vehicle_type, vehicle_details, street, city, state, notes, agreed_terms, source, created_at)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """, (
             booking_date, arrival_time, service_key, service_name,
             json.dumps(clean_addons), total, name, contact_type, contact_val,
-            vehicle_type, street, city, state, notes, 1, "web",
+            vehicle_type, vehicle_details, street, city, state, notes, 1, "web",
             datetime.now().isoformat(timespec="seconds"),
         ))
         conn.commit()
@@ -441,6 +450,7 @@ def book():
         "contact_type":  contact_type,
         "contact_value": contact_val,
         "vehicle_type":  vehicle_type,
+        "vehicle_details": vehicle_details,
         "street": street, "city": city, "state": state,
         "notes":  notes,
         "source": "web",
@@ -526,6 +536,7 @@ def admin_create():
     city         = (f.get("city") or "").strip()
     state        = (f.get("state") or "").strip()
     vehicle_type = (f.get("vehicle_type") or "").strip()
+    vehicle_details = (f.get("vehicle_details") or "").strip()[:120]
     notes        = (f.get("notes") or "").strip()
 
     if not valid_future_date(booking_date):
@@ -547,12 +558,12 @@ def admin_create():
             INSERT INTO bookings
             (booking_date, arrival_time, service_key, service_name, addons_json,
              total_price, customer_name, contact_type, contact_value,
-             vehicle_type, street, city, state, notes, agreed_terms, source, created_at)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+             vehicle_type, vehicle_details, street, city, state, notes, agreed_terms, source, created_at)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """, (
             booking_date, arrival_time, service_key, SERVICES[service_key]["name"],
             json.dumps(clean_addons), total, name, contact_type, contact_val,
-            vehicle_type, street, city, state, notes, 1, "admin",
+            vehicle_type, vehicle_details, street, city, state, notes, 1, "admin",
             datetime.now().isoformat(timespec="seconds"),
         ))
         conn.commit()
@@ -573,6 +584,7 @@ def admin_create():
         "contact_type":  contact_type,
         "contact_value": contact_val,
         "vehicle_type":  vehicle_type,
+        "vehicle_details": vehicle_details,
         "street": street, "city": city, "state": state,
         "notes":  notes,
         "source": "admin",
