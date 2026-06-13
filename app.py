@@ -15,6 +15,16 @@ import urllib.request
 import urllib.parse
 from datetime import datetime, date, timedelta
 from functools import wraps
+from zoneinfo import ZoneInfo
+
+# The shop's local timezone. "Today" is computed here so date logic does not
+# depend on the server/host timezone (which is often UTC). Without this, after
+# ~6pm Central the server would roll over to the next calendar day early and
+# blocks/bookings could be applied to the wrong day.
+SHOP_TZ = ZoneInfo("America/Chicago")
+
+def today_local():
+    return datetime.now(SHOP_TZ).date()
 
 from flask import (
     Flask, request, jsonify, render_template,
@@ -143,8 +153,6 @@ def notify(booking):
 
     contact_label = "📞" if booking.get("contact_type") == "phone" else "✉️"
     vehicle_line = f"\n🚗 {booking['vehicle_type']}" if booking.get("vehicle_type") else ""
-    if booking.get("vehicle_details"):
-        vehicle_line += f" — {booking['vehicle_details']}"
     if booking.get("vehicle_type") in LARGE_VEHICLES:
         vehicle_line += f" (+${LARGE_VEHICLE_SURCHARGE} large vehicle)"
     notes_line = f"\nNotes: {booking['notes']}" if booking.get("notes") else ""
@@ -215,7 +223,6 @@ def init_db():
             contact_type  TEXT NOT NULL,          -- 'phone' or 'email'
             contact_value TEXT NOT NULL,
             vehicle_type  TEXT NOT NULL DEFAULT '',
-            vehicle_details TEXT NOT NULL DEFAULT '',
             street        TEXT NOT NULL,
             city          TEXT NOT NULL,
             state         TEXT NOT NULL,
@@ -241,11 +248,6 @@ def init_db():
     # Migration: add vehicle_type column to existing databases without losing data
     try:
         conn.execute("ALTER TABLE bookings ADD COLUMN vehicle_type TEXT NOT NULL DEFAULT ''")
-        conn.commit()
-    except Exception:
-        pass  # column already exists — safe to ignore
-    try:
-        conn.execute("ALTER TABLE bookings ADD COLUMN vehicle_details TEXT NOT NULL DEFAULT ''")
         conn.commit()
     except Exception:
         pass  # column already exists — safe to ignore
@@ -290,7 +292,7 @@ def valid_future_date(d_str):
         d = datetime.strptime(d_str, "%Y-%m-%d").date()
     except ValueError:
         return False
-    return d > date.today()
+    return d > today_local()
 
 
 def login_required(f):
@@ -313,7 +315,7 @@ def index():
 @app.route("/api/availability")
 def availability():
     """Return taken dates and the earliest bookable date (tomorrow)."""
-    earliest = (date.today() + timedelta(days=1)).isoformat()
+    earliest = (today_local() + timedelta(days=1)).isoformat()
     conn = get_db()
     rows = conn.execute(
         "SELECT booking_date FROM bookings WHERE booking_date >= ?",
@@ -366,7 +368,6 @@ def book():
     city         = (data.get("city") or "").strip()
     state        = (data.get("state") or "").strip()
     vehicle_type = (data.get("vehicle_type") or "").strip()
-    vehicle_details = (data.get("vehicle_details") or "").strip()[:120]  # cap length
     notes        = (data.get("notes") or "").strip()
     agreed       = bool(data.get("agreed_terms"))
 
@@ -421,12 +422,12 @@ def book():
             INSERT INTO bookings
             (booking_date, arrival_time, service_key, service_name, addons_json,
              total_price, customer_name, contact_type, contact_value,
-             vehicle_type, vehicle_details, street, city, state, notes, agreed_terms, source, created_at)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+             vehicle_type, street, city, state, notes, agreed_terms, source, created_at)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """, (
             booking_date, arrival_time, service_key, service_name,
             json.dumps(clean_addons), total, name, contact_type, contact_val,
-            vehicle_type, vehicle_details, street, city, state, notes, 1, "web",
+            vehicle_type, street, city, state, notes, 1, "web",
             datetime.now().isoformat(timespec="seconds"),
         ))
         conn.commit()
@@ -450,7 +451,6 @@ def book():
         "contact_type":  contact_type,
         "contact_value": contact_val,
         "vehicle_type":  vehicle_type,
-        "vehicle_details": vehicle_details,
         "street": street, "city": city, "state": state,
         "notes":  notes,
         "source": "web",
@@ -499,7 +499,7 @@ def admin_dashboard():
         b = dict(r)
         addon_names = [ADDONS[a]["name"] for a in json.loads(b["addons_json"]) if a in ADDONS]
         b["addon_names"] = addon_names
-        b["is_past"] = b["booking_date"] < date.today().isoformat()
+        b["is_past"] = b["booking_date"] < today_local().isoformat()
         bookings.append(b)
 
     # Blocked times — query before closing connection
@@ -517,7 +517,7 @@ def admin_dashboard():
         addons=ADDONS,
         service_addons=SERVICE_ADDONS,
         time_slots=TIME_SLOTS,
-        today=(date.today() + timedelta(days=1)).isoformat(),
+        today=(today_local() + timedelta(days=1)).isoformat(),
     )
 
 
@@ -536,7 +536,6 @@ def admin_create():
     city         = (f.get("city") or "").strip()
     state        = (f.get("state") or "").strip()
     vehicle_type = (f.get("vehicle_type") or "").strip()
-    vehicle_details = (f.get("vehicle_details") or "").strip()[:120]
     notes        = (f.get("notes") or "").strip()
 
     if not valid_future_date(booking_date):
@@ -558,12 +557,12 @@ def admin_create():
             INSERT INTO bookings
             (booking_date, arrival_time, service_key, service_name, addons_json,
              total_price, customer_name, contact_type, contact_value,
-             vehicle_type, vehicle_details, street, city, state, notes, agreed_terms, source, created_at)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+             vehicle_type, street, city, state, notes, agreed_terms, source, created_at)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """, (
             booking_date, arrival_time, service_key, SERVICES[service_key]["name"],
             json.dumps(clean_addons), total, name, contact_type, contact_val,
-            vehicle_type, vehicle_details, street, city, state, notes, 1, "admin",
+            vehicle_type, street, city, state, notes, 1, "admin",
             datetime.now().isoformat(timespec="seconds"),
         ))
         conn.commit()
@@ -584,7 +583,6 @@ def admin_create():
         "contact_type":  contact_type,
         "contact_value": contact_val,
         "vehicle_type":  vehicle_type,
-        "vehicle_details": vehicle_details,
         "street": street, "city": city, "state": state,
         "notes":  notes,
         "source": "admin",
@@ -641,7 +639,7 @@ def admin_test_notification():
         "customer_name": "Test — Kaiser's Detail Co.",
         "service_name":  "Test Notification",
         "addon_names":   [],
-        "booking_date":  date.today().isoformat(),
+        "booking_date":  today_local().isoformat(),
         "arrival_time":  "Now",
         "total_price":   0,
         "contact_type":  "phone",

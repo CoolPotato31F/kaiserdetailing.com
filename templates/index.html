@@ -1462,10 +1462,6 @@ footer {
           <input type="text" class="bk-input" id="bk-vehicle-other" placeholder="Describe your vehicle..." style="display:none;margin-top:8px;">
         </div>
         <div class="bk-fg">
-          <label class="bk-label">Year / Make / Model <span style="color:var(--muted);font-weight:400;text-transform:none;">(optional)</span></label>
-          <input type="text" class="bk-input" id="bk-vehicle-details" placeholder="e.g. 2019 Honda Civic">
-        </div>
-        <div class="bk-fg">
           <label class="bk-label">Additional Notes (optional)</label>
           <textarea class="bk-input" id="bk-notes" rows="3" placeholder="Gate codes, specific concerns, vehicle color..."></textarea>
         </div>
@@ -1961,10 +1957,20 @@ function isFullyBlocked(dateStr) {
   return blockedTimes.some(b => b.date === dateStr && b.type === "full_day");
 }
 
+// Format a Date using its LOCAL calendar components (YYYY-MM-DD).
+// Avoids the toISOString() UTC shift that moved dates back a day in
+// timezones behind UTC (e.g. Central Time), which mis-aligned blocks.
+function localISO(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 function nextOpenDate() {
   let d = new Date(earliestDate + "T00:00:00");
   for (let i = 0; i < 365; i++) {
-    const iso = d.toISOString().slice(0, 10);
+    const iso = localISO(d);
     if (!takenDates.includes(iso) && !isFullyBlocked(iso)) return iso;
     d.setDate(d.getDate() + 1);
   }
@@ -2013,7 +2019,7 @@ async function loadAvailability() {
     renderVehicleSurchargeLabels();
   } catch (e) {
     const t = new Date(); t.setDate(t.getDate() + 1);
-    earliestDate = t.toISOString().slice(0, 10);
+    earliestDate = localISO(t);
     blockedTimes = [];
     bk.largeVehicles = new Set(["Truck","Minivan","SUV"]);
     bk.largeSurcharge = 20;
@@ -2159,7 +2165,6 @@ async function submitBooking() {
   const vehicle = otherInput.style.display !== "none"
     ? otherInput.value.trim()
     : bk.vehicle;
-  const vehicleDetails = document.getElementById("bk-vehicle-details").value.trim();
 
   if (!dateInput.value) return showMsg("Please choose a date.", "err");
   if (!bk.time) return showMsg("Please choose an arrival time.", "err");
@@ -2186,7 +2191,6 @@ async function submitBooking() {
         contact_value: contact,
         street, city, state, notes,
         vehicle_type: vehicle,
-        vehicle_details: vehicleDetails,
         agreed_terms: true,
       }),
     });
