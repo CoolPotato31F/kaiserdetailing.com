@@ -54,12 +54,13 @@
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
     "name": "Auto Detailing Services",
-    "itemListElement": [ "price": "35", "priceCurrency": "USD" }, "price": "55", "priceCurrency": "USD" },
+    "itemListElement": [
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Interior Detail" }, "price": "75", "priceCurrency": "USD" },
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Exterior Detail" }, "price": "50", "priceCurrency": "USD" },
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Professional Detail" }, "price": "125", "priceCurrency": "USD" },
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Showroom Detail" }, "price": "200", "priceCurrency": "USD" },
       { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Engine Bay Cleaning" }, "price": "35", "priceCurrency": "USD" },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Sticker / Decal Removal" }, "price": "15", "priceCurrency": "USD" }
     ]
   }
 }
@@ -1614,6 +1615,10 @@ document.getElementById('cform').addEventListener('submit', async e => {
     if (r.ok) {
       e.target.style.display = 'none';
       document.getElementById('form-ok').style.display = 'block';
+      // ── Google Analytics: contact form lead ──
+      if (typeof gtag === 'function') {
+        gtag('event', 'generate_lead', { event_category: 'contact', event_label: 'contact_form' });
+      }
     }
   } catch {
     alert('Something went wrong. Call or text 815-823-9485 or email KaoFechner@outlook.com.');
@@ -1627,10 +1632,10 @@ document.getElementById('cform').addEventListener('submit', async e => {
 <script>
 // ── Catalog (mirrors server; server re-validates all prices) ──
 const SERVICES = {
-  interior_detail:     { name: "Interior Detail",         price: 75, dur: "1h 30m" },
+  interior_detail:     { name: "Interior Detail",         price: 75,  dur: "1h 30m" },
+  exterior_detail:     { name: "Exterior Detail",         price: 50,  dur: "1h 30m" },
   professional_detail: { name: "Professional Detail",     price: 125, dur: "3h" },
   showroom_detail:     { name: "Showroom Detail",         price: 200, dur: "4h" },
-  exterior_detail:     { name: "Exterior Detail",         price: 50,  dur: "1h 30m" },
   engine_bay:          { name: "Engine Bay Cleaning",     price: 35,  dur: "30m" },
   decal_removal:       { name: "Sticker / Decal Removal", price: 15,  dur: "15m" },
 };
@@ -2004,6 +2009,20 @@ async function submitBooking() {
         `<strong>${d.service}</strong><br>${fmtDate(d.date)} at ${d.time}<br>Total: <strong>$${d.total}</strong> (due at service)`;
       succ.style.display = "block";
       succ.scrollIntoView({ behavior: "smooth", block: "center" });
+      // ── Google Analytics: booking conversion ──
+      if (typeof gtag === "function") {
+        gtag("event", "purchase", {
+          transaction_id: d.date + "_" + bk.time.replace(/[: ]/g, ""),
+          value: d.total,
+          currency: "USD",
+          items: [{
+            item_id: bk.service,
+            item_name: d.service,
+            price: SERVICES[bk.service].price,
+            quantity: 1
+          }]
+        });
+      }
     } else {
       showMsg(d.error || "Something went wrong. Please try again.", "err");
       if (r.status === 409) loadAvailability(); // refresh taken days
