@@ -71,19 +71,24 @@ app.config.update(
 # Prices are validated server-side so a tampered client can't change totals.
 # ──────────────────────────────────────────────────────────────────────────────
 SERVICES = {
-    "interior_detail":     {"name": "Interior Detail",         "price": 75,  "dur": "1h 30m"},
-    "exterior_detail":     {"name": "Exterior Detail",         "price": 50,  "dur": "1h 30m"},
-    "professional_detail": {"name": "Professional Detail",     "price": 125, "dur": "3h"},
-    "showroom_detail":     {"name": "Showroom Detail",         "price": 200, "dur": "4h"},
-    "engine_bay":          {"name": "Engine Bay Cleaning",     "price": 35,  "dur": "30m"},
-    "decal_removal":       {"name": "Sticker / Decal Removal", "price": 15,  "dur": "15m"},
+    "interior_detail":     {"name": "Interior Detail",        "price": 100, "dur": "1h 30m"},
+    "exterior_detail":     {"name": "Exterior Detail",        "price": 75,  "dur": "1h 30m"},
+    "professional_detail": {"name": "Professional Detail",    "price": 150, "dur": "3h"},
+    "showroom_detail":     {"name": "Showroom Detail",        "price": 225, "dur": "4h"},
+    "engine_bay":          {"name": "Engine Bay Cleaning",    "price": 35,  "dur": "30m"},
+    "quick_interior":      {"name": "Quick Interior Cleaning","price": 35,  "dur": "30m"},
+    "quick_detail":        {"name": "Quick Detail",           "price": 55,  "dur": "1h"},
+    "headlight":           {"name": "Headlight Restoration",  "price": 40,  "dur": "40m"},
+    "decal_removal":       {"name": "Sticker / Decal Removal","price": 15,  "dur": "15m"},
 }
 
 ADDONS = {
+    "tire_shine":     {"name": "Tire Shine",     "price": 10},
     "carpet_shampoo": {"name": "Carpet Shampoo", "price": 30},
     "wax":            {"name": "Wax",            "price": 30},
     "clay":           {"name": "Clay Service",   "price": 45},
     "rainx":          {"name": "RainX",          "price": 10},
+    "quick_wash":     {"name": "Quick Wash",     "price": 20},
 }
 
 # Which add-ons are valid for each service (server-side validation)
@@ -92,8 +97,11 @@ SERVICE_ADDONS = {
     "exterior_detail":     ["wax", "clay", "rainx"],
     "professional_detail": ["carpet_shampoo", "clay", "rainx"],
     "showroom_detail":     ["clay", "rainx"],
-    "engine_bay":          [],
-    "decal_removal":       [],
+    "engine_bay":          ["quick_wash"],
+    "quick_interior":      ["carpet_shampoo", "quick_wash"],
+    "quick_detail":        ["tire_shine"],
+    "headlight":           ["quick_wash"],
+    "decal_removal":       ["quick_wash"],
 }
 
 # Available arrival time slots offered to customers
@@ -293,9 +301,11 @@ def login_required(f):
 def index():
     return render_template("index.html")
 
+
 @app.route("/review")
-def admin_logout():
+def review():
     return render_template("review.html")
+
 
 @app.route("/api/availability")
 def availability():
