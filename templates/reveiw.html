@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leave a Review | Kaiser's Detail Co.</title>
+<meta name="description" content="Tell us how we did and help fund a local student's college tuition. Quick feedback + a link to leave us a Google review.">
+<meta name="robots" content="noindex, follow">
+
+<link rel="icon" type="image/png" href="/static/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Outfit:wght@300;400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --cream:    #faf7f2;
+  --cream2:   #f2ede4;
+  --white:    #ffffff;
+  --charcoal: #18181a;
+  --ink:      #2e2d2b;
+  --muted:    #6b6860;
+  --rule:     #e0d9ce;
+  --gold:     #b87414;
+  --gold-h:   #9a600e;
+  --gold-bg:  #fdf3e0;
+  --gold-bd:  #e8c47a;
+  --r:        5px;
+  --rl:       12px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--cream);
+  color: var(--charcoal);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 400;
+  line-height: 1.65;
+}
+a { color: inherit; text-decoration: none; }
+
+.eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.6rem;
+}
+.display {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 700; line-height: 1.1;
+  color: var(--charcoal); margin-bottom: 0.9rem;
+}
+.display em { font-style: italic; color: var(--gold); }
+.lead { font-size: 0.98rem; color: var(--muted); line-height: 1.75; max-width: 560px; margin: 0 auto; }
+
+/* HEADER */
+header {
+  padding: 60px 5% 44px;
+  text-align: center;
+  background: var(--white);
+  border-bottom: 1px solid var(--rule);
+}
+.brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--charcoal); margin-bottom: 1.6rem;
+  letter-spacing: 0.3px;
+}
+.brand span { color: var(--gold); }
+
+/* COLLEGE CALLOUT */
+.college-strip {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--gold-bg); border: 1px solid var(--gold-bd);
+  border-radius: 100px; padding: 8px 18px;
+  font-size: 0.8rem; font-weight: 600; color: var(--gold);
+  margin: 0 auto 1.6rem; letter-spacing: 0.2px;
+}
+
+main { max-width: 640px; margin: 0 auto; padding: 48px 5% 100px; }
+
+/* GOOGLE REVIEW CARD */
+.google-card {
+  background: var(--charcoal);
+  border-radius: var(--rl);
+  padding: 2.2rem 2rem;
+  text-align: center;
+  margin-bottom: 3.2rem;
+  position: relative;
+  overflow: hidden;
+}
+.google-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 0%, rgba(184,116,20,0.25), transparent 60%);
+}
+.google-card-inner { position: relative; z-index: 1; }
+.stars { font-size: 1.6rem; letter-spacing: 4px; color: var(--gold); margin-bottom: 0.9rem; }
+.google-card h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; color: var(--white); font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+.google-card p {
+  font-size: 0.88rem; color: rgba(255,255,255,0.65);
+  max-width: 440px; margin: 0 auto 1.6rem; line-height: 1.7;
+}
+.btn-google {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--gold); color: var(--white);
+  padding: 14px 28px; border-radius: var(--r);
+  font-weight: 600; font-size: 0.9rem; letter-spacing: 0.3px;
+  transition: background 0.18s, transform 0.15s;
+}
+.btn-google:hover { background: var(--gold-h); transform: translateY(-1px); }
+.btn-google svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* DIVIDER */
+.divider {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 3rem; color: var(--muted);
+  font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+}
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+
+/* FORM */
+.form-intro { text-align: center; margin-bottom: 2.2rem; }
+.form-intro h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;
+}
+.form-intro p { font-size: 0.88rem; color: var(--muted); }
+
+.card {
+  background: var(--white); border: 1px solid var(--rule);
+  border-radius: var(--rl); padding: 2rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.field { margin-bottom: 1.6rem; }
+.field:last-of-type { margin-bottom: 0; }
+.field-label {
+  display: block; font-size: 0.86rem; font-weight: 600;
+  color: var(--charcoal); margin-bottom: 0.7rem;
+}
+.field-sub { font-size: 0.76rem; color: var(--muted); font-weight: 400; display: block; margin-top: 2px; }
+.field input[type="text"], .field input[type="email"], .field textarea {
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid var(--rule); border-radius: var(--r);
+  background: var(--cream); font-family: 'Outfit', sans-serif;
+  font-size: 0.92rem; color: var(--ink);
+  transition: border-color 0.18s;
+}
+.field input:focus, .field textarea:focus { outline: none; border-color: var(--gold-bd); }
+.field textarea { resize: vertical; min-height: 90px; }
+
+/* Rating scale (1-5 tiles) */
+.scale { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; }
+.scale-opt { position: relative; }
+.scale-opt input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; margin: 0; }
+.scale-opt label {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 4px; border-radius: var(--r);
+  border: 1.5px solid var(--rule); background: var(--cream);
+  font-size: 0.72rem; color: var(--muted); cursor: pointer;
+  transition: 0.15s; text-align: center;
+}
+.scale-opt label .n { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.1rem; color: var(--ink); }
+.scale-opt input:checked + label {
+  border-color: var(--gold); background: var(--gold-bg); color: var(--gold);
+}
+.scale-opt input:checked + label .n { color: var(--gold); }
+.scale-caption { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--muted); margin-top: 6px; letter-spacing: 0.3px; }
+
+/* Yes/No pills */
+.pillrow { display: flex; gap: 10px; }
+.pillrow .scale-opt { flex: 1; }
+.pillrow label { padding: 12px 4px; }
+
+/* Service used select-like tiles */
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; margin: 0; }
+.chip label {
+  display: inline-block; padding: 9px 16px; border-radius: 100px;
+  border: 1.5px solid var(--rule); background: var(--cream);
+  font-size: 0.8rem; color: var(--muted); cursor: pointer; transition: 0.15s;
+}
+.chip input:checked + label { border-color: var(--gold); background: var(--gold-bg); color: var(--gold); font-weight: 600; }
+
+.submit-btn {
+  width: 100%; margin-top: 2rem; padding: 15px;
+  background: var(--gold); color: var(--white);
+  border: none; border-radius: var(--r);
+  font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.94rem;
+  letter-spacing: 0.4px; cursor: pointer; transition: background 0.18s;
+}
+.submit-btn:hover { background: var(--gold-h); }
+.submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.form-msg { text-align: center; font-size: 0.85rem; margin-top: 1rem; display: none; }
+.form-msg.err { color: #b03a2e; display: block; }
+.form-msg.ok { color: var(--gold); display: block; }
+
+#success {
+  display: none; text-align: center; padding: 3rem 2rem;
+  background: var(--white); border: 1px solid var(--rule); border-radius: var(--rl);
+}
+#success .check {
+  width: 54px; height: 54px; border-radius: 50%; background: var(--gold-bg);
+  border: 1px solid var(--gold-bd); display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.2rem; color: var(--gold); font-size: 1.6rem;
+}
+#success h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.6rem; }
+#success p { font-size: 0.9rem; color: var(--muted); max-width: 400px; margin: 0 auto; }
+
+footer {
+  text-align: center; padding: 40px 5% 60px;
+  font-size: 0.78rem; color: var(--muted);
+}
+footer a { color: var(--gold); font-weight: 500; }
+
+@media (max-width: 480px) {
+  .scale { grid-template-columns: repeat(5,1fr); gap: 5px; }
+  .scale-opt label { padding: 8px 2px; font-size: 0.64rem; }
+  .card { padding: 1.5rem 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">Kaiser's <span>Detail</span> Co.</div>
+  <div class="eyebrow">We'd love your feedback</div>
+  <h1 class="display">How did we do?</h1>
+  <p class="lead">Your feedback helps a local student get closer to paying for college — and helps us keep improving. Takes about a minute.</p>
+</header>
+
+<main>
+
+  <!-- GOOGLE REVIEW CTA -->
+  <section class="google-card">
+    <div class="google-card-inner">
+      <div class="stars">★★★★★</div>
+      <h2>Loved your detail?</h2>
+      <p>If you have 30 seconds, a Google review means the world to a small, local business — and helps us fund the next student's tuition.</p>
+      <a class="btn-google" href="https://g.page/r/CWpuiKGduQ-_EAI/review" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10c0-.67-.07-1.32-.19-1.95H12z" opacity="0"/><path d="M21.35 11.1H12v2.8h5.35c-.24 1.4-1.6 4.1-5.35 4.1-3.22 0-5.85-2.66-5.85-5.95s2.63-5.95 5.85-5.95c1.83 0 3.06.78 3.76 1.45l2.56-2.47C16.9 3.44 14.66 2.5 12 2.5 6.75 2.5 2.5 6.75 2.5 12S6.75 21.5 12 21.5c6.05 0 9.05-4.25 9.05-8.9 0-.65-.07-1.05-.2-1.5z"/></svg>
+        Leave us a Google Review
+      </a>
+    </div>
+  </section>
+
+  <div class="divider">Or tell us more first</div>
+
+  <div class="form-intro">
+    <h2>Quick feedback</h2>
+    <p>A few questions about your experience — from booking on the site to the finished detail.</p>
+  </div>
+
+  <form id="review-form" class="card">
+
+    <div class="field">
+      <label class="field-label">Which service did you get?</label>
+      <div class="chip-row">
+        <div class="chip"><input type="radio" name="service" id="s1" value="Interior Detail"><label for="s1">Interior Detail</label></div>
+        <div class="chip"><input type="radio" name="service" id="s2" value="Exterior Detail"><label for="s2">Exterior Detail</label></div>
+        <div class="chip"><input type="radio" name="service" id="s3" value="Professional Detail"><label for="s3">Professional Detail</label></div>
+        <div class="chip"><input type="radio" name="service" id="s4" value="Showroom Detail"><label for="s4">Showroom Detail</label></div>
+        <div class="chip"><input type="radio" name="service" id="s5" value="Engine Bay Cleaning"><label for="s5">Engine Bay Cleaning</label></div>
+        <div class="chip"><input type="radio" name="service" id="s6" value="Sticker/Decal Removal"><label for="s6">Sticker/Decal Removal</label></div>
+        <div class="chip"><input type="radio" name="service" id="s7" value="Other/Multiple"><label for="s7">Other / Multiple</label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">How easy was it to book on our website?
+        <span class="field-sub">1 = very difficult, 5 = very easy</span>
+      </label>
+      <div class="scale" data-group="website_ease">
+        <div class="scale-opt"><input type="radio" name="website_ease" id="w1" value="1"><label for="w1"><span class="n">1</span></label></div>
+        <div class="scale-opt"><input type="radio" name="website_ease" id="w2" value="2"><label for="w2"><span class="n">2</span></label></div>
+        <div class="scale-opt"><input type="radio" name="website_ease" id="w3" value="3"><label for="w3"><span class="n">3</span></label></div>
+        <div class="scale-opt"><input type="radio" name="website_ease" id="w4" value="4"><label for="w4"><span class="n">4</span></label></div>
+        <div class="scale-opt"><input type="radio" name="website_ease" id="w5" value="5"><label for="w5"><span class="n">5</span></label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">How would you rate the quality of the detail?
+        <span class="field-sub">1 = poor, 5 = excellent</span>
+      </label>
+      <div class="scale" data-group="quality">
+        <div class="scale-opt"><input type="radio" name="quality" id="q1" value="1"><label for="q1"><span class="n">1</span></label></div>
+        <div class="scale-opt"><input type="radio" name="quality" id="q2" value="2"><label for="q2"><span class="n">2</span></label></div>
+        <div class="scale-opt"><input type="radio" name="quality" id="q3" value="3"><label for="q3"><span class="n">3</span></label></div>
+        <div class="scale-opt"><input type="radio" name="quality" id="q4" value="4"><label for="q4"><span class="n">4</span></label></div>
+        <div class="scale-opt"><input type="radio" name="quality" id="q5" value="5"><label for="q5"><span class="n">5</span></label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">How was communication and punctuality?
+        <span class="field-sub">1 = poor, 5 = excellent</span>
+      </label>
+      <div class="scale" data-group="communication">
+        <div class="scale-opt"><input type="radio" name="communication" id="c1" value="1"><label for="c1"><span class="n">1</span></label></div>
+        <div class="scale-opt"><input type="radio" name="communication" id="c2" value="2"><label for="c2"><span class="n">2</span></label></div>
+        <div class="scale-opt"><input type="radio" name="communication" id="c3" value="3"><label for="c3"><span class="n">3</span></label></div>
+        <div class="scale-opt"><input type="radio" name="communication" id="c4" value="4"><label for="c4"><span class="n">4</span></label></div>
+        <div class="scale-opt"><input type="radio" name="communication" id="c5" value="5"><label for="c5"><span class="n">5</span></label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Did you feel you got good value for the price?</label>
+      <div class="pillrow">
+        <div class="scale-opt"><input type="radio" name="value" id="v1" value="Yes"><label for="v1">Yes</label></div>
+        <div class="scale-opt"><input type="radio" name="value" id="v2" value="Somewhat"><label for="v2">Somewhat</label></div>
+        <div class="scale-opt"><input type="radio" name="value" id="v3" value="No"><label for="v3">No</label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">How likely are you to recommend Kaiser's Detail Co. to a friend?
+        <span class="field-sub">1 = not likely, 5 = very likely</span>
+      </label>
+      <div class="scale" data-group="recommend">
+        <div class="scale-opt"><input type="radio" name="recommend" id="r1" value="1"><label for="r1"><span class="n">1</span></label></div>
+        <div class="scale-opt"><input type="radio" name="recommend" id="r2" value="2"><label for="r2"><span class="n">2</span></label></div>
+        <div class="scale-opt"><input type="radio" name="recommend" id="r3" value="3"><label for="r3"><span class="n">3</span></label></div>
+        <div class="scale-opt"><input type="radio" name="recommend" id="r4" value="4"><label for="r4"><span class="n">4</span></label></div>
+        <div class="scale-opt"><input type="radio" name="recommend" id="r5" value="5"><label for="r5"><span class="n">5</span></label></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="favorite">What did you like most?</label>
+      <textarea name="favorite" id="favorite" placeholder="e.g. the car looked brand new, super friendly, showed up on time..."></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="improve">Anything we could improve?</label>
+      <textarea name="improve" id="improve" placeholder="Totally optional — but we read every response."></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="name">Name <span class="field-sub" style="display:inline;">(optional)</span></label>
+      <input type="text" name="name" id="name" placeholder="Your name">
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="email">Email <span class="field-sub" style="display:inline;">(optional, in case we want to follow up)</span></label>
+      <input type="email" name="email" id="email" placeholder="you@example.com">
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">Submit Feedback</button>
+    <div class="form-msg" id="form-msg"></div>
+  </form>
+
+  <div id="success">
+    <div class="check">✓</div>
+    <h2>Thank you!</h2>
+    <p>Your feedback was submitted — and it directly helps fund a local student's tuition. If you haven't already, we'd be grateful for a quick Google review too.</p>
+  </div>
+
+</main>
+
+<footer>
+  Kaiser's Detail Co. · Plainfield, IL · <a href="mailto:KaoFechner@outlook.com">KaoFechner@outlook.com</a> · <a href="https://kaiserdetailing.com">kaiserdetailing.com</a>
+</footer>
+
+<script>
+const form = document.getElementById("review-form");
+const msg = document.getElementById("form-msg");
+const btn = document.getElementById("submit-btn");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  msg.className = "form-msg";
+
+  const service = form.querySelector('input[name="service"]:checked');
+  const websiteEase = form.querySelector('input[name="website_ease"]:checked');
+  const quality = form.querySelector('input[name="quality"]:checked');
+
+  if (!service || !websiteEase || !quality) {
+    msg.textContent = "Please answer the required rating questions above.";
+    msg.className = "form-msg err";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Submitting...";
+
+  const formData = new FormData(form);
+  formData.append("_subject", "New review/feedback — Kaiser's Detail Co.");
+
+  try {
+    const res = await fetch("https://formspree.io/f/xnjrqajr", {
+      method: "POST",
+      body: formData,
+      headers: { "Accept": "application/json" }
+    });
+    if (res.ok) {
+      form.style.display = "none";
+      document.querySelector(".form-intro").style.display = "none";
+      document.getElementById("success").style.display = "block";
+      document.getElementById("success").scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      msg.textContent = "Something went wrong. Please try again or email KaoFechner@outlook.com.";
+      msg.className = "form-msg err";
+      btn.disabled = false;
+      btn.textContent = "Submit Feedback";
+    }
+  } catch (err) {
+    msg.textContent = "Connection error. Please try again or email KaoFechner@outlook.com.";
+    msg.className = "form-msg err";
+    btn.disabled = false;
+    btn.textContent = "Submit Feedback";
+  }
+});
+</script>
+
+</body>
+</html>
