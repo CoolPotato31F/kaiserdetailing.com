@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Kaiser's Detail Co. | Auto Detailing in Plainfield, IL — Call or Text to Book</title>
-<meta name="description" content="Professional mobile auto detailing in Plainfield, IL. Interior, exterior, full-detail packages from $50. Every booking funds college tuition. Call or text 815-823-9485.">
+<meta name="description" content="Professional mobile auto detailing in Plainfield, IL. Interior, exterior, full-detail packages from $20. Every booking funds college tuition. Call or text 815-823-9485.">
 <meta name="keywords" content="auto detailing Plainfield IL, car detailing Plainfield Illinois, mobile detailing Joliet, interior detail, exterior detail, car wash Plainfield, Kaiser Detail Co">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://kaiserdetailing.com/">
@@ -148,6 +148,16 @@ nav {
   white-space: nowrap;
 }
 .nav-call:hover { background: var(--gold-h) !important; }
+.lang-toggle-btn {
+  background: transparent; border: 1.5px solid var(--rule); border-radius: 100px;
+  color: var(--muted); font-family: 'Outfit', sans-serif; font-size: 0.72rem;
+  font-weight: 600; letter-spacing: 0.5px; padding: 6px 13px; cursor: pointer;
+  transition: 0.18s; margin-right: 1.2rem; white-space: nowrap;
+}
+.lang-toggle-btn:hover { border-color: var(--gold); color: var(--gold); }
+@media (max-width: 768px) {
+  .lang-toggle-btn { margin-right: 0.6rem; font-size: 0.68rem; padding: 5px 10px; }
+}
 .ham { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
 .ham span { width: 22px; height: 1.5px; background: var(--charcoal); transition: 0.25s; }
 .mob-nav {
@@ -930,59 +940,60 @@ footer {
     Kaiser's <span>Detail Co.</span>
   </div>
   <ul class="nav-links">
-    <li><a href="#book-online">Book Online</a></li>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#book-online" class="nav-call">📅 Book Now</a></li>
+    <li><a href="#book-online" data-i18n="nav_book">Book Online</a></li>
+    <li><a href="#services" data-i18n="nav_services">Services</a></li>
+    <li><a href="#gallery" data-i18n="nav_gallery">Gallery</a></li>
+    <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+    <li><a href="#book-online" class="nav-call" data-i18n="nav_book_now">📅 Book Now</a></li>
   </ul>
+  <button id="lang-toggle" class="lang-toggle-btn" onclick="toggleLang()" type="button" aria-label="Switch language">EN · Español</button>
   <div class="ham" id="ham"><span></span><span></span><span></span></div>
 </nav>
 <div class="mob-nav" id="mob-nav">
-  <a href="#book-online">Book Online</a>
-  <a href="#services">Services</a>
-  <a href="#gallery">Gallery</a>
-  <a href="#before-after">Results</a>
-  <a href="#contact">Contact</a>
-  <a href="#book-online" class="mob-call">📅 Book Now — Online Booking</a>
+  <a href="#book-online" data-i18n="nav_book">Book Online</a>
+  <a href="#services" data-i18n="nav_services">Services</a>
+  <a href="#gallery" data-i18n="nav_gallery">Gallery</a>
+  <a href="#before-after" data-i18n="nav_results">Results</a>
+  <a href="#contact" data-i18n="nav_contact">Contact</a>
+  <a href="#book-online" class="mob-call" data-i18n="mob_book_now">📅 Book Now — Online Booking</a>
 </div>
 
 <!-- HERO -->
 <section id="hero">
   <div class="hero-text">
-    <div class="eyebrow">Plainfield, Illinois · Auto Detailing</div>
-    <h1 class="hero-title">
+    <div class="eyebrow" data-i18n="hero_eyebrow">Plainfield, Illinois · Auto Detailing</div>
+    <h1 class="hero-title" data-i18n-html="hero_title">
       Your Car,<br>
       <em>Spotless.</em>
     </h1>
-    <div class="college-strip">🎓 Every booking funds college tuition — support local, drive clean</div>
-    <p class="hero-sub">
+    <div class="college-strip" data-i18n="hero_college_strip">🎓 Every booking funds college tuition — support local, drive clean</div>
+    <p class="hero-sub" data-i18n-html="hero_sub">
       Kaiser's Detail Co. brings meticulous interior &amp; exterior detailing right to Plainfield.
       <strong>Every single dollar you spend goes directly toward college tuition</strong> — you get a spotless car and a local student gets closer to their degree. That's a real win-win.
     </p>
     <div class="hero-actions">
-      <a href="#book-online" class="btn-call">
+      <a href="#book-online" class="btn-call" data-i18n="hero_btn_book">
         📅 Book Online Now
       </a>
-      <a href="#services" class="btn-ghost">View Pricing</a>
-      <a href="tel:8158239485" class="btn-ghost">📞 Questions? Call</a>
+      <a href="#services" class="btn-ghost" data-i18n="hero_btn_pricing">View Pricing</a>
+      <a href="tel:8158239485" class="btn-ghost" data-i18n="hero_btn_call">📞 Questions? Call</a>
     </div>
   </div>
 
   <div class="hero-right">
     <div class="stat-tile">
-      <div class="num">$50</div>
-      <div class="label">Starting price</div>
+      <div class="num">$20</div>
+      <div class="label" data-i18n="hero_stat_price">Starting price</div>
     </div>
     <div class="stat-tile">
       <div class="num">30m–4h</div>
-      <div class="label">Service durations</div>
+      <div class="label" data-i18n="hero_stat_dur">Service durations</div>
     </div>
     <div class="stat-tile span2">
       <div class="num">🎓</div>
       <div>
-        <div class="label">100% funds college tuition</div>
-        <p>When you book with Kaiser's Detail Co., you're not just getting a clean car — you're investing in a local Plainfield student's future. Every appointment helps pay tuition. Thank you for that.</p>
+        <div class="label" data-i18n="hero_stat_college_label">100% funds college tuition</div>
+        <p data-i18n="hero_stat_college_p">When you book with Kaiser's Detail Co., you're not just getting a clean car — you're investing in a local Plainfield student's future. Every appointment helps pay tuition. Thank you for that.</p>
       </div>
     </div>
   </div>
@@ -991,14 +1002,14 @@ footer {
 <!-- CONTACT BANNER -->
 <div id="contact-banner">
   <div class="contact-banner-text">
-    <h2>Ready to book? Reserve your day online.</h2>
-    <p>Pick your service, choose an open day, and you're set — quick and easy. Every booking funds college.</p>
+    <h2 data-i18n="banner_h2">Ready to book? Reserve your day online.</h2>
+    <p data-i18n="banner_p">Pick your service, choose an open day, and you're set — quick and easy. Every booking funds college.</p>
   </div>
   <div class="banner-btns">
-    <a href="#book-online" class="btn-white">
+    <a href="#book-online" class="btn-white" data-i18n="banner_btn_book">
       📅 Book Online
     </a>
-    <a href="tel:8158239485" class="btn-white-outline">
+    <a href="tel:8158239485" class="btn-white-outline" data-i18n="banner_btn_call">
       📞 Or Call
     </a>
   </div>
@@ -1007,36 +1018,36 @@ footer {
 <!-- BEFORE / AFTER -->
 <section id="before-after">
   <div class="section-head">
-    <div class="eyebrow">The Difference</div>
-    <h2 class="display">See the <em>Transformation</em></h2>
-    <p class="lead">Drag the handle to compare before &amp; after on each service. This is what precision detailing looks like.</p>
+    <div class="eyebrow" data-i18n="ba_eyebrow">The Difference</div>
+    <h2 class="display" data-i18n-html="ba_h2">See the <em>Transformation</em></h2>
+    <p class="lead" data-i18n="ba_lead">Drag the handle to compare before &amp; after on each service. This is what precision detailing looks like.</p>
   </div>
 
   <div class="sliders-grid">
     <div class="slider-card">
-      <div class="sl-bar"><h3>Interior Detail</h3><span class="sl-hint">↔ drag</span></div>
+      <div class="sl-bar"><h3 data-i18n="svc_interior_name">Interior Detail</h3><span class="sl-hint" data-i18n="ba_drag_hint">↔ drag</span></div>
       <div class="ba-wrap" data-slider>
         <div class="ba-b ib"><img src="/static/BeforeInterior.png" alt="Interior before detailing" loading="lazy"></div>
         <div class="ba-a ia"><img src="/static/AfterInterior.png" alt="Interior after detailing" loading="lazy"></div>
         <div class="ba-div" data-div></div>
         <div class="ba-knob" data-knob><svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M5 2L1 8l4 6M11 2l4 6-4 6"/></svg></div>
-        <span class="ba-pill before">Before</span><span class="ba-pill after">After</span>
+        <span class="ba-pill before" data-i18n="ba_before">Before</span><span class="ba-pill after" data-i18n="ba_after">After</span>
       </div>
     </div>
 </section>
 
 <!-- SERVICES -->
 <section id="services">
-  <div class="eyebrow">What We Offer</div>
-  <h2 class="display">Services &amp; <em>Pricing</em></h2>
-  <p class="lead" style="margin-bottom:2.5rem;">Build your own detail below — check add-ons to see your total live. Then call or text to book. Every dollar goes toward college tuition.</p>
+  <div class="eyebrow" data-i18n="svc_eyebrow">What We Offer</div>
+  <h2 class="display" data-i18n-html="svc_h2">Services &amp; <em>Pricing</em></h2>
+  <p class="lead" style="margin-bottom:2.5rem;" data-i18n="svc_lead">Build your own detail below — check add-ons to see your total live. Then call or text to book. Every dollar goes toward college tuition.</p>
 
   <div class="svc-tabs">
-    <button class="svc-tab active" onclick="switchTab(this,'all')">All</button>
-    <button class="svc-tab" onclick="switchTab(this,'interior')">Interior</button>
-    <button class="svc-tab" onclick="switchTab(this,'exterior')">Exterior</button>
-    <button class="svc-tab" onclick="switchTab(this,'full')">Full Packages</button>
-    <button class="svc-tab" onclick="switchTab(this,'extras')">Add-Ons &amp; Extras</button>
+    <button class="svc-tab active" onclick="switchTab(this,'all')" data-i18n="tab_all">All</button>
+    <button class="svc-tab" onclick="switchTab(this,'interior')" data-i18n="tab_interior">Interior</button>
+    <button class="svc-tab" onclick="switchTab(this,'exterior')" data-i18n="tab_exterior">Exterior</button>
+    <button class="svc-tab" onclick="switchTab(this,'full')" data-i18n="tab_full">Full Packages</button>
+    <button class="svc-tab" onclick="switchTab(this,'extras')" data-i18n-html="tab_extras">Add-Ons &amp; Extras</button>
   </div>
 
   <!-- ALL SERVICES -->
@@ -1044,90 +1055,90 @@ footer {
     <div class="services-grid">
       <div class="svc-card featured">
         <div class="svc-head">
-          <div class="svc-head-left"><h3>Showroom Detail</h3><div class="dur">~4 hours</div></div>
+          <div class="svc-head-left"><h3 data-i18n="svc_showroom_name">Showroom Detail</h3><div class="dur" data-i18n="dur_4h">~4 hours</div></div>
           <div class="svc-price"><sup>$</sup>200</div>
         </div>
         <div class="svc-body">
-          <div class="badge">✨ Most Thorough</div>
+          <div class="badge" data-i18n="badge_thorough">✨ Most Thorough</div>
           <ul class="inc-list">
-            <li>Everything in Professional Detail</li>
-            <li>Deep extraction vacuuming &amp; steam clean</li>
-            <li>Full carpet shampoo &amp; stain treatment</li>
-            <li>Seat &amp; upholstery scrub-down</li>
-            <li>Air vent &amp; crevice deep clean</li>
-            <li>Leather conditioning (if applicable)</li>
-            <li>Full odor elimination treatment</li>
-            <li>Showroom-quality finish throughout</li>
+            <li data-i18n="li_show_1">Everything in Professional Detail</li>
+            <li data-i18n="li_show_2">Deep extraction vacuuming &amp; steam clean</li>
+            <li data-i18n="li_show_3">Full carpet shampoo &amp; stain treatment</li>
+            <li data-i18n="li_show_4">Seat &amp; upholstery scrub-down</li>
+            <li data-i18n="li_show_5">Air vent &amp; crevice deep clean</li>
+            <li data-i18n="li_show_6">Leather conditioning (if applicable)</li>
+            <li data-i18n="li_show_7">Full odor elimination treatment</li>
+            <li data-i18n="li_show_8">Showroom-quality finish throughout</li>
           </ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="200">$200</span></div>
-          <a href="#book-online" class="svc-book-btn" onclick="bookService('showroom_detail')" >Book Now</a>
+          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
+          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="200">$200</span></div>
+          <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('showroom_detail')" >Book Now</a>
         </div>
       </div>
 
       <div class="svc-card featured">
         <div class="svc-head">
-          <div class="svc-head-left"><h3>Professional Detail</h3><div class="dur">~3 hours</div></div>
+          <div class="svc-head-left"><h3 data-i18n="svc_professional_name">Professional Detail</h3><div class="dur" data-i18n="dur_3h">~3 hours</div></div>
           <div class="svc-price"><sup>$</sup>125</div>
         </div>
         <div class="svc-body">
-          <div class="badge">⭐ Best Value</div>
+          <div class="badge" data-i18n="badge_value">⭐ Best Value</div>
           <ul class="inc-list">
-            <li>Full interior detail — vacuum, wipe, glass, odor</li>
-            <li>Full exterior hand wash &amp; rinse</li>
-            <li>Wheel &amp; rim cleaning</li>
-            <li>Door jamb wipe-down</li>
-            <li>Window clean inside &amp; out</li>
+            <li data-i18n="li_pro_1">Full interior detail — vacuum, wipe, glass, odor</li>
+            <li data-i18n="li_pro_2">Full exterior hand wash &amp; rinse</li>
+            <li data-i18n="li_wheel_rim">Wheel &amp; rim cleaning</li>
+            <li data-i18n="li_door_jamb">Door jamb wipe-down</li>
+            <li data-i18n="li_pro_5">Window clean inside &amp; out</li>
           </ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Carpet Shampoo <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="125">$125</span></div>
-          <a href="#book-online" class="svc-book-btn" onclick="bookService('professional_detail')" >Book Now</a>
+          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_carpet">Carpet Shampoo</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
+          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="125">$125</span></div>
+          <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('professional_detail')" >Book Now</a>
         </div>
       </div>
 
       <div class="svc-card">
         <div class="svc-head">
-          <div class="svc-head-left"><h3>Interior Detail</h3><div class="dur">~1 hour 30 min</div></div>
+          <div class="svc-head-left"><h3 data-i18n="svc_interior_name">Interior Detail</h3><div class="dur" data-i18n="dur_90m">~1 hour 30 min</div></div>
           <div class="svc-price"><sup>$</sup>75</div>
         </div>
         <div class="svc-body">
           <ul class="inc-list">
-            <li>Deep vacuum — seats, floors, crevices</li>
-            <li>Dashboard, console &amp; door panel wipe-down</li>
-            <li>Interior glass cleaning</li>
-            <li>Odor treatment &amp; freshening</li>
-            <li>Door pockets &amp; cup holder clean-out</li>
+            <li data-i18n="li_int_1">Deep vacuum — seats, floors, crevices</li>
+            <li data-i18n="li_int_2">Dashboard, console &amp; door panel wipe-down</li>
+            <li data-i18n="li_int_3">Interior glass cleaning</li>
+            <li data-i18n="li_int_4">Odor treatment &amp; freshening</li>
+            <li data-i18n="li_int_5">Door pockets &amp; cup holder clean-out</li>
           </ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Carpet Shampoo <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="75">$75</span></div>
-          <a href="#book-online" class="svc-book-btn" onclick="bookService('interior_detail')" >Book Now</a>
+          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_carpet">Carpet Shampoo</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
+          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="75">$75</span></div>
+          <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('interior_detail')" >Book Now</a>
         </div>
       </div>
 
       <div class="svc-card">
         <div class="svc-head">
-          <div class="svc-head-left"><h3>Exterior Detail</h3><div class="dur">~1 hour 30 min</div></div>
+          <div class="svc-head-left"><h3 data-i18n="svc_exterior_name">Exterior Detail</h3><div class="dur" data-i18n="dur_90m">~1 hour 30 min</div></div>
           <div class="svc-price"><sup>$</sup>50</div>
         </div>
         <div class="svc-body">
           <ul class="inc-list">
-            <li>Full hand wash &amp; rinse</li>
-            <li>Wheel &amp; rim cleaning</li>
-            <li>Window exterior cleaning</li>
-            <li>Door jamb wipe-down</li>
+            <li data-i18n="li_ext_1">Full hand wash &amp; rinse</li>
+            <li data-i18n="li_wheel_rim">Wheel &amp; rim cleaning</li>
+            <li data-i18n="li_ext_3">Window exterior cleaning</li>
+            <li data-i18n="li_door_jamb">Door jamb wipe-down</li>
           </ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Wax <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+45min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="50">$50</span></div>
-          <a href="#book-online" class="svc-book-btn" onclick="bookService('exterior_detail')" >Book Now</a>
+          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_wax">Wax</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+45min</span></label><span class="addon-cost">+$30</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
+          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="50">$50</span></div>
+          <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('exterior_detail')" >Book Now</a>
         </div>
       </div>
 
@@ -1135,13 +1146,13 @@ footer {
   <div class="svc-panel" id="tab-interior">
     <div class="services-grid">
       <div class="svc-card">
-        <div class="svc-head"><div class="svc-head-left"><h3>Interior Detail</h3><div class="dur">~1 hour 30 min</div></div><div class="svc-price"><sup>$</sup>75</div></div>
+        <div class="svc-head"><div class="svc-head-left"><h3 data-i18n="svc_interior_name">Interior Detail</h3><div class="dur" data-i18n="dur_90m">~1 hour 30 min</div></div><div class="svc-price"><sup>$</sup>75</div></div>
         <div class="svc-body">
-          <ul class="inc-list"><li>Deep vacuum — seats, floors, crevices</li><li>Dashboard, console &amp; door panel wipe-down</li><li>Interior glass cleaning</li><li>Odor treatment &amp; freshening</li><li>Door pockets &amp; cup holder clean-out</li></ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Carpet Shampoo <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="75">$75</span></div>
-          <a href="#book-online" class="svc-book-btn">Book Now</a>
+          <ul class="inc-list"><li data-i18n="li_int_1">Deep vacuum — seats, floors, crevices</li><li data-i18n="li_int_2">Dashboard, console &amp; door panel wipe-down</li><li data-i18n="li_int_3">Interior glass cleaning</li><li data-i18n="li_int_4">Odor treatment &amp; freshening</li><li data-i18n="li_int_5">Door pockets &amp; cup holder clean-out</li></ul>
+          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_carpet">Carpet Shampoo</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
+          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="75">$75</span></div>
+          <a href="#book-online" class="svc-book-btn" data-i18n="book_now">Book Now</a>
         </div>
       </div>
     </div>
@@ -1151,15 +1162,15 @@ footer {
   <div class="svc-panel" id="tab-exterior">
     <div class="services-grid">
       <div class="svc-card">
-        <div class="svc-head"><div class="svc-head-left"><h3>Exterior Detail</h3><div class="dur">~1 hour 30 min</div></div><div class="svc-price"><sup>$</sup>50</div></div>
+        <div class="svc-head"><div class="svc-head-left"><h3 data-i18n="svc_exterior_name">Exterior Detail</h3><div class="dur" data-i18n="dur_90m">~1 hour 30 min</div></div><div class="svc-price"><sup>$</sup>50</div></div>
         <div class="svc-body">
-          <ul class="inc-list"><li>Full hand wash &amp; rinse</li><li>Wheel &amp; rim cleaning</li><li>Window exterior cleaning</li><li>Door jamb wipe-down</li></ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Wax <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+45min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="50">$50</span></div>
-          <a href="#book-online" class="svc-book-btn">Book Now</a>
+          <ul class="inc-list"><li data-i18n="li_ext_1">Full hand wash &amp; rinse</li><li data-i18n="li_wheel_rim">Wheel &amp; rim cleaning</li><li data-i18n="li_ext_3">Window exterior cleaning</li><li data-i18n="li_door_jamb">Door jamb wipe-down</li></ul>
+          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_wax">Wax</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+45min</span></label><span class="addon-cost">+$30</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
+          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="50">$50</span></div>
+          <a href="#book-online" class="svc-book-btn" data-i18n="book_now">Book Now</a>
         </div>
       </div>
     </div>
@@ -1169,153 +1180,153 @@ footer {
   <div class="svc-panel" id="tab-full">
     <div class="services-grid">
       <div class="svc-card featured">
-        <div class="svc-head"><div class="svc-head-left"><h3>Showroom Detail</h3><div class="dur">~4 hours</div></div><div class="svc-price"><sup>$</sup>200</div></div>
+        <div class="svc-head"><div class="svc-head-left"><h3 data-i18n="svc_showroom_name">Showroom Detail</h3><div class="dur" data-i18n="dur_4h">~4 hours</div></div><div class="svc-price"><sup>$</sup>200</div></div>
         <div class="svc-body">
-          <div class="badge">✨ Most Thorough</div>
-          <ul class="inc-list"><li>Everything in Professional Detail</li><li>Deep extraction vacuuming &amp; steam clean</li><li>Full carpet shampoo &amp; stain treatment</li><li>Seat &amp; upholstery scrub-down</li><li>Air vent &amp; crevice deep clean</li><li>Leather conditioning (if applicable)</li><li>Full odor elimination treatment</li><li>Showroom-quality finish throughout</li></ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="200">$200</span></div>
-          <a href="#book-online" class="svc-book-btn">Book Now</a>
+          <div class="badge" data-i18n="badge_thorough">✨ Most Thorough</div>
+          <ul class="inc-list"><li data-i18n="li_show_1">Everything in Professional Detail</li><li data-i18n="li_show_2">Deep extraction vacuuming &amp; steam clean</li><li data-i18n="li_show_3">Full carpet shampoo &amp; stain treatment</li><li data-i18n="li_show_4">Seat &amp; upholstery scrub-down</li><li data-i18n="li_show_5">Air vent &amp; crevice deep clean</li><li data-i18n="li_show_6">Leather conditioning (if applicable)</li><li data-i18n="li_show_7">Full odor elimination treatment</li><li data-i18n="li_show_8">Showroom-quality finish throughout</li></ul>
+          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
+          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="200">$200</span></div>
+          <a href="#book-online" class="svc-book-btn" data-i18n="book_now">Book Now</a>
         </div>
       </div>
       <div class="svc-card featured">
-        <div class="svc-head"><div class="svc-head-left"><h3>Professional Detail</h3><div class="dur">~3 hours</div></div><div class="svc-price"><sup>$</sup>125</div></div>
+        <div class="svc-head"><div class="svc-head-left"><h3 data-i18n="svc_professional_name">Professional Detail</h3><div class="dur" data-i18n="dur_3h">~3 hours</div></div><div class="svc-price"><sup>$</sup>125</div></div>
         <div class="svc-body">
-          <div class="badge">⭐ Best Value</div>
-          <ul class="inc-list"><li>Full interior detail — vacuum, wipe, glass, odor</li><li>Full exterior hand wash &amp; rinse</li><li>Wheel &amp; rim cleaning</li><li>Door jamb wipe-down</li><li>Window clean inside &amp; out</li></ul>
-          <div class="addon-head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"> Carpet Shampoo <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"> Clay Service <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"> RainX <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl">Your Total</span><span class="total-num" data-base="125">$125</span></div>
-          <a href="#book-online" class="svc-book-btn">Book Now</a>
+          <div class="badge" data-i18n="badge_value">⭐ Best Value</div>
+          <ul class="inc-list"><li data-i18n="li_pro_1">Full interior detail — vacuum, wipe, glass, odor</li><li data-i18n="li_pro_2">Full exterior hand wash &amp; rinse</li><li data-i18n="li_wheel_rim">Wheel &amp; rim cleaning</li><li data-i18n="li_door_jamb">Door jamb wipe-down</li><li data-i18n="li_pro_5">Window clean inside &amp; out</li></ul>
+          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_carpet">Carpet Shampoo</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
+          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
+          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="125">$125</span></div>
+          <a href="#book-online" class="svc-book-btn" data-i18n="book_now">Book Now</a>
         </div>
       </div>
     </div>
-    <div class="info-strip">🎓 <strong>Your booking funds college.</strong> Every full-package appointment goes directly toward tuition. You're not just getting an incredible detail — you're investing in a Plainfield student's future.</div>
+    <div class="info-strip" data-i18n-html="info_strip_full">🎓 <strong>Your booking funds college.</strong> Every full-package appointment goes directly toward tuition. You're not just getting an incredible detail — you're investing in a Plainfield student's future.</div>
   </div>
 
   <!-- ADD-ONS & EXTRAS -->
   <div class="svc-panel" id="tab-extras">
-    <p style="font-size:0.9rem;color:var(--muted);margin-bottom:2rem;line-height:1.75;">These can be booked standalone or added to any package. Just mention them when you call or text.</p>
+    <p style="font-size:0.9rem;color:var(--muted);margin-bottom:2rem;line-height:1.75;" data-i18n="extras_intro">These can be booked standalone or added to any package. Just mention them when you call or text.</p>
     <div class="extras-grid">
-      <div class="extra-card"><div><h4>Engine Bay Cleaning</h4><p>~30 minutes · Degreased &amp; detailed under the hood</p></div><div class="extra-price"><sup>$</sup>35</div></div>
-      <div class="extra-card"><div><h4>Sticker / Decal Removal</h4><p>~15 minutes · Clean removal without damaging paint</p></div><div class="extra-price"><sup>$</sup>15</div></div>
-      <div class="extra-card"><div><h4>Carpet Shampoo</h4><p>+30 min · Available on Interior, Professional &amp; Maintenance Cleaning</p></div><div class="extra-price"><sup>$</sup>30</div></div>
-      <div class="extra-card"><div><h4>Wax</h4><p>+45 min · Available on Exterior Detail</p></div><div class="extra-price"><sup>$</sup>30</div></div>
-      <div class="extra-card"><div><h4>Clay Service</h4><p>+35 min · Available on Exterior, Professional &amp; Showroom</p></div><div class="extra-price"><sup>$</sup>45</div></div>
-      <div class="extra-card"><div><h4>RainX Treatment</h4><p>+15 min · Available on Exterior, Professional &amp; Showroom</p></div><div class="extra-price"><sup>$</sup>10</div></div>
+      <div class="extra-card"><div><h4 data-i18n="svc_engine_name">Engine Bay Cleaning</h4><p data-i18n="extra_engine_desc">~30 minutes · Degreased &amp; detailed under the hood</p></div><div class="extra-price"><sup>$</sup>35</div></div>
+      <div class="extra-card"><div><h4 data-i18n="svc_decal_name">Sticker / Decal Removal</h4><p data-i18n="extra_decal_desc">~15 minutes · Clean removal without damaging paint</p></div><div class="extra-price"><sup>$</sup>15</div></div>
+      <div class="extra-card"><div><h4 data-i18n="addon_carpet">Carpet Shampoo</h4><p data-i18n="extra_carpet_desc">+30 min · Available on Interior, Professional &amp; Maintenance Cleaning</p></div><div class="extra-price"><sup>$</sup>30</div></div>
+      <div class="extra-card"><div><h4 data-i18n="addon_wax">Wax</h4><p data-i18n="extra_wax_desc">+45 min · Available on Exterior Detail</p></div><div class="extra-price"><sup>$</sup>30</div></div>
+      <div class="extra-card"><div><h4 data-i18n="addon_clay">Clay Service</h4><p data-i18n="extra_clay_desc">+35 min · Available on Exterior, Professional &amp; Showroom</p></div><div class="extra-price"><sup>$</sup>45</div></div>
+      <div class="extra-card"><div><h4 data-i18n="extra_rainx_name">RainX Treatment</h4><p data-i18n="extra_rainx_desc">+15 min · Available on Exterior, Professional &amp; Showroom</p></div><div class="extra-price"><sup>$</sup>10</div></div>
     </div>
-    <div class="info-strip" style="margin-top:1.8rem;">✨ <strong>Want to mix and match?</strong> Head to <a href="#booking" style="color:var(--gold);font-weight:600;">online booking</a> and build your detail — or text <a href="tel:8158239485" style="color:var(--gold);font-weight:600;">815-823-9485</a> with questions.</div>
+    <div class="info-strip" style="margin-top:1.8rem;" data-i18n-html="info_strip_extras">✨ <strong>Want to mix and match?</strong> Head to <a href="#booking" style="color:var(--gold);font-weight:600;">online booking</a> and build your detail — or text <a href="tel:8158239485" style="color:var(--gold);font-weight:600;">815-823-9485</a> with questions.</div>
   </div>
 
 </section>
 
 <!-- ONLINE BOOKING -->
 <section id="book-online">
-  <div class="eyebrow">Reserve Your Spot</div>
-  <h2 class="display">Book <em>Online</em></h2>
-  <p class="lead" style="margin-bottom:0.5rem;">Pick a service, choose an open day and arrival time, and you're set. I take <strong>one booking per day</strong> so every car gets full attention.</p>
-  <p class="lead" style="font-size:0.9rem;">🎓 Every booking goes directly toward a local Plainfield student's college tuition. Thank you for supporting that.</p>
+  <div class="eyebrow" data-i18n="bk_eyebrow">Reserve Your Spot</div>
+  <h2 class="display" data-i18n-html="bk_h2">Book <em>Online</em></h2>
+  <p class="lead" style="margin-bottom:0.5rem;" data-i18n-html="bk_lead1">Pick a service, choose an open day and arrival time, and you're set. I take <strong>one booking per day</strong> so every car gets full attention.</p>
+  <p class="lead" style="font-size:0.9rem;" data-i18n="bk_lead2">🎓 Every booking goes directly toward a local Plainfield student's college tuition. Thank you for supporting that.</p>
 
   <div class="booking-wrap">
     <div class="booking-card" id="booking-form">
 
       <!-- Step 1: Service -->
       <div class="bk-step">
-        <div class="bk-step-head"><div class="bk-step-num">1</div><h3>Choose Your Service</h3></div>
+        <div class="bk-step-head"><div class="bk-step-num">1</div><h3 data-i18n="bk_step1_h3">Choose Your Service</h3></div>
         <div class="bk-fg">
-          <label class="bk-label">Service</label>
+          <label class="bk-label" data-i18n="bk_service_label">Service</label>
           <select class="bk-select" id="bk-service"></select>
         </div>
         <div id="bk-addons-wrap" style="display:none;">
-          <label class="bk-label">Add-Ons (optional)</label>
+          <label class="bk-label" data-i18n="bk_addons_label">Add-Ons (optional)</label>
           <div class="bk-addons" id="bk-addons"></div>
         </div>
       </div>
 
       <!-- Step 2: Date & Time -->
       <div class="bk-step">
-        <div class="bk-step-head"><div class="bk-step-num">2</div><h3>Pick a Day &amp; Arrival Time</h3></div>
+        <div class="bk-step-head"><div class="bk-step-num">2</div><h3 data-i18n="bk_step2_h3">Pick a Day &amp; Arrival Time</h3></div>
         <div class="bk-fg">
-          <label class="bk-label">Date <span style="text-transform:none;letter-spacing:0;color:var(--muted);">(next day or later — taken days are blocked)</span></label>
+          <label class="bk-label" data-i18n-html="bk_date_label">Date <span style="text-transform:none;letter-spacing:0;color:var(--muted);">(next day or later — taken days are blocked)</span></label>
           <input type="date" class="bk-input" id="bk-date">
         </div>
         <div class="bk-fg">
-          <label class="bk-label">Arrival Time</label>
+          <label class="bk-label" data-i18n="bk_time_label">Arrival Time</label>
           <div class="bk-times" id="bk-times"></div>
         </div>
       </div>
 
       <!-- Step 3: Your Info -->
       <div class="bk-step">
-        <div class="bk-step-head"><div class="bk-step-num">3</div><h3>Your Details</h3></div>
+        <div class="bk-step-head"><div class="bk-step-num">3</div><h3 data-i18n="bk_step3_h3">Your Details</h3></div>
         <div class="bk-fg">
-          <label class="bk-label">Full Name</label>
-          <input type="text" class="bk-input" id="bk-name" placeholder="John Smith">
+          <label class="bk-label" data-i18n="bk_name_label">Full Name</label>
+          <input type="text" class="bk-input" id="bk-name" placeholder="John Smith" data-i18n-ph="ph_name">
         </div>
         <div class="bk-fg">
-          <label class="bk-label">Contact</label>
+          <label class="bk-label" data-i18n="bk_contact_label">Contact</label>
           <div class="contact-toggle">
-            <button type="button" id="bk-toggle-phone" class="on" onclick="setContact('phone')">📞 Phone</button>
-            <button type="button" id="bk-toggle-email" onclick="setContact('email')">✉️ Email</button>
+            <button type="button" id="bk-toggle-phone" class="on" onclick="setContact('phone')" data-i18n="toggle_phone">📞 Phone</button>
+            <button type="button" id="bk-toggle-email" onclick="setContact('email')" data-i18n="toggle_email">✉️ Email</button>
           </div>
           <input type="text" class="bk-input" id="bk-contact" placeholder="(815) 555-0100">
         </div>
-        <label class="bk-label">Service Address</label>
+        <label class="bk-label" data-i18n="bk_address_label">Service Address</label>
         <div class="bk-fg">
-          <input type="text" class="bk-input" id="bk-street" placeholder="Street address (e.g. 123 Main St)">
+          <input type="text" class="bk-input" id="bk-street" placeholder="Street address (e.g. 123 Main St)" data-i18n-ph="ph_street">
         </div>
         <div class="bk-row">
-          <input type="text" class="bk-input" id="bk-city" placeholder="City (e.g. Plainfield)">
-          <input type="text" class="bk-input" id="bk-state" placeholder="State (e.g. IL)" maxlength="2" value="IL">
+          <input type="text" class="bk-input" id="bk-city" placeholder="City (e.g. Plainfield)" data-i18n-ph="ph_city">
+          <input type="text" class="bk-input" id="bk-state" placeholder="State (e.g. IL)" maxlength="2" value="IL" data-i18n-ph="ph_state">
         </div>
         <div class="bk-fg">
-          <label class="bk-label">Vehicle Type</label>
+          <label class="bk-label" data-i18n="bk_vehicle_label">Vehicle Type</label>
           <div class="bk-vehicle-grid" id="bk-vehicle-grid">
-            <div class="bk-vtile" data-v="Sedan" onclick="setVehicle(this)">🚗<span>Sedan</span></div>
-            <div class="bk-vtile" data-v="Truck" onclick="setVehicle(this)">🛻<span>Truck</span></div>
-            <div class="bk-vtile" data-v="Minivan" onclick="setVehicle(this)">🚐<span>Minivan</span></div>
-            <div class="bk-vtile" data-v="SUV" onclick="setVehicle(this)">🚙<span>SUV</span></div>
-            <div class="bk-vtile" data-v="other" onclick="setVehicle(this)">✏️<span>Other</span></div>
+            <div class="bk-vtile" data-v="Sedan" onclick="setVehicle(this)">🚗<span data-i18n="veh_sedan">Sedan</span></div>
+            <div class="bk-vtile" data-v="Truck" onclick="setVehicle(this)">🛻<span data-i18n="veh_truck">Truck</span></div>
+            <div class="bk-vtile" data-v="Minivan" onclick="setVehicle(this)">🚐<span data-i18n="veh_minivan">Minivan</span></div>
+            <div class="bk-vtile" data-v="SUV" onclick="setVehicle(this)">🚙<span data-i18n="veh_suv">SUV</span></div>
+            <div class="bk-vtile" data-v="other" onclick="setVehicle(this)">✏️<span data-i18n="veh_other">Other</span></div>
           </div>
-          <input type="text" class="bk-input" id="bk-vehicle-other" placeholder="Describe your vehicle..." style="display:none;margin-top:8px;">
+          <input type="text" class="bk-input" id="bk-vehicle-other" placeholder="Describe your vehicle..." style="display:none;margin-top:8px;" data-i18n-ph="ph_vehicle_other">
         </div>
         <div class="bk-fg">
-          <label class="bk-label">Additional Notes (optional)</label>
-          <textarea class="bk-input" id="bk-notes" rows="3" placeholder="Gate codes, specific concerns, vehicle color..."></textarea>
+          <label class="bk-label" data-i18n="bk_notes_label">Additional Notes (optional)</label>
+          <textarea class="bk-input" id="bk-notes" rows="3" placeholder="Gate codes, specific concerns, vehicle color..." data-i18n-ph="ph_notes"></textarea>
         </div>
       </div>
 
       <!-- Step 4: Confirm -->
       <div class="bk-step">
-        <div class="bk-step-head"><div class="bk-step-num">4</div><h3>Review &amp; Confirm</h3></div>
+        <div class="bk-step-head"><div class="bk-step-num">4</div><h3 data-i18n="bk_step4_h3">Review &amp; Confirm</h3></div>
         <div class="bk-summary" id="bk-summary">
           <div class="bk-summary-row"><span id="sum-service">—</span><span id="sum-service-price"></span></div>
           <div id="sum-addons"></div>
-          <div class="bk-summary-row"><span>Date &amp; Time</span><span id="sum-datetime">—</span></div>
+          <div class="bk-summary-row"><span data-i18n="sum_datetime_label">Date &amp; Time</span><span id="sum-datetime">—</span></div>
           <div class="bk-summary-row" id="sum-vehicle" style="display:none;color:var(--muted);"></div>
-          <div class="bk-summary-row bk-summary-total"><span class="lbl">Total</span><span class="val" id="sum-total">$0</span></div>
+          <div class="bk-summary-row bk-summary-total"><span class="lbl" data-i18n="sum_total_label">Total</span><span class="val" id="sum-total">$0</span></div>
         </div>
         <div class="bk-terms">
           <input type="checkbox" id="bk-agree">
-          <label for="bk-agree">I have read and agree to the <a onclick="openLegal()">Terms of Service, Privacy Policy &amp; Liability Terms</a>. I understand that <strong>payment is due in full upon completion of the service</strong>, before the operator leaves my location.</label>
+          <label for="bk-agree" data-i18n-html="bk_terms_label">I have read and agree to the <a onclick="openLegal()">Terms of Service, Privacy Policy &amp; Liability Terms</a>. I understand that <strong>payment is due in full upon completion of the service</strong>, before the operator leaves my location.</label>
         </div>
-        <button class="bk-submit" id="bk-submit" onclick="submitBooking()">Confirm Booking</button>
+        <button class="bk-submit" id="bk-submit" onclick="submitBooking()" data-i18n="bk_submit_btn">Confirm Booking</button>
         <div class="bk-msg" id="bk-msg"></div>
-        <p class="bk-onebooking">📅 Only one appointment is taken per day. If your preferred day is unavailable, please choose another. Questions? Text <a href="tel:8158239485" style="color:var(--gold);">815-823-9485</a>.</p>
+        <p class="bk-onebooking" data-i18n-html="bk_onebooking">📅 Only one appointment is taken per day. If your preferred day is unavailable, please choose another. Questions? Text <a href="tel:8158239485" style="color:var(--gold);">815-823-9485</a>.</p>
       </div>
     </div>
 
     <!-- Success state -->
     <div class="booking-card bk-success" id="booking-success">
       <div class="check">✅</div>
-      <h3>You're Booked!</h3>
-      <p>Thank you for booking with Kaiser's Detail Co. — and for helping fund a local student's education. 🎓</p>
+      <h3 data-i18n="bk_success_h3">You're Booked!</h3>
+      <p data-i18n="bk_success_p">Thank you for booking with Kaiser's Detail Co. — and for helping fund a local student's education. 🎓</p>
       <div class="bk-detail" id="success-detail"></div>
-      <p style="font-size:0.85rem;">I'll reach out to confirm details. Need to make a change? Text <strong>815-823-9485</strong>.</p>
+      <p style="font-size:0.85rem;" data-i18n-html="bk_success_note">I'll reach out to confirm details. Need to make a change? Text <strong>815-823-9485</strong>.</p>
     </div>
   </div>
 </section>
@@ -1323,122 +1334,122 @@ footer {
 <!-- LEGAL MODAL -->
 <div class="legal-modal" id="legal-modal">
   <div class="legal-box">
-    <h2>Terms of Service &amp; Policies</h2>
-    <p style="color:var(--muted);font-size:0.82rem;">Kaiser's Detail Co. · Plainfield, IL · Last updated June 2026<br>Please read these terms carefully before booking. By submitting a booking you agree to all terms below.</p>
+    <h2 data-i18n="legal_title">Terms of Service &amp; Policies</h2>
+    <p style="color:var(--muted);font-size:0.82rem;" data-i18n-html="legal_intro">Kaiser's Detail Co. · Plainfield, IL · Last updated June 2026<br>Please read these terms carefully before booking. By submitting a booking you agree to all terms below.</p>
 
-    <h4>1. Booking &amp; Scheduling</h4>
-    <p>Kaiser's Detail Co. accepts one appointment per day. Submitting a booking online reserves that date pending confirmation. We will contact you using the phone number or email you provide to confirm the appointment and finalize details. <strong>A booking is not guaranteed until you receive a confirmation from us.</strong> We reserve the right to decline or cancel any booking at our discretion. If we cancel a booking we have accepted, any advance payment collected will be refunded in full.</p>
+    <h4 data-i18n-html="legal_h1">1. Booking &amp; Scheduling</h4>
+    <p data-i18n-html="legal_p1">Kaiser's Detail Co. accepts one appointment per day. Submitting a booking online reserves that date pending confirmation. We will contact you using the phone number or email you provide to confirm the appointment and finalize details. <strong>A booking is not guaranteed until you receive a confirmation from us.</strong> We reserve the right to decline or cancel any booking at our discretion. If we cancel a booking we have accepted, any advance payment collected will be refunded in full.</p>
 
-    <h4>2. Payment</h4>
-    <p><strong>Payment is due in full upon completion of the service</strong>, before we leave your location. We do not require payment in advance. Accepted payment methods will be confirmed at booking. The total shown during online booking is an estimate based on your selected service and add-ons. Final pricing may differ if the vehicle's actual condition varies substantially from what was described — for example, excessive soiling, heavy pet hair, mold, or biohazard conditions may require an adjusted quote, which will be discussed and agreed upon <em>before</em> any additional work begins. No payment card data is collected through this website; all payments are handled in person.</p>
+    <h4 data-i18n-html="legal_h2">2. Payment</h4>
+    <p data-i18n-html="legal_p2"><strong>Payment is due in full upon completion of the service</strong>, before we leave your location. We do not require payment in advance. Accepted payment methods will be confirmed at booking. The total shown during online booking is an estimate based on your selected service and add-ons. Final pricing may differ if the vehicle's actual condition varies substantially from what was described — for example, excessive soiling, heavy pet hair, mold, or biohazard conditions may require an adjusted quote, which will be discussed and agreed upon <em>before</em> any additional work begins. No payment card data is collected through this website; all payments are handled in person.</p>
 
-    <h4>3. Cancellations &amp; Rescheduling</h4>
-    <p>Please provide at least <strong>24 hours' notice</strong> to cancel or reschedule. Same-day cancellations or no-shows may be subject to a cancellation fee at the operator's discretion. To cancel or reschedule, text or call <strong>815-823-9485</strong> or email KaoFechner@outlook.com.</p>
+    <h4 data-i18n-html="legal_h3">3. Cancellations &amp; Rescheduling</h4>
+    <p data-i18n-html="legal_p3">Please provide at least <strong>24 hours' notice</strong> to cancel or reschedule. Same-day cancellations or no-shows may be subject to a cancellation fee at the operator's discretion. To cancel or reschedule, text or call <strong>815-823-9485</strong> or email KaoFechner@outlook.com.</p>
 
-    <h4>4. Weather &amp; Force Majeure</h4>
-    <p>Mobile detailing is weather-dependent. If severe weather, unsafe conditions, illness, or other circumstances beyond our control prevent us from performing your service, we will contact you as soon as possible to reschedule at no penalty to either party. We are not liable for delays or cancellations caused by events outside our reasonable control.</p>
+    <h4 data-i18n-html="legal_h4">4. Weather &amp; Force Majeure</h4>
+    <p data-i18n-html="legal_p4">Mobile detailing is weather-dependent. If severe weather, unsafe conditions, illness, or other circumstances beyond our control prevent us from performing your service, we will contact you as soon as possible to reschedule at no penalty to either party. We are not liable for delays or cancellations caused by events outside our reasonable control.</p>
 
-    <h4>5. Access &amp; Vehicle Preparation</h4>
-    <p>You are responsible for providing safe, lawful access to the vehicle and a suitable location for the work. Please remove personal belongings and valuables from the vehicle before your appointment. Kaiser's Detail Co. is not responsible for personal items left in the vehicle. You confirm that you are the vehicle owner or have the owner's permission to authorize this service.</p>
+    <h4 data-i18n-html="legal_h5">5. Access &amp; Vehicle Preparation</h4>
+    <p data-i18n-html="legal_p5">You are responsible for providing safe, lawful access to the vehicle and a suitable location for the work. Please remove personal belongings and valuables from the vehicle before your appointment. Kaiser's Detail Co. is not responsible for personal items left in the vehicle. You confirm that you are the vehicle owner or have the owner's permission to authorize this service.</p>
 
-    <h4>6. Right to Refuse Service</h4>
-    <p>We reserve the right to refuse or discontinue service at any time for any reason, including but not limited to unsafe working conditions, vehicle conditions that present a health or safety risk, or conduct we deem inappropriate. If service is refused before work begins, no charge applies. If service is discontinued partway through due to a condition not disclosed at booking, a partial charge reflecting work completed may apply.</p>
+    <h4 data-i18n-html="legal_h6">6. Right to Refuse Service</h4>
+    <p data-i18n-html="legal_p6">We reserve the right to refuse or discontinue service at any time for any reason, including but not limited to unsafe working conditions, vehicle conditions that present a health or safety risk, or conduct we deem inappropriate. If service is refused before work begins, no charge applies. If service is discontinued partway through due to a condition not disclosed at booking, a partial charge reflecting work completed may apply.</p>
 
-    <h4>7. Liability</h4>
-    <p>Kaiser's Detail Co. takes great care with every vehicle. However, by booking you acknowledge that detailing involves inherent risks. We are not liable for pre-existing damage, wear, defects, or conditions — including but not limited to faded or peeling paint, clear-coat failure, loose trim, prior scratches or dents, mechanical or electrical issues, or aftermarket modifications — that may become more visible after cleaning. We are not responsible for damage resulting from undisclosed vehicle conditions. <strong>Our maximum liability for any claim arising from our services is limited to the total amount paid for the service in question.</strong></p>
+    <h4 data-i18n-html="legal_h7">7. Liability</h4>
+    <p data-i18n-html="legal_p7">Kaiser's Detail Co. takes great care with every vehicle. However, by booking you acknowledge that detailing involves inherent risks. We are not liable for pre-existing damage, wear, defects, or conditions — including but not limited to faded or peeling paint, clear-coat failure, loose trim, prior scratches or dents, mechanical or electrical issues, or aftermarket modifications — that may become more visible after cleaning. We are not responsible for damage resulting from undisclosed vehicle conditions. <strong>Our maximum liability for any claim arising from our services is limited to the total amount paid for the service in question.</strong></p>
 
-    <h4>8. Results</h4>
-    <p>While we strive for excellent results, some stains, odors, oxidation, scratches, or other damage may be permanent and cannot be fully removed by detailing. Expected outcomes vary based on the vehicle's age, condition, materials, and prior care. We make no guarantee of specific results beyond our reasonable professional effort.</p>
+    <h4 data-i18n-html="legal_h8">8. Results</h4>
+    <p data-i18n-html="legal_p8">While we strive for excellent results, some stains, odors, oxidation, scratches, or other damage may be permanent and cannot be fully removed by detailing. Expected outcomes vary based on the vehicle's age, condition, materials, and prior care. We make no guarantee of specific results beyond our reasonable professional effort.</p>
 
-    <h4>9. Photography</h4>
-    <p>We may photograph vehicles before and after service for quality records and portfolio or marketing purposes (e.g. the gallery on this website). We do not publish identifying details such as license plates or street addresses. If you prefer your vehicle not be photographed for marketing use, please let us know at your appointment and we will respect that request.</p>
+    <h4 data-i18n-html="legal_h9">9. Photography</h4>
+    <p data-i18n-html="legal_p9">We may photograph vehicles before and after service for quality records and portfolio or marketing purposes (e.g. the gallery on this website). We do not publish identifying details such as license plates or street addresses. If you prefer your vehicle not be photographed for marketing use, please let us know at your appointment and we will respect that request.</p>
 
-    <h4>10. Age &amp; Eligibility</h4>
-    <p>This service is intended for individuals who are 18 years of age or older, or minors (under 18) booking with the knowledge and consent of a parent or legal guardian. By submitting a booking you confirm you meet this requirement. We do not knowingly collect personal information from children under 13 without verifiable parental consent. If you believe a booking has been submitted by a child under 13 without parental consent, please contact us immediately at KaoFechner@outlook.com.</p>
+    <h4 data-i18n-html="legal_h10">10. Age &amp; Eligibility</h4>
+    <p data-i18n-html="legal_p10">This service is intended for individuals who are 18 years of age or older, or minors (under 18) booking with the knowledge and consent of a parent or legal guardian. By submitting a booking you confirm you meet this requirement. We do not knowingly collect personal information from children under 13 without verifiable parental consent. If you believe a booking has been submitted by a child under 13 without parental consent, please contact us immediately at KaoFechner@outlook.com.</p>
 
-    <h4>11. Business Disclosure</h4>
-    <p>Kaiser's Detail Co. is a sole-proprietorship operated by a single individual in Plainfield, Illinois. It is not a licensed commercial fleet operation, a franchise, or a bonded/insured detailing company unless expressly stated otherwise. Proceeds support the operator's college tuition. This is a personal small business — not a registered nonprofit or charity — and payments are not tax-deductible donations.</p>
+    <h4 data-i18n-html="legal_h11">11. Business Disclosure</h4>
+    <p data-i18n-html="legal_p11">Kaiser's Detail Co. is a sole-proprietorship operated by a single individual in Plainfield, Illinois. It is not a licensed commercial fleet operation, a franchise, or a bonded/insured detailing company unless expressly stated otherwise. Proceeds support the operator's college tuition. This is a personal small business — not a registered nonprofit or charity — and payments are not tax-deductible donations.</p>
 
-    <h4>12. Privacy Policy</h4>
-    <p>We collect only the information you voluntarily provide when submitting a booking or contact form: your name, phone number or email address, and service address. This information is used solely to schedule, perform, confirm, and follow up on your service appointment. We do not sell, rent, or share your personal information with any third party. We retain your booking information only as long as reasonably necessary for business records. You may request deletion of your information at any time by contacting us at KaoFechner@outlook.com. We implement reasonable security measures to protect your data, consistent with Illinois law. This website does not use tracking cookies, third-party advertising networks, or behavioral profiling.</p>
+    <h4 data-i18n-html="legal_h12">12. Privacy Policy</h4>
+    <p data-i18n-html="legal_p12">We collect only the information you voluntarily provide when submitting a booking or contact form: your name, phone number or email address, and service address. This information is used solely to schedule, perform, confirm, and follow up on your service appointment. We do not sell, rent, or share your personal information with any third party. We retain your booking information only as long as reasonably necessary for business records. You may request deletion of your information at any time by contacting us at KaoFechner@outlook.com. We implement reasonable security measures to protect your data, consistent with Illinois law. This website does not use tracking cookies, third-party advertising networks, or behavioral profiling.</p>
 
-    <h4>13. Governing Law &amp; Disputes</h4>
-    <p>These terms are governed by and construed in accordance with the laws of the State of Illinois, without regard to conflict-of-law principles. Any dispute arising out of or relating to these terms or our services shall be resolved in the state or federal courts located in <strong>Will County, Illinois</strong>, and you consent to personal jurisdiction in those courts. If any provision of these terms is found unenforceable, the remaining provisions continue in full force.</p>
+    <h4 data-i18n-html="legal_h13">13. Governing Law &amp; Disputes</h4>
+    <p data-i18n-html="legal_p13">These terms are governed by and construed in accordance with the laws of the State of Illinois, without regard to conflict-of-law principles. Any dispute arising out of or relating to these terms or our services shall be resolved in the state or federal courts located in <strong>Will County, Illinois</strong>, and you consent to personal jurisdiction in those courts. If any provision of these terms is found unenforceable, the remaining provisions continue in full force.</p>
 
-    <p style="margin-top:1.4rem;font-size:0.78rem;color:var(--muted);border-top:1px solid var(--rule);padding-top:1rem;">These terms were last updated in June 2026. Kaiser's Detail Co. reserves the right to update these terms at any time. The version displayed at the time of your booking applies to that booking. For questions, contact KaoFechner@outlook.com.</p>
+    <p style="margin-top:1.4rem;font-size:0.78rem;color:var(--muted);border-top:1px solid var(--rule);padding-top:1rem;" data-i18n-html="legal_footer_note">These terms were last updated in June 2026. Kaiser's Detail Co. reserves the right to update these terms at any time. The version displayed at the time of your booking applies to that booking. For questions, contact KaoFechner@outlook.com.</p>
 
-    <button class="legal-close" onclick="closeLegal()">I Understand — Close</button>
+    <button class="legal-close" onclick="closeLegal()" data-i18n="legal_close_btn">I Understand — Close</button>
   </div>
 </div>
 
 <!-- GALLERY -->
 <section id="gallery">
   <div class="section-head">
-    <div class="eyebrow">Real Results</div>
-    <h2 class="display">The <em>Work</em></h2>
-    <p class="lead">Photos from real jobs in Plainfield, IL and surrounding areas.</p>
+    <div class="eyebrow" data-i18n="gal_eyebrow">Real Results</div>
+    <h2 class="display" data-i18n-html="gal_h2">The <em>Work</em></h2>
+    <p class="lead" data-i18n="gal_lead">Photos from real jobs in Plainfield, IL and surrounding areas.</p>
   </div>
   <div class="gallery-grid">
-    <div class="gal-item"><img src="/static/AfterInterior.png" alt="Clean car interior after Kaiser's Detail Co." loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Interior Detail</div><div class="gal-cap">Interior Detail — Plainfield, IL</div></div>
-    <div class="gal-item"><img src="/static/AfterExterior.png" alt="Shiny clean car exterior" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Exterior Detail</div><div class="gal-cap">Exterior Detail</div></div>
-    <div class="gal-item"><img src="/static/AfterCarpet.png" alt="Clean carpet after shampooing" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Carpet Shampoo</div><div class="gal-cap">Carpet Shampoo Add-On</div></div>
-    <div class="gal-item"><img src="/static/AfterEngineBay.png" alt="Clean engine bay" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Engine Bay</div><div class="gal-cap">Engine Bay Cleaning</div></div>
+    <div class="gal-item"><img src="/static/AfterInterior.png" alt="Clean car interior after Kaiser's Detail Co." loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg data-i18n="svc_interior_name">Interior Detail</div><div class="gal-cap" data-i18n="gal_cap_interior">Interior Detail — Plainfield, IL</div></div>
+    <div class="gal-item"><img src="/static/AfterExterior.png" alt="Shiny clean car exterior" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg data-i18n="svc_exterior_name">Exterior Detail</div><div class="gal-cap" data-i18n="svc_exterior_name">Exterior Detail</div></div>
+    <div class="gal-item"><img src="/static/AfterCarpet.png" alt="Clean carpet after shampooing" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg data-i18n="addon_carpet">Carpet Shampoo</div><div class="gal-cap" data-i18n="gal_cap_carpet">Carpet Shampoo Add-On</div></div>
+    <div class="gal-item"><img src="/static/AfterEngineBay.png" alt="Clean engine bay" loading="lazy"><div class="gal-ph"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg data-i18n="gal_engine_bay">Engine Bay</div><div class="gal-cap" data-i18n="svc_engine_name">Engine Bay Cleaning</div></div>
   </div>
-  <p class="gal-note"><strong>Every photo is from a real job.</strong> Want your car looking like this? Text 815-823-9485 to book.</p>
+  <p class="gal-note" data-i18n-html="gal_note"><strong>Every photo is from a real job.</strong> Want your car looking like this? Text 815-823-9485 to book.</p>
 </section>
 
 <!-- HOW TO BOOK -->
 <section id="booking">
-  <div class="eyebrow">Getting Started</div>
-  <h2 class="display">How <em>Booking</em> Works</h2>
-  <p class="lead" style="margin-bottom:2.5rem;">The fastest way to book is right here on the site — <a href="#book-online" style="color:var(--gold);font-weight:600;">reserve your day online</a> in about a minute. Prefer to reach out directly? That works too.</p>
+  <div class="eyebrow" data-i18n="how_eyebrow">Getting Started</div>
+  <h2 class="display" data-i18n-html="how_h2">How <em>Booking</em> Works</h2>
+  <p class="lead" style="margin-bottom:2.5rem;" data-i18n-html="how_lead">The fastest way to book is right here on the site — <a href="#book-online" style="color:var(--gold);font-weight:600;">reserve your day online</a> in about a minute. Prefer to reach out directly? That works too.</p>
 
   <div class="booking-layout">
     <div class="booking-left">
-      <p>Booking online is simple: pick your service, choose an open day and arrival time, and add your details. I take one appointment per day so every car gets full attention. Prefer to text, call, or email instead? Just reach out and I'll get you on the schedule.</p>
+      <p data-i18n="how_p1">Booking online is simple: pick your service, choose an open day and arrival time, and add your details. I take one appointment per day so every car gets full attention. Prefer to text, call, or email instead? Just reach out and I'll get you on the schedule.</p>
       <ul class="how-list">
-        <li><div class="how-num">1</div> <strong><a href="#book-online" style="color:var(--gold);">Book online</a></strong> — or text/call <strong>815-823-9485</strong> with your service &amp; location</li>
-        <li><div class="how-num">2</div> I'll confirm your day and time</li>
-        <li><div class="how-num">3</div> I come to you — no drop-off needed</li>
-        <li><div class="how-num">4</div> You come back to a spotless car</li>
+        <li><div class="how-num">1</div> <span data-i18n-html="how_step1"><strong><a href="#book-online" style="color:var(--gold);">Book online</a></strong> — or text/call <strong>815-823-9485</strong> with your service &amp; location</span></li>
+        <li><div class="how-num">2</div> <span data-i18n="how_step2">I'll confirm your day and time</span></li>
+        <li><div class="how-num">3</div> <span data-i18n="how_step3">I come to you — no drop-off needed</span></li>
+        <li><div class="how-num">4</div> <span data-i18n="how_step4">You come back to a spotless car</span></li>
       </ul>
       <div style="margin-top:1.5rem;padding:1.2rem 1.4rem;background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:var(--rl);font-size:0.88rem;line-height:1.8;color:var(--ink);">
-        🎓 <strong style="color:var(--gold);">Your booking funds college.</strong><br>
-        Every appointment goes directly toward tuition. You're not just getting a clean car — you're investing in a Plainfield student's future. That means the world.
+        <span data-i18n-html="how_college_box">🎓 <strong style="color:var(--gold);">Your booking funds college.</strong><br>
+        Every appointment goes directly toward tuition. You're not just getting a clean car — you're investing in a Plainfield student's future. That means the world.</span>
       </div>
-      <p style="margin-top:1.2rem;font-size:0.85rem;color:var(--muted);">Prefer email? Reach out at <a href="mailto:KaoFechner@outlook.com" style="color:var(--gold);">KaoFechner@outlook.com</a> or use the contact form below.</p>
+      <p style="margin-top:1.2rem;font-size:0.85rem;color:var(--muted);" data-i18n-html="how_email_note">Prefer email? Reach out at <a href="mailto:KaoFechner@outlook.com" style="color:var(--gold);">KaoFechner@outlook.com</a> or use the contact form below.</p>
     </div>
 
     <div class="booking-contact-card">
       <div class="bcc-head">
-        <h3>Reach Out to Book</h3>
-        <p>I respond fast — usually within the hour.</p>
+        <h3 data-i18n="bcc_h3">Reach Out to Book</h3>
+        <p data-i18n="bcc_p">I respond fast — usually within the hour.</p>
       </div>
       <div class="bcc-body">
         <a href="sms:8158239485" class="bcc-option">
           <div class="bcc-icon">💬</div>
           <div class="bcc-option-text">
-            <h4>Send a Text</h4>
-            <p><strong>815-823-9485</strong> — tap to open Messages</p>
+            <h4 data-i18n="bcc_text_h4">Send a Text</h4>
+            <p data-i18n-html="bcc_text_p"><strong>815-823-9485</strong> — tap to open Messages</p>
           </div>
         </a>
-        <div class="bcc-divider">or</div>
+        <div class="bcc-divider" data-i18n="or_divider">or</div>
         <a href="tel:8158239485" class="bcc-option">
           <div class="bcc-icon">📞</div>
           <div class="bcc-option-text">
-            <h4>Call Me</h4>
-            <p><strong>815-823-9485</strong> — tap to call directly</p>
+            <h4 data-i18n="bcc_call_h4">Call Me</h4>
+            <p data-i18n-html="bcc_call_p"><strong>815-823-9485</strong> — tap to call directly</p>
           </div>
         </a>
-        <div class="bcc-divider">or</div>
+        <div class="bcc-divider" data-i18n="or_divider">or</div>
         <a href="mailto:KaoFechner@outlook.com" class="bcc-option">
           <div class="bcc-icon">✉️</div>
           <div class="bcc-option-text">
-            <h4>Send an Email</h4>
+            <h4 data-i18n="bcc_email_h4">Send an Email</h4>
             <p><strong>KaoFechner@outlook.com</strong></p>
           </div>
         </a>
-        <div class="bcc-note">
+        <div class="bcc-note" data-i18n-html="bcc_note">
           🎓 <strong>Every booking helps fund college.</strong> You get a spotless car and a local student gets closer to graduation — thank you for supporting that.
         </div>
       </div>
@@ -1448,58 +1459,58 @@ footer {
 
 <!-- CONTACT -->
 <section id="contact">
-  <div class="eyebrow">Get in Touch</div>
-  <h2 class="display">Say <em>Hello</em></h2>
-  <p class="lead" style="margin-bottom:0;">Questions, custom requests, or want to talk through services — I'll get back to you fast.</p>
+  <div class="eyebrow" data-i18n="contact_eyebrow">Get in Touch</div>
+  <h2 class="display" data-i18n-html="contact_h2">Say <em>Hello</em></h2>
+  <p class="lead" style="margin-bottom:0;" data-i18n="contact_lead">Questions, custom requests, or want to talk through services — I'll get back to you fast.</p>
 
   <div class="contact-grid">
     <div>
       <div class="contact-pill">
         <div class="c-icon">💬</div>
         <div class="c-icon-detail">
-          <h4>Text (preferred)</h4>
-          <p><a href="sms:8158239485">815-823-9485</a> — or <a href="tel:8158239485">call</a></p>
+          <h4 data-i18n="contact_text_h4">Text (preferred)</h4>
+          <p><a href="sms:8158239485">815-823-9485</a> — <span data-i18n="contact_or_call">or <a href="tel:8158239485">call</a></span></p>
         </div>
       </div>
       <div class="contact-pill">
         <div class="c-icon">✉️</div>
         <div class="c-icon-detail">
-          <h4>Email</h4>
+          <h4 data-i18n="contact_email_h4">Email</h4>
           <p><a href="mailto:KaoFechner@outlook.com">KaoFechner@outlook.com</a></p>
         </div>
       </div>
       <div class="contact-pill">
         <div class="c-icon">📍</div>
         <div class="c-icon-detail">
-          <h4>Service Area</h4>
-          <p>Plainfield, IL &amp; surrounding areas</p>
+          <h4 data-i18n="contact_area_h4">Service Area</h4>
+          <p data-i18n="contact_area_p">Plainfield, IL &amp; surrounding areas</p>
         </div>
       </div>
       <div class="contact-pill">
         <div class="c-icon">⏱️</div>
         <div class="c-icon-detail">
-          <h4>Time Per Car</h4>
-          <p>30 min to 4 hours depending on service</p>
+          <h4 data-i18n="contact_time_h4">Time Per Car</h4>
+          <p data-i18n="contact_time_p">30 min to 4 hours depending on service</p>
         </div>
       </div>
       <div style="margin-top:1.5rem;padding:1.2rem 1.4rem;background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:var(--rl);font-size:0.85rem;line-height:1.75;color:var(--ink);">
-        🎓 <strong style="color:var(--gold);">Supporting a local student.</strong><br>
-        Kaiser's Detail Co. is a one-person operation run by a Plainfield college student. Every booking — big or small — goes directly toward tuition. Your support makes a real difference.
+        <span data-i18n-html="contact_college_box">🎓 <strong style="color:var(--gold);">Supporting a local student.</strong><br>
+        Kaiser's Detail Co. is a one-person operation run by a Plainfield college student. Every booking — big or small — goes directly toward tuition. Your support makes a real difference.</span>
       </div>
     </div>
 
     <div class="contact-form">
       <form id="cform" action="https://formspree.io/f/xnjrqajr" method="POST">
         <div class="form-2col">
-          <div class="fg"><label>First Name</label><input type="text" name="first_name" placeholder="John" required></div>
-          <div class="fg"><label>Last Name</label><input type="text" name="last_name" placeholder="Smith" required></div>
+          <div class="fg"><label data-i18n="form_first">First Name</label><input type="text" name="first_name" placeholder="John" required data-i18n-ph="ph_first"></div>
+          <div class="fg"><label data-i18n="form_last">Last Name</label><input type="text" name="last_name" placeholder="Smith" required data-i18n-ph="ph_last"></div>
         </div>
-        <div class="fg"><label>Email</label><input type="email" name="email" placeholder="john@example.com" required></div>
-        <div class="fg"><label>Phone (optional)</label><input type="tel" name="phone" placeholder="(815) 555-0100"></div>
+        <div class="fg"><label data-i18n="form_email">Email</label><input type="email" name="email" placeholder="john@example.com" required data-i18n-ph="ph_email"></div>
+        <div class="fg"><label data-i18n="form_phone">Phone (optional)</label><input type="tel" name="phone" placeholder="(815) 555-0100" data-i18n-ph="ph_phone"></div>
         <div class="fg">
-          <label>Service Interested In</label>
+          <label data-i18n="form_service">Service Interested In</label>
           <select name="service">
-            <option value="">— Select a service —</option>
+            <option value="" data-i18n="form_select_service">— Select a service —</option>
             <optgroup label="Interior"><option>Interior Detail ($75)</option></optgroup>
             <optgroup label="Exterior"><option>Exterior Detail ($50)</option></optgroup>
             <optgroup label="Full Packages">
@@ -1519,12 +1530,12 @@ footer {
             <option>Custom / Multiple Services</option>
           </select>
         </div>
-        <div class="fg"><label>Message</label><textarea name="message" placeholder="Tell me about your vehicle, what you need, or any questions..."></textarea></div>
-        <button type="submit" class="form-submit">Send Message →</button>
+        <div class="fg"><label data-i18n="form_message">Message</label><textarea name="message" placeholder="Tell me about your vehicle, what you need, or any questions..." data-i18n-ph="ph_message"></textarea></div>
+        <button type="submit" class="form-submit" data-i18n="form_submit">Send Message →</button>
       </form>
       <div class="form-ok" id="form-ok">
-        ✅ Message sent — I'll be in touch soon!<br>
-        <span style="font-size:0.8rem;color:var(--muted);">Thanks for reaching out!</span>
+        <span data-i18n-html="form_ok_msg">✅ Message sent — I'll be in touch soon!<br>
+        <span style="font-size:0.8rem;color:var(--muted);">Thanks for reaching out!</span></span>
       </div>
     </div>
   </div>
@@ -1534,18 +1545,18 @@ footer {
 <footer>
   <div>
     <div class="ft-brand">Kaiser's <span>Detail Co.</span></div>
-    <p class="ft-tag">Professional Auto Detailing · Plainfield, IL<br>Local student, serious work, spotless results.<br>Every booking funds college tuition. 🎓</p>
+    <p class="ft-tag" data-i18n-html="ft_tag">Professional Auto Detailing · Plainfield, IL<br>Local student, serious work, spotless results.<br>Every booking funds college tuition. 🎓</p>
   </div>
   <div class="ft-right">
-    <a href="#book-online">📅 Book Online — kaiserdetailing.com</a>
-    <a href="sms:8158239485" style="font-size:0.75rem;opacity:0.7;">💬 Or text/call 815-823-9485</a>
+    <a href="#book-online" data-i18n="ft_book">📅 Book Online — kaiserdetailing.com</a>
+    <a href="sms:8158239485" style="font-size:0.75rem;opacity:0.7;" data-i18n="ft_text">💬 Or text/call 815-823-9485</a>
     <a href="mailto:KaoFechner@outlook.com">KaoFechner@outlook.com</a>
     <a href="https://kaiserdetailing.com">kaiserdetailing.com</a>
     <div style="margin-top:0.6rem;display:flex;gap:1rem;justify-content:flex-end;flex-wrap:wrap;">
-      <a href="javascript:void(0)" onclick="openLegal()" style="font-size:0.72rem;opacity:0.6;">Terms of Service</a>
-      <a href="javascript:void(0)" onclick="openLegal()" style="font-size:0.72rem;opacity:0.6;">Privacy Policy</a>
+      <a href="javascript:void(0)" onclick="openLegal()" style="font-size:0.72rem;opacity:0.6;" data-i18n="ft_terms">Terms of Service</a>
+      <a href="javascript:void(0)" onclick="openLegal()" style="font-size:0.72rem;opacity:0.6;" data-i18n="ft_privacy">Privacy Policy</a>
     </div>
-    <p>&copy; 2025–2026 Kaiser's Detail Co. All rights reserved.</p>
+    <p data-i18n="ft_copy">&copy; 2025–2026 Kaiser's Detail Co. All rights reserved.</p>
   </div>
 </footer>
 
@@ -1615,10 +1626,6 @@ document.getElementById('cform').addEventListener('submit', async e => {
     if (r.ok) {
       e.target.style.display = 'none';
       document.getElementById('form-ok').style.display = 'block';
-      // ── Google Analytics: contact form lead ──
-      if (typeof gtag === 'function') {
-        gtag('event', 'generate_lead', { event_category: 'contact', event_label: 'contact_form' });
-      }
     }
   } catch {
     alert('Something went wrong. Call or text 815-823-9485 or email KaoFechner@outlook.com.');
@@ -1628,23 +1635,447 @@ document.getElementById('cform').addEventListener('submit', async e => {
 // GA
 </script>
 
+
+<!-- LANGUAGE / i18n -->
+<script>
+const I18N = {
+en: {
+nav_book: "Book Online", nav_services: "Services", nav_gallery: "Gallery", nav_results: "Results",
+nav_contact: "Contact", nav_book_now: "📅 Book Now", mob_book_now: "📅 Book Now — Online Booking",
+
+hero_eyebrow: "Plainfield, Illinois · Auto Detailing",
+hero_title: "Your Car,<br><em>Spotless.</em>",
+hero_college_strip: "🎓 Every booking funds college tuition — support local, drive clean",
+hero_sub: "Kaiser's Detail Co. brings meticulous interior &amp; exterior detailing right to Plainfield. <strong>Every single dollar you spend goes directly toward college tuition</strong> — you get a spotless car and a local student gets closer to their degree. That's a real win-win.",
+hero_btn_book: "📅 Book Online Now", hero_btn_pricing: "View Pricing", hero_btn_call: "📞 Questions? Call",
+hero_stat_price: "Starting price", hero_stat_dur: "Service durations",
+hero_stat_college_label: "100% funds college tuition",
+hero_stat_college_p: "When you book with Kaiser's Detail Co., you're not just getting a clean car — you're investing in a local Plainfield student's future. Every appointment helps pay tuition. Thank you for that.",
+
+banner_h2: "Ready to book? Reserve your day online.",
+banner_p: "Pick your service, choose an open day, and you're set — quick and easy. Every booking funds college.",
+banner_btn_book: "📅 Book Online", banner_btn_call: "📞 Or Call",
+
+ba_eyebrow: "The Difference", ba_h2: "See the <em>Transformation</em>",
+ba_lead: "Drag the handle to compare before &amp; after on each service. This is what precision detailing looks like.",
+ba_drag_hint: "↔ drag", ba_before: "Before", ba_after: "After",
+
+svc_eyebrow: "What We Offer", svc_h2: "Services &amp; <em>Pricing</em>",
+svc_lead: "Build your own detail below — check add-ons to see your total live. Then call or text to book. Every dollar goes toward college tuition.",
+tab_all: "All", tab_interior: "Interior", tab_exterior: "Exterior", tab_full: "Full Packages", tab_extras: "Add-Ons &amp; Extras",
+
+svc_showroom_name: "Showroom Detail", svc_professional_name: "Professional Detail",
+svc_interior_name: "Interior Detail", svc_exterior_name: "Exterior Detail",
+svc_engine_name: "Engine Bay Cleaning", svc_decal_name: "Sticker / Decal Removal",
+
+dur_4h: "~4 hours", dur_3h: "~3 hours", dur_90m: "~1 hour 30 min",
+badge_thorough: "✨ Most Thorough", badge_value: "⭐ Best Value",
+addons_head: "Add-Ons", your_total: "Your Total", book_now: "Book Now",
+
+li_show_1: "Everything in Professional Detail",
+li_show_2: "Deep extraction vacuuming &amp; steam clean",
+li_show_3: "Full carpet shampoo &amp; stain treatment",
+li_show_4: "Seat &amp; upholstery scrub-down",
+li_show_5: "Air vent &amp; crevice deep clean",
+li_show_6: "Leather conditioning (if applicable)",
+li_show_7: "Full odor elimination treatment",
+li_show_8: "Showroom-quality finish throughout",
+li_pro_1: "Full interior detail — vacuum, wipe, glass, odor",
+li_pro_2: "Full exterior hand wash &amp; rinse",
+li_wheel_rim: "Wheel &amp; rim cleaning",
+li_door_jamb: "Door jamb wipe-down",
+li_pro_5: "Window clean inside &amp; out",
+li_int_1: "Deep vacuum — seats, floors, crevices",
+li_int_2: "Dashboard, console &amp; door panel wipe-down",
+li_int_3: "Interior glass cleaning",
+li_int_4: "Odor treatment &amp; freshening",
+li_int_5: "Door pockets &amp; cup holder clean-out",
+li_ext_1: "Full hand wash &amp; rinse",
+li_ext_3: "Window exterior cleaning",
+
+addon_clay: "Clay Service", addon_rainx: "RainX", addon_carpet: "Carpet Shampoo", addon_wax: "Wax",
+
+info_strip_full: "🎓 <strong>Your booking funds college.</strong> Every full-package appointment goes directly toward tuition. You're not just getting an incredible detail — you're investing in a Plainfield student's future.",
+
+extras_intro: "These can be booked standalone or added to any package. Just mention them when you call or text.",
+extra_engine_desc: "~30 minutes · Degreased &amp; detailed under the hood",
+extra_decal_desc: "~15 minutes · Clean removal without damaging paint",
+extra_carpet_desc: "+30 min · Available on Interior, Professional &amp; Maintenance Cleaning",
+extra_wax_desc: "+45 min · Available on Exterior Detail",
+extra_clay_desc: "+35 min · Available on Exterior, Professional &amp; Showroom",
+extra_rainx_name: "RainX Treatment",
+extra_rainx_desc: "+15 min · Available on Exterior, Professional &amp; Showroom",
+info_strip_extras: "✨ <strong>Want to mix and match?</strong> Head to <a href=\"#booking\" style=\"color:var(--gold);font-weight:600;\">online booking</a> and build your detail — or text <a href=\"tel:8158239485\" style=\"color:var(--gold);font-weight:600;\">815-823-9485</a> with questions.",
+
+gal_eyebrow: "Real Results", gal_h2: "The <em>Work</em>",
+gal_lead: "Photos from real jobs in Plainfield, IL and surrounding areas.",
+gal_cap_interior: "Interior Detail — Plainfield, IL",
+gal_cap_carpet: "Carpet Shampoo Add-On",
+gal_engine_bay: "Engine Bay",
+gal_note: "<strong>Every photo is from a real job.</strong> Want your car looking like this? Text 815-823-9485 to book.",
+
+how_eyebrow: "Getting Started", how_h2: "How <em>Booking</em> Works",
+how_lead: "The fastest way to book is right here on the site — <a href=\"#book-online\" style=\"color:var(--gold);font-weight:600;\">reserve your day online</a> in about a minute. Prefer to reach out directly? That works too.",
+how_p1: "Booking online is simple: pick your service, choose an open day and arrival time, and add your details. I take one appointment per day so every car gets full attention. Prefer to text, call, or email instead? Just reach out and I'll get you on the schedule.",
+how_step1: "<strong><a href=\"#book-online\" style=\"color:var(--gold);\">Book online</a></strong> — or text/call <strong>815-823-9485</strong> with your service &amp; location",
+how_step2: "I'll confirm your day and time",
+how_step3: "I come to you — no drop-off needed",
+how_step4: "You come back to a spotless car",
+how_college_box: "🎓 <strong style=\"color:var(--gold);\">Your booking funds college.</strong><br>Every appointment goes directly toward tuition. You're not just getting a clean car — you're investing in a Plainfield student's future. That means the world.",
+how_email_note: "Prefer email? Reach out at <a href=\"mailto:KaoFechner@outlook.com\" style=\"color:var(--gold);\">KaoFechner@outlook.com</a> or use the contact form below.",
+
+bcc_h3: "Reach Out to Book", bcc_p: "I respond fast — usually within the hour.",
+bcc_text_h4: "Send a Text", bcc_text_p: "<strong>815-823-9485</strong> — tap to open Messages",
+bcc_call_h4: "Call Me", bcc_call_p: "<strong>815-823-9485</strong> — tap to call directly",
+bcc_email_h4: "Send an Email", or_divider: "or",
+bcc_note: "🎓 <strong>Every booking helps fund college.</strong> You get a spotless car and a local student gets closer to graduation — thank you for supporting that.",
+
+bk_eyebrow: "Reserve Your Spot", bk_h2: "Book <em>Online</em>",
+bk_lead1: "Pick a service, choose an open day and arrival time, and you're set. I take <strong>one booking per day</strong> so every car gets full attention.",
+bk_lead2: "🎓 Every booking goes directly toward a local Plainfield student's college tuition. Thank you for supporting that.",
+bk_step1_h3: "Choose Your Service", bk_service_label: "Service", bk_addons_label: "Add-Ons (optional)",
+bk_step2_h3: "Pick a Day &amp; Arrival Time",
+bk_date_label: "Date <span style=\"text-transform:none;letter-spacing:0;color:var(--muted);\">(next day or later — taken days are blocked)</span>",
+bk_time_label: "Arrival Time",
+bk_step3_h3: "Your Details", bk_name_label: "Full Name", bk_contact_label: "Contact",
+toggle_phone: "📞 Phone", toggle_email: "✉️ Email",
+bk_address_label: "Service Address", bk_vehicle_label: "Vehicle Type",
+veh_sedan: "Sedan", veh_truck: "Truck", veh_minivan: "Minivan", veh_suv: "SUV", veh_other: "Other",
+bk_notes_label: "Additional Notes (optional)",
+bk_step4_h3: "Review &amp; Confirm", sum_datetime_label: "Date &amp; Time", sum_total_label: "Total",
+bk_terms_label: "I have read and agree to the <a onclick=\"openLegal()\">Terms of Service, Privacy Policy &amp; Liability Terms</a>. I understand that <strong>payment is due in full upon completion of the service</strong>, before the operator leaves my location.",
+bk_submit_btn: "Confirm Booking",
+bk_onebooking: "📅 Only one appointment is taken per day. If your preferred day is unavailable, please choose another. Questions? Text <a href=\"tel:8158239485\" style=\"color:var(--gold);\">815-823-9485</a>.",
+bk_success_h3: "You're Booked!",
+bk_success_p: "Thank you for booking with Kaiser's Detail Co. — and for helping fund a local student's education. 🎓",
+bk_success_note: "I'll reach out to confirm details. Need to make a change? Text <strong>815-823-9485</strong>.",
+
+contact_eyebrow: "Get in Touch", contact_h2: "Say <em>Hello</em>",
+contact_lead: "Questions, custom requests, or want to talk through services — I'll get back to you fast.",
+contact_text_h4: "Text (preferred)", contact_or_call: "or <a href=\"tel:8158239485\">call</a>",
+contact_email_h4: "Email", contact_area_h4: "Service Area", contact_area_p: "Plainfield, IL &amp; surrounding areas",
+contact_time_h4: "Time Per Car", contact_time_p: "30 min to 4 hours depending on service",
+contact_college_box: "🎓 <strong style=\"color:var(--gold);\">Supporting a local student.</strong><br>Kaiser's Detail Co. is a one-person operation run by a Plainfield college student. Every booking — big or small — goes directly toward tuition. Your support makes a real difference.",
+
+form_first: "First Name", form_last: "Last Name", form_email: "Email", form_phone: "Phone (optional)",
+form_service: "Service Interested In", form_select_service: "— Select a service —", form_message: "Message",
+form_submit: "Send Message →",
+form_ok_msg: "✅ Message sent — I'll be in touch soon!<br><span style=\"font-size:0.8rem;color:var(--muted);\">Thanks for reaching out!</span>",
+
+ft_tag: "Professional Auto Detailing · Plainfield, IL<br>Local student, serious work, spotless results.<br>Every booking funds college tuition. 🎓",
+ft_book: "📅 Book Online — kaiserdetailing.com", ft_text: "💬 Or text/call 815-823-9485",
+ft_terms: "Terms of Service", ft_privacy: "Privacy Policy",
+ft_copy: "&copy; 2025–2026 Kaiser's Detail Co. All rights reserved.",
+
+legal_title: "Terms of Service &amp; Policies",
+legal_intro: "Kaiser's Detail Co. · Plainfield, IL · Last updated June 2026<br>Please read these terms carefully before booking. By submitting a booking you agree to all terms below.",
+legal_h1: "1. Booking &amp; Scheduling",
+legal_p1: "Kaiser's Detail Co. accepts one appointment per day. Submitting a booking online reserves that date pending confirmation. We will contact you using the phone number or email you provide to confirm the appointment and finalize details. <strong>A booking is not guaranteed until you receive a confirmation from us.</strong> We reserve the right to decline or cancel any booking at our discretion. If we cancel a booking we have accepted, any advance payment collected will be refunded in full.",
+legal_h2: "2. Payment",
+legal_p2: "<strong>Payment is due in full upon completion of the service</strong>, before we leave your location. We do not require payment in advance. Accepted payment methods will be confirmed at booking. The total shown during online booking is an estimate based on your selected service and add-ons. Final pricing may differ if the vehicle's actual condition varies substantially from what was described — for example, excessive soiling, heavy pet hair, mold, or biohazard conditions may require an adjusted quote, which will be discussed and agreed upon <em>before</em> any additional work begins. No payment card data is collected through this website; all payments are handled in person.",
+legal_h3: "3. Cancellations &amp; Rescheduling",
+legal_p3: "Please provide at least <strong>24 hours' notice</strong> to cancel or reschedule. Same-day cancellations or no-shows may be subject to a cancellation fee at the operator's discretion. To cancel or reschedule, text or call <strong>815-823-9485</strong> or email KaoFechner@outlook.com.",
+legal_h4: "4. Weather &amp; Force Majeure",
+legal_p4: "Mobile detailing is weather-dependent. If severe weather, unsafe conditions, illness, or other circumstances beyond our control prevent us from performing your service, we will contact you as soon as possible to reschedule at no penalty to either party. We are not liable for delays or cancellations caused by events outside our reasonable control.",
+legal_h5: "5. Access &amp; Vehicle Preparation",
+legal_p5: "You are responsible for providing safe, lawful access to the vehicle and a suitable location for the work. Please remove personal belongings and valuables from the vehicle before your appointment. Kaiser's Detail Co. is not responsible for personal items left in the vehicle. You confirm that you are the vehicle owner or have the owner's permission to authorize this service.",
+legal_h6: "6. Right to Refuse Service",
+legal_p6: "We reserve the right to refuse or discontinue service at any time for any reason, including but not limited to unsafe working conditions, vehicle conditions that present a health or safety risk, or conduct we deem inappropriate. If service is refused before work begins, no charge applies. If service is discontinued partway through due to a condition not disclosed at booking, a partial charge reflecting work completed may apply.",
+legal_h7: "7. Liability",
+legal_p7: "Kaiser's Detail Co. takes great care with every vehicle. However, by booking you acknowledge that detailing involves inherent risks. We are not liable for pre-existing damage, wear, defects, or conditions — including but not limited to faded or peeling paint, clear-coat failure, loose trim, prior scratches or dents, mechanical or electrical issues, or aftermarket modifications — that may become more visible after cleaning. We are not responsible for damage resulting from undisclosed vehicle conditions. <strong>Our maximum liability for any claim arising from our services is limited to the total amount paid for the service in question.</strong>",
+legal_h8: "8. Results",
+legal_p8: "While we strive for excellent results, some stains, odors, oxidation, scratches, or other damage may be permanent and cannot be fully removed by detailing. Expected outcomes vary based on the vehicle's age, condition, materials, and prior care. We make no guarantee of specific results beyond our reasonable professional effort.",
+legal_h9: "9. Photography",
+legal_p9: "We may photograph vehicles before and after service for quality records and portfolio or marketing purposes (e.g. the gallery on this website). We do not publish identifying details such as license plates or street addresses. If you prefer your vehicle not be photographed for marketing use, please let us know at your appointment and we will respect that request.",
+legal_h10: "10. Age &amp; Eligibility",
+legal_p10: "This service is intended for individuals who are 18 years of age or older, or minors (under 18) booking with the knowledge and consent of a parent or legal guardian. By submitting a booking you confirm you meet this requirement. We do not knowingly collect personal information from children under 13 without verifiable parental consent. If you believe a booking has been submitted by a child under 13 without parental consent, please contact us immediately at KaoFechner@outlook.com.",
+legal_h11: "11. Business Disclosure",
+legal_p11: "Kaiser's Detail Co. is a sole-proprietorship operated by a single individual in Plainfield, Illinois. It is not a licensed commercial fleet operation, a franchise, or a bonded/insured detailing company unless expressly stated otherwise. Proceeds support the operator's college tuition. This is a personal small business — not a registered nonprofit or charity — and payments are not tax-deductible donations.",
+legal_h12: "12. Privacy Policy",
+legal_p12: "We collect only the information you voluntarily provide when submitting a booking or contact form: your name, phone number or email address, and service address. This information is used solely to schedule, perform, confirm, and follow up on your service appointment. We do not sell, rent, or share your personal information with any third party. We retain your booking information only as long as reasonably necessary for business records. You may request deletion of your information at any time by contacting us at KaoFechner@outlook.com. We implement reasonable security measures to protect your data, consistent with Illinois law. This website does not use tracking cookies, third-party advertising networks, or behavioral profiling.",
+legal_h13: "13. Governing Law &amp; Disputes",
+legal_p13: "These terms are governed by and construed in accordance with the laws of the State of Illinois, without regard to conflict-of-law principles. Any dispute arising out of or relating to these terms or our services shall be resolved in the state or federal courts located in <strong>Will County, Illinois</strong>, and you consent to personal jurisdiction in those courts. If any provision of these terms is found unenforceable, the remaining provisions continue in full force.",
+legal_footer_note: "These terms were last updated in June 2026. Kaiser's Detail Co. reserves the right to update these terms at any time. The version displayed at the time of your booking applies to that booking. For questions, contact KaoFechner@outlook.com.",
+legal_close_btn: "I Understand — Close",
+
+ph_name: "John Smith", ph_street: "Street address (e.g. 123 Main St)", ph_city: "City (e.g. Plainfield)",
+ph_state: "State (e.g. IL)", ph_vehicle_other: "Describe your vehicle...", ph_notes: "Gate codes, specific concerns, vehicle color...",
+ph_first: "John", ph_last: "Smith", ph_email: "john@example.com", ph_phone: "(815) 555-0100",
+ph_message: "Tell me about your vehicle, what you need, or any questions...",
+
+ph_contact_phone: "(815) 555-0100", ph_contact_email: "you@example.com",
+msg_choose_date: "Please choose a date.",
+msg_choose_time: "Please choose an arrival time.",
+msg_enter_name: "Please enter your name.",
+msg_enter_contact: "Please enter your phone or email.",
+msg_enter_address: "Please enter your full address.",
+msg_select_vehicle: "Please select your vehicle type.",
+msg_agree_terms: "Please agree to the terms to continue.",
+msg_generic_error: "Something went wrong. Please try again.",
+msg_connection_error: "Connection error. Please try again or text 815-823-9485.",
+msg_booking_in_progress: "Booking...",
+large_vehicle_surcharge: "Large vehicle surcharge",
+msg_earliest_date: "Bookings start the next day. Earliest available date selected.",
+msg_taken_date: "Sorry — that day is already booked. Showing the next open day.",
+msg_blocked_date: "Sorry — that day is not available. Showing the next open day.",
+success_total_due: " (due at service)",
+at_time_join: "at",
+success_total_label: "Total: ",
+},
+
+es: {
+nav_book: "Reservar en línea", nav_services: "Servicios", nav_gallery: "Galería", nav_results: "Resultados",
+nav_contact: "Contacto", nav_book_now: "📅 Reservar ahora", mob_book_now: "📅 Reservar ahora — En línea",
+
+hero_eyebrow: "Plainfield, Illinois · Detallado automotriz",
+hero_title: "Tu auto,<br><em>impecable.</em>",
+hero_college_strip: "🎓 Cada reserva ayuda a pagar la universidad — apoya lo local, conduce limpio",
+hero_sub: "Kaiser's Detail Co. lleva un detallado interior y exterior meticuloso directamente a Plainfield. <strong>Cada dólar que gastas va directamente hacia la colegiatura universitaria</strong> — tú obtienes un auto impecable y un estudiante local se acerca más a su título. Un verdadero beneficio para ambos.",
+hero_btn_book: "📅 Reservar en línea ahora", hero_btn_pricing: "Ver precios", hero_btn_call: "📞 ¿Preguntas? Llama",
+hero_stat_price: "Precio inicial", hero_stat_dur: "Duración del servicio",
+hero_stat_college_label: "100% financia la universidad",
+hero_stat_college_p: "Cuando reservas con Kaiser's Detail Co., no solo obtienes un auto limpio — estás invirtiendo en el futuro de un estudiante local de Plainfield. Cada cita ayuda a pagar la colegiatura. Gracias por eso.",
+
+banner_h2: "¿Listo para reservar? Aparta tu día en línea.",
+banner_p: "Elige tu servicio, escoge un día disponible y listo — rápido y fácil. Cada reserva ayuda a pagar la universidad.",
+banner_btn_book: "📅 Reservar en línea", banner_btn_call: "📞 O llama",
+
+ba_eyebrow: "La diferencia", ba_h2: "Mira la <em>transformación</em>",
+ba_lead: "Arrastra el control para comparar el antes y después de cada servicio. Así se ve un detallado de precisión.",
+ba_drag_hint: "↔ arrastra", ba_before: "Antes", ba_after: "Después",
+
+svc_eyebrow: "Lo que ofrecemos", svc_h2: "Servicios y <em>precios</em>",
+svc_lead: "Arma tu propio detallado abajo — marca los complementos para ver tu total al instante. Luego llama o envía un mensaje de texto para reservar. Cada dólar va hacia la colegiatura universitaria.",
+tab_all: "Todos", tab_interior: "Interior", tab_exterior: "Exterior", tab_full: "Paquetes completos", tab_extras: "Complementos y extras",
+
+svc_showroom_name: "Detallado de exhibición", svc_professional_name: "Detallado profesional",
+svc_interior_name: "Detallado interior", svc_exterior_name: "Detallado exterior",
+svc_engine_name: "Limpieza del motor", svc_decal_name: "Eliminación de calcomanías",
+
+dur_4h: "~4 horas", dur_3h: "~3 horas", dur_90m: "~1 hora 30 min",
+badge_thorough: "✨ Más completo", badge_value: "⭐ Mejor valor",
+addons_head: "Complementos", your_total: "Tu total", book_now: "Reservar ahora",
+
+li_show_1: "Todo lo incluido en el Detallado profesional",
+li_show_2: "Aspirado profundo por extracción y limpieza a vapor",
+li_show_3: "Shampoo completo de alfombras y tratamiento de manchas",
+li_show_4: "Limpieza a fondo de asientos y tapicería",
+li_show_5: "Limpieza profunda de rejillas de aire y rendijas",
+li_show_6: "Acondicionamiento de piel (si aplica)",
+li_show_7: "Tratamiento completo para eliminar olores",
+li_show_8: "Acabado de calidad de exhibición en todo el vehículo",
+li_pro_1: "Detallado interior completo — aspirado, limpieza, vidrios, olores",
+li_pro_2: "Lavado exterior completo a mano y enjuague",
+li_wheel_rim: "Limpieza de llantas y rines",
+li_door_jamb: "Limpieza de los marcos de las puertas",
+li_pro_5: "Limpieza de vidrios por dentro y por fuera",
+li_int_1: "Aspirado profundo — asientos, pisos, rendijas",
+li_int_2: "Limpieza del tablero, consola y paneles de puertas",
+li_int_3: "Limpieza de vidrios interiores",
+li_int_4: "Tratamiento y refrescado de olores",
+li_int_5: "Limpieza de bolsillos de puertas y portavasos",
+li_ext_1: "Lavado completo a mano y enjuague",
+li_ext_3: "Limpieza de vidrios exteriores",
+
+addon_clay: "Tratamiento de arcilla", addon_rainx: "RainX", addon_carpet: "Shampoo de alfombras", addon_wax: "Encerado",
+
+info_strip_full: "🎓 <strong>Tu reserva financia la universidad.</strong> Cada cita de paquete completo va directamente hacia la colegiatura. No solo obtienes un detallado increíble — estás invirtiendo en el futuro de un estudiante de Plainfield.",
+
+extras_intro: "Estos se pueden reservar solos o añadirse a cualquier paquete. Solo menciónalos al llamar o enviar un mensaje de texto.",
+extra_engine_desc: "~30 minutos · Desengrasado y detallado bajo el cofre",
+extra_decal_desc: "~15 minutos · Eliminación limpia sin dañar la pintura",
+extra_carpet_desc: "+30 min · Disponible en Interior, Profesional y Limpieza de mantenimiento",
+extra_wax_desc: "+45 min · Disponible en el Detallado exterior",
+extra_clay_desc: "+35 min · Disponible en Exterior, Profesional y de exhibición",
+extra_rainx_name: "Tratamiento RainX",
+extra_rainx_desc: "+15 min · Disponible en Exterior, Profesional y de exhibición",
+info_strip_extras: "✨ <strong>¿Quieres combinar servicios?</strong> Ve a la <a href=\"#booking\" style=\"color:var(--gold);font-weight:600;\">reserva en línea</a> y arma tu detallado — o envía un mensaje de texto a <a href=\"tel:8158239485\" style=\"color:var(--gold);font-weight:600;\">815-823-9485</a> si tienes preguntas.",
+
+gal_eyebrow: "Resultados reales", gal_h2: "El <em>trabajo</em>",
+gal_lead: "Fotos de trabajos reales en Plainfield, IL y áreas cercanas.",
+gal_cap_interior: "Detallado interior — Plainfield, IL",
+gal_cap_carpet: "Complemento de shampoo de alfombras",
+gal_engine_bay: "Compartimento del motor",
+gal_note: "<strong>Cada foto es de un trabajo real.</strong> ¿Quieres que tu auto se vea así? Envía un mensaje de texto al 815-823-9485 para reservar.",
+
+how_eyebrow: "Cómo empezar", how_h2: "Cómo funciona la <em>reserva</em>",
+how_lead: "La forma más rápida de reservar es aquí mismo en el sitio — <a href=\"#book-online\" style=\"color:var(--gold);font-weight:600;\">aparta tu día en línea</a> en aproximadamente un minuto. ¿Prefieres contactarme directamente? También funciona.",
+how_p1: "Reservar en línea es sencillo: elige tu servicio, escoge un día y hora disponibles, y añade tus datos. Solo tomo una cita por día para darle atención total a cada auto. ¿Prefieres enviar un mensaje de texto, llamar o escribir un correo? Solo contáctame y te agendaré.",
+how_step1: "<strong><a href=\"#book-online\" style=\"color:var(--gold);\">Reserva en línea</a></strong> — o envía un mensaje de texto/llama al <strong>815-823-9485</strong> con tu servicio y ubicación",
+how_step2: "Confirmaré tu día y hora",
+how_step3: "Voy hasta donde estés — no necesitas dejar el auto",
+how_step4: "Recibes de vuelta un auto impecable",
+how_college_box: "🎓 <strong style=\"color:var(--gold);\">Tu reserva financia la universidad.</strong><br>Cada cita va directamente hacia la colegiatura. No solo obtienes un auto limpio — estás invirtiendo en el futuro de un estudiante de Plainfield. Eso significa mucho.",
+how_email_note: "¿Prefieres el correo electrónico? Escribe a <a href=\"mailto:KaoFechner@outlook.com\" style=\"color:var(--gold);\">KaoFechner@outlook.com</a> o usa el formulario de contacto abajo.",
+
+bcc_h3: "Contáctame para reservar", bcc_p: "Respondo rápido — usualmente en menos de una hora.",
+bcc_text_h4: "Envía un mensaje de texto", bcc_text_p: "<strong>815-823-9485</strong> — toca para abrir Mensajes",
+bcc_call_h4: "Llámame", bcc_call_p: "<strong>815-823-9485</strong> — toca para llamar directamente",
+bcc_email_h4: "Envía un correo electrónico", or_divider: "o",
+bcc_note: "🎓 <strong>Cada reserva ayuda a financiar la universidad.</strong> Obtienes un auto impecable y un estudiante local se acerca a graduarse — gracias por apoyar eso.",
+
+bk_eyebrow: "Aparta tu lugar", bk_h2: "Reservar <em>en línea</em>",
+bk_lead1: "Elige un servicio, escoge un día y hora disponibles, y listo. Tomo <strong>una reserva por día</strong> para darle atención total a cada auto.",
+bk_lead2: "🎓 Cada reserva va directamente hacia la colegiatura universitaria de un estudiante local de Plainfield. Gracias por apoyar eso.",
+bk_step1_h3: "Elige tu servicio", bk_service_label: "Servicio", bk_addons_label: "Complementos (opcional)",
+bk_step2_h3: "Elige un día y hora de llegada",
+bk_date_label: "Fecha <span style=\"text-transform:none;letter-spacing:0;color:var(--muted);\">(a partir de mañana — los días ocupados están bloqueados)</span>",
+bk_time_label: "Hora de llegada",
+bk_step3_h3: "Tus datos", bk_name_label: "Nombre completo", bk_contact_label: "Contacto",
+toggle_phone: "📞 Teléfono", toggle_email: "✉️ Correo",
+bk_address_label: "Dirección del servicio", bk_vehicle_label: "Tipo de vehículo",
+veh_sedan: "Sedán", veh_truck: "Camioneta", veh_minivan: "Minivan", veh_suv: "SUV", veh_other: "Otro",
+bk_notes_label: "Notas adicionales (opcional)",
+bk_step4_h3: "Revisar y confirmar", sum_datetime_label: "Fecha y hora", sum_total_label: "Total",
+bk_terms_label: "He leído y acepto los <a onclick=\"openLegal()\">Términos de servicio, Política de privacidad y Términos de responsabilidad</a>. Entiendo que <strong>el pago debe realizarse en su totalidad al completar el servicio</strong>, antes de que el operador se retire de mi ubicación.",
+bk_submit_btn: "Confirmar reserva",
+bk_onebooking: "📅 Solo se toma una cita por día. Si tu día preferido no está disponible, elige otro. ¿Preguntas? Envía un mensaje de texto a <a href=\"tel:8158239485\" style=\"color:var(--gold);\">815-823-9485</a>.",
+bk_success_h3: "¡Tu reserva está confirmada!",
+bk_success_p: "Gracias por reservar con Kaiser's Detail Co. — y por ayudar a financiar la educación de un estudiante local. 🎓",
+bk_success_note: "Me pondré en contacto para confirmar los detalles. ¿Necesitas hacer un cambio? Envía un mensaje de texto al <strong>815-823-9485</strong>.",
+
+contact_eyebrow: "Ponte en contacto", contact_h2: "Di <em>hola</em>",
+contact_lead: "Preguntas, solicitudes especiales, o si quieres platicar sobre los servicios — te responderé rápido.",
+contact_text_h4: "Mensaje de texto (preferido)", contact_or_call: "o <a href=\"tel:8158239485\">llama</a>",
+contact_email_h4: "Correo electrónico", contact_area_h4: "Área de servicio", contact_area_p: "Plainfield, IL y áreas cercanas",
+contact_time_h4: "Tiempo por auto", contact_time_p: "De 30 minutos a 4 horas según el servicio",
+contact_college_box: "🎓 <strong style=\"color:var(--gold);\">Apoyando a un estudiante local.</strong><br>Kaiser's Detail Co. es un negocio de una sola persona dirigido por un estudiante universitario de Plainfield. Cada reserva — grande o pequeña — va directamente hacia la colegiatura. Tu apoyo hace una verdadera diferencia.",
+
+form_first: "Nombre", form_last: "Apellido", form_email: "Correo electrónico", form_phone: "Teléfono (opcional)",
+form_service: "Servicio de interés", form_select_service: "— Selecciona un servicio —", form_message: "Mensaje",
+form_submit: "Enviar mensaje →",
+form_ok_msg: "✅ Mensaje enviado — ¡me pondré en contacto pronto!<br><span style=\"font-size:0.8rem;color:var(--muted);\">¡Gracias por escribir!</span>",
+
+ft_tag: "Detallado automotriz profesional · Plainfield, IL<br>Estudiante local, trabajo serio, resultados impecables.<br>Cada reserva financia la universidad. 🎓",
+ft_book: "📅 Reservar en línea — kaiserdetailing.com", ft_text: "💬 O envía un mensaje de texto/llama al 815-823-9485",
+ft_terms: "Términos de servicio", ft_privacy: "Política de privacidad",
+ft_copy: "&copy; 2025–2026 Kaiser's Detail Co. Todos los derechos reservados.",
+
+legal_title: "Términos de servicio y políticas",
+legal_intro: "Kaiser's Detail Co. · Plainfield, IL · Última actualización: junio de 2026<br>Por favor lee estos términos cuidadosamente antes de reservar. Al enviar una reserva aceptas todos los términos a continuación.",
+legal_h1: "1. Reservas y programación",
+legal_p1: "Kaiser's Detail Co. acepta una cita por día. Enviar una reserva en línea aparta esa fecha en espera de confirmación. Te contactaremos usando el teléfono o correo que proporciones para confirmar la cita y finalizar los detalles. <strong>Una reserva no está garantizada hasta que recibas una confirmación de nuestra parte.</strong> Nos reservamos el derecho de rechazar o cancelar cualquier reserva a nuestra discreción. Si cancelamos una reserva que ya habíamos aceptado, cualquier pago anticipado recibido será reembolsado en su totalidad.",
+legal_h2: "2. Pago",
+legal_p2: "<strong>El pago debe realizarse en su totalidad al completar el servicio</strong>, antes de que nos retiremos de tu ubicación. No requerimos pago por adelantado. Los métodos de pago aceptados se confirmarán al momento de reservar. El total mostrado durante la reserva en línea es un estimado basado en el servicio y complementos seleccionados. El precio final puede variar si la condición real del vehículo difiere considerablemente de lo descrito — por ejemplo, suciedad excesiva, exceso de pelo de mascota, moho o condiciones de riesgo biológico pueden requerir una cotización ajustada, la cual se discutirá y acordará <em>antes</em> de comenzar cualquier trabajo adicional. Este sitio web no recopila datos de tarjetas de pago; todos los pagos se realizan en persona.",
+legal_h3: "3. Cancelaciones y reprogramaciones",
+legal_p3: "Por favor avisa con al menos <strong>24 horas de anticipación</strong> para cancelar o reprogramar. Las cancelaciones el mismo día o las inasistencias pueden estar sujetas a un cargo por cancelación a discreción del operador. Para cancelar o reprogramar, envía un mensaje de texto o llama al <strong>815-823-9485</strong>, o escribe a KaoFechner@outlook.com.",
+legal_h4: "4. Clima y fuerza mayor",
+legal_p4: "El detallado móvil depende del clima. Si el mal tiempo, condiciones inseguras, enfermedad u otras circunstancias fuera de nuestro control nos impiden realizar tu servicio, te contactaremos lo antes posible para reprogramar sin ninguna penalización para ninguna de las partes. No somos responsables por retrasos o cancelaciones causados por eventos fuera de nuestro control razonable.",
+legal_h5: "5. Acceso y preparación del vehículo",
+legal_p5: "Eres responsable de proporcionar acceso seguro y legal al vehículo, así como un lugar adecuado para el trabajo. Por favor retira tus pertenencias personales y objetos de valor del vehículo antes de tu cita. Kaiser's Detail Co. no es responsable de los artículos personales dejados en el vehículo. Confirmas que eres el propietario del vehículo o que cuentas con el permiso del propietario para autorizar este servicio.",
+legal_h6: "6. Derecho a rechazar el servicio",
+legal_p6: "Nos reservamos el derecho de rechazar o interrumpir el servicio en cualquier momento y por cualquier motivo, incluyendo, entre otros, condiciones de trabajo inseguras, condiciones del vehículo que representen un riesgo para la salud o seguridad, o conducta que consideremos inapropiada. Si el servicio se rechaza antes de comenzar el trabajo, no se aplicará ningún cargo. Si el servicio se interrumpe a mitad debido a una condición no revelada al reservar, se puede aplicar un cargo parcial que refleje el trabajo realizado.",
+legal_h7: "7. Responsabilidad",
+legal_p7: "Kaiser's Detail Co. trata cada vehículo con gran cuidado. Sin embargo, al reservar reconoces que el detallado conlleva riesgos inherentes. No somos responsables por daños preexistentes, desgaste, defectos o condiciones — incluyendo, entre otros, pintura descolorida o descascarada, fallas en el barniz transparente, molduras sueltas, rayones o abolladuras previas, problemas mecánicos o eléctricos, o modificaciones no originales — que puedan volverse más visibles después de la limpieza. No somos responsables de daños resultantes de condiciones del vehículo no reveladas. <strong>Nuestra responsabilidad máxima por cualquier reclamo derivado de nuestros servicios se limita al monto total pagado por el servicio en cuestión.</strong>",
+legal_h8: "8. Resultados",
+legal_p8: "Aunque nos esforzamos por lograr excelentes resultados, algunas manchas, olores, oxidación, rayones u otros daños pueden ser permanentes y no eliminarse por completo con el detallado. Los resultados esperados varían según la edad, condición, materiales y cuidado previo del vehículo. No garantizamos resultados específicos más allá de nuestro esfuerzo profesional razonable.",
+legal_h9: "9. Fotografía",
+legal_p9: "Podemos fotografiar los vehículos antes y después del servicio para fines de control de calidad, portafolio o mercadotecnia (por ejemplo, la galería de este sitio web). No publicamos detalles identificables como placas o direcciones. Si prefieres que tu vehículo no sea fotografiado con fines de mercadotecnia, avísanos en tu cita y respetaremos esa solicitud.",
+legal_h10: "10. Edad y elegibilidad",
+legal_p10: "Este servicio está destinado a personas de 18 años de edad o más, o menores de edad (menores de 18) que reserven con el conocimiento y consentimiento de un padre, madre o tutor legal. Al enviar una reserva confirmas que cumples con este requisito. No recopilamos a sabiendas información personal de menores de 13 años sin el consentimiento verificable de un padre o tutor. Si crees que una reserva fue enviada por un menor de 13 años sin consentimiento parental, contáctanos de inmediato en KaoFechner@outlook.com.",
+legal_h11: "11. Divulgación del negocio",
+legal_p11: "Kaiser's Detail Co. es un negocio de propietario único operado por una sola persona en Plainfield, Illinois. No es una operación de flota comercial con licencia, una franquicia, ni una empresa de detallado afianzada o asegurada, a menos que se indique expresamente lo contrario. Las ganancias apoyan la colegiatura universitaria del operador. Este es un pequeño negocio personal — no una organización sin fines de lucro registrada ni una entidad benéfica — y los pagos no son donaciones deducibles de impuestos.",
+legal_h12: "12. Política de privacidad",
+legal_p12: "Solo recopilamos la información que proporcionas voluntariamente al enviar una reserva o formulario de contacto: tu nombre, número de teléfono o correo electrónico, y dirección del servicio. Esta información se usa únicamente para programar, realizar, confirmar y dar seguimiento a tu cita de servicio. No vendemos, alquilamos ni compartimos tu información personal con terceros. Conservamos tu información de reserva solo el tiempo razonablemente necesario para registros del negocio. Puedes solicitar la eliminación de tu información en cualquier momento contactándonos en KaoFechner@outlook.com. Implementamos medidas de seguridad razonables para proteger tus datos, conforme a la ley de Illinois. Este sitio web no utiliza cookies de rastreo, redes publicitarias de terceros ni perfilado de comportamiento.",
+legal_h13: "13. Ley aplicable y disputas",
+legal_p13: "Estos términos se rigen e interpretan de acuerdo con las leyes del Estado de Illinois, sin importar los principios de conflicto de leyes. Cualquier disputa que surja de o esté relacionada con estos términos o nuestros servicios se resolverá en los tribunales estatales o federales ubicados en el <strong>condado de Will, Illinois</strong>, y aceptas la jurisdicción personal de esos tribunales. Si alguna disposición de estos términos se considera inaplicable, las disposiciones restantes seguirán vigentes en su totalidad.",
+legal_footer_note: "Estos términos se actualizaron por última vez en junio de 2026. Kaiser's Detail Co. se reserva el derecho de actualizar estos términos en cualquier momento. La versión mostrada al momento de tu reserva es la que aplica a esa reserva. Para preguntas, contacta a KaoFechner@outlook.com.",
+legal_close_btn: "Entiendo — Cerrar",
+
+ph_name: "Juan Pérez", ph_street: "Dirección (ej. Calle Principal 123)", ph_city: "Ciudad (ej. Plainfield)",
+ph_state: "Estado (ej. IL)", ph_vehicle_other: "Describe tu vehículo...", ph_notes: "Códigos de acceso, inquietudes específicas, color del vehículo...",
+ph_first: "Juan", ph_last: "Pérez", ph_email: "juan@ejemplo.com", ph_phone: "(815) 555-0100",
+ph_message: "Cuéntame sobre tu vehículo, qué necesitas o cualquier pregunta...",
+
+ph_contact_phone: "(815) 555-0100", ph_contact_email: "tucorreo@ejemplo.com",
+msg_choose_date: "Por favor elige una fecha.",
+msg_choose_time: "Por favor elige una hora de llegada.",
+msg_enter_name: "Por favor ingresa tu nombre.",
+msg_enter_contact: "Por favor ingresa tu teléfono o correo electrónico.",
+msg_enter_address: "Por favor ingresa tu dirección completa.",
+msg_select_vehicle: "Por favor selecciona el tipo de vehículo.",
+msg_agree_terms: "Por favor acepta los términos para continuar.",
+msg_generic_error: "Algo salió mal. Por favor intenta de nuevo.",
+msg_connection_error: "Error de conexión. Intenta de nuevo o envía un mensaje de texto al 815-823-9485.",
+msg_booking_in_progress: "Reservando...",
+large_vehicle_surcharge: "Recargo por vehículo grande",
+msg_earliest_date: "Las reservas comienzan al día siguiente. Se seleccionó la fecha disponible más próxima.",
+msg_taken_date: "Lo sentimos — ese día ya está reservado. Mostrando el siguiente día disponible.",
+msg_blocked_date: "Lo sentimos — ese día no está disponible. Mostrando el siguiente día disponible.",
+success_total_due: " (a pagar en el servicio)",
+at_time_join: "a las",
+success_total_label: "Total: ",
+}
+};
+
+let currentLang = 'en';
+
+function t(key) {
+  const dict = I18N[currentLang] || I18N.en;
+  return (dict && dict[key] !== undefined) ? dict[key] : (I18N.en[key] !== undefined ? I18N.en[key] : key);
+}
+
+function applyLang(lang) {
+  currentLang = lang;
+  const dict = I18N[lang] || I18N.en;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) el.textContent = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (dict[key] !== undefined) el.innerHTML = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    if (dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
+  });
+  const toggleBtn = document.getElementById('lang-toggle');
+  if (toggleBtn) toggleBtn.textContent = lang === 'es' ? 'ES · English' : 'EN · Español';
+  try { localStorage.setItem('kdc_lang', lang); } catch (e) {}
+  // Re-render language-aware dynamic booking-widget content
+  if (typeof refreshDynamicLang === 'function') refreshDynamicLang();
+}
+
+function toggleLang() {
+  applyLang(currentLang === 'es' ? 'en' : 'es');
+}
+
+(function detectLang() {
+  let saved = null;
+  try { saved = localStorage.getItem('kdc_lang'); } catch (e) {}
+  if (saved === 'en' || saved === 'es') {
+    applyLang(saved);
+    return;
+  }
+  const browserLang = (navigator.language || (navigator.languages && navigator.languages[0]) || 'en').toLowerCase();
+  applyLang(browserLang.startsWith('es') ? 'es' : 'en');
+})();
+</script>
+
 <!-- BOOKING LOGIC -->
 <script>
 // ── Catalog (mirrors server; server re-validates all prices) ──
 const SERVICES = {
-  interior_detail:     { name: "Interior Detail",         price: 75,  dur: "1h 30m" },
-  exterior_detail:     { name: "Exterior Detail",         price: 50,  dur: "1h 30m" },
-  professional_detail: { name: "Professional Detail",     price: 125, dur: "3h" },
-  showroom_detail:     { name: "Showroom Detail",         price: 200, dur: "4h" },
-  engine_bay:          { name: "Engine Bay Cleaning",     price: 35,  dur: "30m" },
-  decal_removal:       { name: "Sticker / Decal Removal", price: 15,  dur: "15m" },
+  interior_detail:     { name: "Interior Detail",         price: 75, dur: "1h 30m", i18n: "svc_interior_name" },
+  professional_detail: { name: "Professional Detail",     price: 125, dur: "3h",    i18n: "svc_professional_name" },
+  showroom_detail:     { name: "Showroom Detail",         price: 200, dur: "4h",    i18n: "svc_showroom_name" },
+  exterior_detail:     { name: "Exterior Detail",         price: 50,  dur: "1h 30m", i18n: "svc_exterior_name" },
+  engine_bay:          { name: "Engine Bay Cleaning",     price: 35,  dur: "30m",   i18n: "svc_engine_name" },
+  decal_removal:       { name: "Sticker / Decal Removal", price: 15,  dur: "15m",   i18n: "svc_decal_name" },
 };
 const ADDONS = {
-  carpet_shampoo: { name: "Carpet Shampoo", price: 30 },
-  wax:            { name: "Wax",            price: 30 },
-  clay:           { name: "Clay Service",   price: 45 },
-  rainx:          { name: "RainX",          price: 10 },
+  carpet_shampoo: { name: "Carpet Shampoo", price: 30, i18n: "addon_carpet" },
+  wax:            { name: "Wax",            price: 30, i18n: "addon_wax" },
+  clay:           { name: "Clay Service",   price: 45, i18n: "addon_clay" },
+  rainx:          { name: "RainX",          price: 10, i18n: "addon_rainx" },
 };
+// Look up the current-language name for a catalog entry, falling back to English.
+function localName(entry) {
+  const dict = (typeof I18N !== "undefined" && I18N[typeof currentLang !== "undefined" ? currentLang : "en"]) || {};
+  return dict[entry.i18n] || entry.name;
+}
 const SERVICE_ADDONS = {
   interior_detail:     ["carpet_shampoo"],
   exterior_detail:     ["wax", "clay", "rainx"],
@@ -1683,13 +2114,19 @@ const SERVICE_ORDER = [
   "showroom_detail","professional_detail","interior_detail","exterior_detail",
   "engine_bay","decal_removal"
 ];
-SERVICE_ORDER.forEach(k => {
-  const v = SERVICES[k];
-  const o = document.createElement("option");
-  o.value = k;
-  o.textContent = `${v.name} — $${v.price} (${v.dur})`;
-  svcSel.appendChild(o);
-});
+function populateServiceDropdown() {
+  const prev = svcSel.value;
+  svcSel.innerHTML = "";
+  SERVICE_ORDER.forEach(k => {
+    const v = SERVICES[k];
+    const o = document.createElement("option");
+    o.value = k;
+    o.textContent = `${localName(v)} — $${v.price} (${v.dur})`;
+    svcSel.appendChild(o);
+  });
+  if (prev && SERVICES[prev]) svcSel.value = prev;
+}
+populateServiceDropdown();
 
 // Read ?service= from URL or hash for deep-linking from cards
 (function preselect() {
@@ -1720,7 +2157,7 @@ function renderAddons() {
     row.setAttribute("role", "checkbox");
     row.setAttribute("aria-checked", "false");
     row.setAttribute("tabindex", "0");
-    row.innerHTML = `<span class="bk-addon-check" aria-hidden="true"></span><span class="bk-addon-name">${a.name}</span><span class="ac">+$${a.price}</span>`;
+    row.innerHTML = `<span class="bk-addon-check" aria-hidden="true"></span><span class="bk-addon-name">${localName(a)}</span><span class="ac">+$${a.price}</span>`;
     const toggle = () => {
       const checked = row.getAttribute("aria-checked") === "true";
       row.setAttribute("aria-checked", !checked);
@@ -1860,13 +2297,13 @@ function renderVehicleSurchargeLabels() {
 dateInput.addEventListener("change", () => {
   if (!dateInput.value) return;
   if (dateInput.value < earliestDate) {
-    showMsg("Bookings start the next day. Earliest available date selected.", "err");
+    showMsg(t("msg_earliest_date"), "err");
     dateInput.value = nextOpenDate();
   } else if (takenDates.includes(dateInput.value)) {
-    showMsg("Sorry — that day is already booked. Showing the next open day.", "err");
+    showMsg(t("msg_taken_date"), "err");
     dateInput.value = nextOpenDate();
   } else if (isFullyBlocked(dateInput.value)) {
-    showMsg("Sorry — that day is not available. Showing the next open day.", "err");
+    showMsg(t("msg_blocked_date"), "err");
     dateInput.value = nextOpenDate();
   } else {
     clearMsg();
@@ -1900,14 +2337,21 @@ function setContact(type) {
   document.getElementById("bk-toggle-phone").classList.toggle("on", type === "phone");
   document.getElementById("bk-toggle-email").classList.toggle("on", type === "email");
   const inp = document.getElementById("bk-contact");
-  inp.placeholder = type === "phone" ? "(815) 555-0100" : "you@example.com";
+  const dict = (typeof I18N !== "undefined" && I18N[currentLang]) || {};
+  inp.placeholder = type === "phone" ? (dict.ph_contact_phone || "(815) 555-0100") : (dict.ph_contact_email || "you@example.com");
   inp.type = type === "phone" ? "tel" : "email";
   inp.value = "";
+}
+const VEH_I18N = { Sedan: "veh_sedan", Truck: "veh_truck", Minivan: "veh_minivan", SUV: "veh_suv" };
+function localVehicleLabel(v) {
+  const dict = (typeof I18N !== "undefined" && I18N[currentLang]) || {};
+  const key = VEH_I18N[v];
+  return (key && dict[key]) || v;
 }
 
 function renderSummary() {
   const s = SERVICES[bk.service];
-  document.getElementById("sum-service").textContent = s.name;
+  document.getElementById("sum-service").textContent = localName(s);
   document.getElementById("sum-service-price").textContent = "$" + s.price;
   let total = s.price;
   const addonBox = document.getElementById("sum-addons");
@@ -1915,23 +2359,24 @@ function renderSummary() {
   // Large vehicle surcharge — only on interior-touching services
   if (bk.vehicle && bk.largeVehicles.has(bk.vehicle) && bk.largeVehicleServices.has(bk.service)) {
     total += bk.largeSurcharge;
+    const surchargeLabel = ((typeof I18N !== "undefined" && I18N[currentLang] && I18N[currentLang].large_vehicle_surcharge) || "Large vehicle surcharge");
     const row = document.createElement("div");
     row.className = "bk-summary-row";
-    row.innerHTML = `<span style="color:var(--muted);">Large vehicle surcharge</span><span style="color:var(--muted);">+$${bk.largeSurcharge}</span>`;
+    row.innerHTML = `<span style="color:var(--muted);">${surchargeLabel}</span><span style="color:var(--muted);">+$${bk.largeSurcharge}</span>`;
     addonBox.appendChild(row);
   }
   bk.addons.forEach(k => {
     total += ADDONS[k].price;
     const row = document.createElement("div");
     row.className = "bk-summary-row";
-    row.innerHTML = `<span style="color:var(--muted);">+ ${ADDONS[k].name}</span><span style="color:var(--muted);">+$${ADDONS[k].price}</span>`;
+    row.innerHTML = `<span style="color:var(--muted);">+ ${localName(ADDONS[k])}</span><span style="color:var(--muted);">+$${ADDONS[k].price}</span>`;
     addonBox.appendChild(row);
   });
   const dt = (dateInput.value ? fmtDate(dateInput.value) : "—") + (bk.time ? " · " + bk.time : "");
   document.getElementById("sum-datetime").textContent = dt;
   const vRow = document.getElementById("sum-vehicle");
   if (bk.vehicle) {
-    vRow.textContent = "🚗 " + bk.vehicle;
+    vRow.textContent = "🚗 " + localVehicleLabel(bk.vehicle);
     vRow.style.display = "";
   } else {
     vRow.style.display = "none";
@@ -1941,7 +2386,8 @@ function renderSummary() {
 
 function fmtDate(s) {
   const [y, m, d] = s.split("-");
-  return new Date(y, m - 1, d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  const locale = (typeof currentLang !== "undefined" && currentLang === "es") ? "es-ES" : "en-US";
+  return new Date(y, m - 1, d).toLocaleDateString(locale, { weekday: "short", month: "short", day: "numeric" });
 }
 
 function showMsg(text, type) {
@@ -1973,16 +2419,16 @@ async function submitBooking() {
     ? otherInput.value.trim()
     : bk.vehicle;
 
-  if (!dateInput.value) return showMsg("Please choose a date.", "err");
-  if (!bk.time) return showMsg("Please choose an arrival time.", "err");
-  if (!name) return showMsg("Please enter your name.", "err");
-  if (!contact) return showMsg("Please enter your phone or email.", "err");
-  if (!street || !city || !state) return showMsg("Please enter your full address.", "err");
-  if (!vehicle) return showMsg("Please select your vehicle type.", "err");
-  if (!agree) return showMsg("Please agree to the terms to continue.", "err");
+  if (!dateInput.value) return showMsg(t("msg_choose_date"), "err");
+  if (!bk.time) return showMsg(t("msg_choose_time"), "err");
+  if (!name) return showMsg(t("msg_enter_name"), "err");
+  if (!contact) return showMsg(t("msg_enter_contact"), "err");
+  if (!street || !city || !state) return showMsg(t("msg_enter_address"), "err");
+  if (!vehicle) return showMsg(t("msg_select_vehicle"), "err");
+  if (!agree) return showMsg(t("msg_agree_terms"), "err");
 
   const btn = document.getElementById("bk-submit");
-  btn.disabled = true; btn.textContent = "Booking...";
+  btn.disabled = true; btn.textContent = t("msg_booking_in_progress");
 
   try {
     const r = await fetch("/api/book", {
@@ -2005,32 +2451,32 @@ async function submitBooking() {
     if (d.ok) {
       document.getElementById("booking-form").style.display = "none";
       const succ = document.getElementById("booking-success");
+      const svcLabel = SERVICES[bk.service] ? localName(SERVICES[bk.service]) : d.service;
       document.getElementById("success-detail").innerHTML =
-        `<strong>${d.service}</strong><br>${fmtDate(d.date)} at ${d.time}<br>Total: <strong>$${d.total}</strong> (due at service)`;
+        `<strong>${svcLabel}</strong><br>${fmtDate(d.date)} ${t("at_time_join")} ${d.time}<br>${t("success_total_label")}<strong>$${d.total}</strong>${t("success_total_due")}`;
       succ.style.display = "block";
       succ.scrollIntoView({ behavior: "smooth", block: "center" });
-      // ── Google Analytics: booking conversion ──
-      if (typeof gtag === "function") {
-        gtag("event", "purchase", {
-          transaction_id: d.date + "_" + bk.time.replace(/[: ]/g, ""),
-          value: d.total,
-          currency: "USD",
-          items: [{
-            item_id: bk.service,
-            item_name: d.service,
-            price: SERVICES[bk.service].price,
-            quantity: 1
-          }]
-        });
-      }
     } else {
-      showMsg(d.error || "Something went wrong. Please try again.", "err");
+      showMsg(d.error || t("msg_generic_error"), "err");
       if (r.status === 409) loadAvailability(); // refresh taken days
-      btn.disabled = false; btn.textContent = "Confirm Booking";
+      btn.disabled = false; btn.textContent = t("bk_submit_btn");
     }
   } catch (e) {
-    showMsg("Connection error. Please try again or text 815-823-9485.", "err");
-    btn.disabled = false; btn.textContent = "Confirm Booking";
+    showMsg(t("msg_connection_error"), "err");
+    btn.disabled = false; btn.textContent = t("bk_submit_btn");
+  }
+}
+
+// Re-render all language-dependent dynamic content (called by applyLang on toggle)
+function refreshDynamicLang() {
+  if (typeof populateServiceDropdown === "function") populateServiceDropdown();
+  if (typeof renderAddons === "function") renderAddons();
+  if (typeof renderSummary === "function") renderSummary();
+  if (typeof renderVehicleSurchargeLabels === "function") renderVehicleSurchargeLabels();
+  // Update the contact placeholder without clearing what the user typed
+  const contactInp = document.getElementById("bk-contact");
+  if (contactInp) {
+    contactInp.placeholder = bk.contactType === "phone" ? t("ph_contact_phone") : t("ph_contact_email");
   }
 }
 
