@@ -293,6 +293,10 @@ def login_required(f):
 def index():
     return render_template("index.html")
 
+@app.route("/review")
+def admin_logout():
+    return render_template("review.html")
+
 
 @app.route("/api/availability")
 def availability():
