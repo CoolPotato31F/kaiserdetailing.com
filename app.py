@@ -71,24 +71,19 @@ app.config.update(
 # Prices are validated server-side so a tampered client can't change totals.
 # ──────────────────────────────────────────────────────────────────────────────
 SERVICES = {
-    "interior_detail":     {"name": "Interior Detail",        "price": 100, "dur": "1h 30m"},
-    "exterior_detail":     {"name": "Exterior Detail",        "price": 75,  "dur": "1h 30m"},
-    "professional_detail": {"name": "Professional Detail",    "price": 150, "dur": "3h"},
-    "showroom_detail":     {"name": "Showroom Detail",        "price": 225, "dur": "4h"},
-    "engine_bay":          {"name": "Engine Bay Cleaning",    "price": 35,  "dur": "30m"},
-    "quick_interior":      {"name": "Quick Interior Cleaning","price": 35,  "dur": "30m"},
-    "quick_detail":        {"name": "Quick Detail",           "price": 55,  "dur": "1h"},
-    "headlight":           {"name": "Headlight Restoration",  "price": 40,  "dur": "40m"},
-    "decal_removal":       {"name": "Sticker / Decal Removal","price": 15,  "dur": "15m"},
+    "interior_detail":     {"name": "Interior Detail",         "price": 75,  "dur": "1h 30m"},
+    "exterior_detail":     {"name": "Exterior Detail",         "price": 50,  "dur": "1h 30m"},
+    "professional_detail": {"name": "Professional Detail",     "price": 125, "dur": "3h"},
+    "showroom_detail":     {"name": "Showroom Detail",         "price": 200, "dur": "4h"},
+    "engine_bay":          {"name": "Engine Bay Cleaning",     "price": 35,  "dur": "30m"},
+    "decal_removal":       {"name": "Sticker / Decal Removal", "price": 15,  "dur": "15m"},
 }
 
 ADDONS = {
-    "tire_shine":     {"name": "Tire Shine",     "price": 10},
-    "carpet_shampoo": {"name": "Carpet Shampoo", "price": 30},
-    "wax":            {"name": "Wax",            "price": 30},
-    "clay":           {"name": "Clay Service",   "price": 45},
-    "rainx":          {"name": "RainX",          "price": 10},
-    "quick_wash":     {"name": "Quick Wash",     "price": 20},
+    "carpet_shampoo": {"name": "Carpet Shampoo", "price": 30, "dur": "30m"},
+    "wax":            {"name": "Wax",            "price": 30, "dur": "45m"},
+    "clay":           {"name": "Clay Service",   "price": 45, "dur": "35m"},
+    "rainx":          {"name": "RainX",          "price": 10, "dur": "15m"},
 }
 
 # Which add-ons are valid for each service (server-side validation)
@@ -97,11 +92,8 @@ SERVICE_ADDONS = {
     "exterior_detail":     ["wax", "clay", "rainx"],
     "professional_detail": ["carpet_shampoo", "clay", "rainx"],
     "showroom_detail":     ["clay", "rainx"],
-    "engine_bay":          ["quick_wash"],
-    "quick_interior":      ["carpet_shampoo", "quick_wash"],
-    "quick_detail":        ["tire_shine"],
-    "headlight":           ["quick_wash"],
-    "decal_removal":       ["quick_wash"],
+    "engine_bay":          [],
+    "decal_removal":       [],
 }
 
 # Available arrival time slots offered to customers
@@ -188,6 +180,65 @@ def notify(booking):
         return False, str(e)
 
 
+def notify_review(review):
+    """
+    Fire a Pushover push notification for a new customer review.
+    Never lets a notification failure break the review submission response.
+
+    review is a dict with keys: service, website_ease, quality, communication,
+    value_rating, recommend, favorite, improve, customer_name, email.
+    """
+    if not PUSHOVER_TOKEN:
+        app.logger.warning("Pushover: PUSHOVER_TOKEN not set — skipping notification.")
+        return
+
+    stars = "★" * review["quality"] + "☆" * (5 - review["quality"])
+    name = review.get("customer_name") or "Anonymous"
+
+    lines = [
+        f"{name} — {review['service']}",
+        f"{stars}  (quality {review['quality']}/5)",
+        f"Website ease: {review['website_ease']}/5",
+    ]
+    if review.get("communication"):
+        lines.append(f"Communication: {review['communication']}/5")
+    if review.get("recommend"):
+        lines.append(f"Would recommend: {review['recommend']}/5")
+    if review.get("value_rating"):
+        lines.append(f"Good value: {review['value_rating']}")
+    if review.get("favorite"):
+        lines.append(f"Liked: {review['favorite']}")
+    if review.get("improve"):
+        lines.append(f"Improve: {review['improve']}")
+
+    payload = urllib.parse.urlencode({
+        "token":   PUSHOVER_TOKEN,
+        "user":    PUSHOVER_USER,
+        "title":   "⭐ New Customer Review",
+        "message": "\n".join(lines),
+        "sound":   "magic",
+        "priority": "0",
+    }).encode()
+
+    try:
+        req = urllib.request.Request(
+            "https://api.pushover.net/1/messages.json",
+            data=payload,
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            result = json.loads(resp.read())
+            if result.get("status") != 1:
+                app.logger.error(f"Pushover error: {result}")
+                return False, str(result)
+            else:
+                app.logger.info("Pushover review notification sent.")
+                return True, None
+    except Exception as e:
+        app.logger.error(f"Pushover review notification failed: {e}")
+        return False, str(e)
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Database
 # ──────────────────────────────────────────────────────────────────────────────
@@ -241,6 +292,24 @@ def init_db():
         conn.commit()
     except Exception:
         pass  # column already exists — safe to ignore
+
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS reviews (
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            service        TEXT NOT NULL,
+            website_ease   INTEGER NOT NULL,       -- 1-5
+            quality        INTEGER NOT NULL,       -- 1-5
+            communication  INTEGER,                -- 1-5
+            value_rating   TEXT,                   -- 'Yes' / 'Somewhat' / 'No'
+            recommend      INTEGER,                -- 1-5
+            favorite       TEXT DEFAULT '',
+            improve        TEXT DEFAULT '',
+            customer_name  TEXT DEFAULT '',
+            email          TEXT DEFAULT '',
+            created_at     TEXT NOT NULL
+        );
+    """)
+    conn.commit()
     conn.close()
 
 
@@ -252,7 +321,6 @@ LARGE_VEHICLE_SURCHARGE = 20
 # Only services that involve interior work qualify for the large-vehicle surcharge
 LARGE_VEHICLE_SERVICES = {
     "interior_detail", "professional_detail", "showroom_detail",
-    "quick_interior", "quick_detail",
 }
 
 
@@ -305,6 +373,64 @@ def index():
 @app.route("/review")
 def review():
     return render_template("review.html")
+
+
+@app.route("/api/review", methods=["POST"])
+def submit_review():
+    data = request.get_json(silent=True) or {}
+
+    service = (data.get("service") or "").strip()
+    favorite = (data.get("favorite") or "").strip()
+    improve = (data.get("improve") or "").strip()
+    value_rating = (data.get("value") or "").strip()
+    customer_name = (data.get("name") or "").strip()
+    email = (data.get("email") or "").strip()
+
+    if not service:
+        return jsonify({"ok": False, "error": "Please select which service you had."}), 400
+
+    def _to_int_1_5(v):
+        try:
+            n = int(v)
+        except (TypeError, ValueError):
+            return None
+        return n if 1 <= n <= 5 else None
+
+    website_ease = _to_int_1_5(data.get("website_ease"))
+    quality = _to_int_1_5(data.get("quality"))
+    communication = _to_int_1_5(data.get("communication"))
+    recommend = _to_int_1_5(data.get("recommend"))
+
+    if website_ease is None or quality is None:
+        return jsonify({"ok": False, "error": "Please answer the required rating questions."}), 400
+
+    conn = get_db()
+    conn.execute("""
+        INSERT INTO reviews
+        (service, website_ease, quality, communication, value_rating, recommend,
+         favorite, improve, customer_name, email, created_at)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)
+    """, (
+        service, website_ease, quality, communication, value_rating, recommend,
+        favorite, improve, customer_name, email,
+        datetime.now().isoformat(timespec="seconds"),
+    ))
+    conn.commit()
+    conn.close()
+
+    notify_review({
+        "service": service,
+        "website_ease": website_ease,
+        "quality": quality,
+        "communication": communication,
+        "value_rating": value_rating,
+        "recommend": recommend,
+        "favorite": favorite,
+        "improve": improve,
+        "customer_name": customer_name,
+    })
+
+    return jsonify({"ok": True})
 
 
 @app.route("/api/availability")
@@ -501,13 +627,22 @@ def admin_dashboard():
     block_rows = conn.execute(
         "SELECT * FROM blocked_times ORDER BY block_date ASC"
     ).fetchall()
+
+    review_rows = conn.execute(
+        "SELECT * FROM reviews ORDER BY created_at DESC"
+    ).fetchall()
     conn.close()
+
     blocks = [dict(b) for b in block_rows]
+    reviews = [dict(r) for r in review_rows]
+    avg_quality = round(sum(r["quality"] for r in reviews) / len(reviews), 1) if reviews else None
 
     return render_template(
         "admin.html",
         bookings=bookings,
         blocks=blocks,
+        reviews=reviews,
+        avg_quality=avg_quality,
         services=SERVICES,
         addons=ADDONS,
         service_addons=SERVICE_ADDONS,
@@ -658,6 +793,16 @@ def admin_delete(booking_id):
     conn.commit()
     conn.close()
     return _admin_redirect("Booking deleted.", ok=True)
+
+
+@app.route("/admin/review/delete/<int:review_id>", methods=["POST"])
+@login_required
+def admin_delete_review(review_id):
+    conn = get_db()
+    conn.execute("DELETE FROM reviews WHERE id = ?", (review_id,))
+    conn.commit()
+    conn.close()
+    return _admin_redirect("Review deleted.", ok=True)
 
 
 def _admin_redirect(msg, ok=False):

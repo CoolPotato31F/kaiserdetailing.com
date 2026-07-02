@@ -393,22 +393,33 @@ form.addEventListener("submit", async (e) => {
   btn.disabled = true;
   btn.textContent = "Submitting...";
 
-  const formData = new FormData(form);
-  formData.append("_subject", "New review/feedback — Kaiser's Detail Co.");
+  const payload = {
+    service:       service.value,
+    website_ease:  websiteEase.value,
+    quality:       quality.value,
+    communication: (form.querySelector('input[name="communication"]:checked') || {}).value || null,
+    value:         (form.querySelector('input[name="value"]:checked') || {}).value || null,
+    recommend:     (form.querySelector('input[name="recommend"]:checked') || {}).value || null,
+    favorite:      form.querySelector('#favorite').value.trim(),
+    improve:       form.querySelector('#improve').value.trim(),
+    name:          form.querySelector('#name').value.trim(),
+    email:         form.querySelector('#email').value.trim(),
+  };
 
   try {
-    const res = await fetch("https://formspree.io/f/xnjrqajr", {
+    const res = await fetch("/api/review", {
       method: "POST",
-      body: formData,
-      headers: { "Accept": "application/json" }
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
-    if (res.ok) {
+    const d = await res.json().catch(() => ({}));
+    if (res.ok && d.ok) {
       form.style.display = "none";
       document.querySelector(".form-intro").style.display = "none";
       document.getElementById("success").style.display = "block";
       document.getElementById("success").scrollIntoView({ behavior: "smooth", block: "center" });
     } else {
-      msg.textContent = "Something went wrong. Please try again or email KaoFechner@outlook.com.";
+      msg.textContent = d.error || "Something went wrong. Please try again or email KaoFechner@outlook.com.";
       msg.className = "form-msg err";
       btn.disabled = false;
       btn.textContent = "Submit Feedback";

@@ -70,6 +70,14 @@ tr.past td{opacity:0.5;}
 .block-type{font-size:0.75rem;background:var(--cream2);border:1px solid var(--rule);border-radius:100px;padding:2px 10px;color:var(--muted);}
 .block-note{font-size:0.8rem;color:var(--muted);}
 .block-past{opacity:0.45;}
+.review-card{background:#fff;border:1px solid var(--rule);border-radius:var(--rl);padding:1.3rem 1.6rem;margin-bottom:0.9rem;}
+.review-top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;margin-bottom:0.6rem;}
+.review-stars{color:var(--gold);font-size:1.05rem;letter-spacing:2px;}
+.review-meta{font-size:0.75rem;color:var(--muted);margin-top:2px;}
+.review-ratings{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.7rem;}
+.review-pill{font-size:0.72rem;background:var(--cream2);border:1px solid var(--rule);border-radius:100px;padding:3px 11px;color:var(--ink);}
+.review-text{font-size:0.86rem;color:var(--ink);line-height:1.6;margin-bottom:0.3rem;}
+.review-text strong{color:var(--muted);font-weight:600;font-size:0.72rem;letter-spacing:0.5px;text-transform:uppercase;display:block;margin-bottom:2px;}
 @media(max-width:700px){.block-grid{grid-template-columns:1fr 1fr;}.grid2,.grid3{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -91,6 +99,7 @@ tr.past td{opacity:0.5;}
     <div class="stat"><div class="n">{{ upcoming | length }}</div><div class="l">Upcoming Bookings</div></div>
     <div class="stat"><div class="n">{{ bookings | length }}</div><div class="l">Total Bookings</div></div>
     <div class="stat"><div class="n">${{ revenue }}</div><div class="l">Upcoming Revenue</div></div>
+    <div class="stat"><div class="n">{{ avg_quality if avg_quality else '—' }}{% if avg_quality %}<span style="font-size:1rem;color:var(--muted);">/5</span>{% endif %}</div><div class="l">Avg. Review Rating ({{ reviews|length }})</div></div>
   </div>
 
   <!-- BLOCKED TIMES -->
@@ -207,13 +216,44 @@ tr.past td{opacity:0.5;}
             <option value="Other">Other</option>
           </select>
         </div>
-        <div class="fg"><label>Year / Make / Model (optional)</label>
-          <input type="text" name="vehicle_details" placeholder="e.g. 2019 Honda Civic">
-        </div>
         <div class="fg"><label>Notes</label><textarea name="notes" rows="2"></textarea></div>
         <button class="create-btn" type="submit">Create Booking</button>
       </form>
     </div>
+  </div>
+
+  <!-- CUSTOMER REVIEWS -->
+  <div class="section">
+    <h2>⭐ Customer Reviews</h2>
+    {% if reviews %}
+      {% for r in reviews %}
+      <div class="review-card">
+        <div class="review-top">
+          <div>
+            <span class="review-stars">{{ '★' * r.quality }}{{ '☆' * (5 - r.quality) }}</span>
+            <div class="review-meta">
+              {{ r.customer_name or 'Anonymous' }} · {{ r.service }} · {{ r.created_at }}
+              {% if r.email %} · <a href="mailto:{{ r.email }}" style="color:var(--gold);">{{ r.email }}</a>{% endif %}
+            </div>
+          </div>
+          <form method="POST" action="{{ url_for('admin_delete_review', review_id=r.id) }}" onsubmit="return confirm('Delete this review?');">
+            <button class="del" type="submit">Delete</button>
+          </form>
+        </div>
+        <div class="review-ratings">
+          <span class="review-pill">Website ease: {{ r.website_ease }}/5</span>
+          <span class="review-pill">Quality: {{ r.quality }}/5</span>
+          {% if r.communication %}<span class="review-pill">Communication: {{ r.communication }}/5</span>{% endif %}
+          {% if r.value_rating %}<span class="review-pill">Good value: {{ r.value_rating }}</span>{% endif %}
+          {% if r.recommend %}<span class="review-pill">Would recommend: {{ r.recommend }}/5</span>{% endif %}
+        </div>
+        {% if r.favorite %}<div class="review-text"><strong>Liked most</strong>{{ r.favorite }}</div>{% endif %}
+        {% if r.improve %}<div class="review-text"><strong>Could improve</strong>{{ r.improve }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="create-card empty">No reviews yet. They'll appear here as customers submit feedback at /review.</div>
+    {% endif %}
   </div>
 
   <!-- BOOKINGS TABLE -->
@@ -234,7 +274,7 @@ tr.past td{opacity:0.5;}
           <td class="date-cell">{{ b.booking_date }}<br><span class="src">{{ b.source }}</span></td>
           <td>{{ b.arrival_time }}</td>
           <td>{{ b.customer_name }}</td>
-          <td style="font-size:0.85rem;">{{ b.vehicle_type or '—' }}{% if b.vehicle_details %}<br><span style="color:var(--muted);font-size:0.78rem;">{{ b.vehicle_details }}</span>{% endif %}</td>
+          <td style="font-size:0.85rem;">{{ b.vehicle_type or '—' }}</td>
           <td class="contact-cell">
             {% if b.contact_type == 'phone' %}<a href="tel:{{ b.contact_value }}">{{ b.contact_value }}</a>
             {% else %}<a href="mailto:{{ b.contact_value }}">{{ b.contact_value }}</a>{% endif %}
