@@ -297,7 +297,6 @@ def index():
 def admin_logout():
     return render_template("review.html")
 
-
 @app.route("/api/availability")
 def availability():
     """Return taken dates and the earliest bookable date (tomorrow)."""
