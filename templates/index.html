@@ -140,6 +140,7 @@ nav {
   color: var(--muted); transition: color 0.18s;
 }
 .nav-links a:hover { color: var(--charcoal); }
+.nav-right { display: flex; align-items: center; gap: 1.6rem; }
 .nav-call {
   background: var(--gold); color: var(--white) !important;
   padding: 9px 20px; border-radius: var(--r);
@@ -149,14 +150,16 @@ nav {
 }
 .nav-call:hover { background: var(--gold-h) !important; }
 .lang-toggle-btn {
-  background: transparent; border: 1.5px solid var(--rule); border-radius: 100px;
-  color: var(--muted); font-family: 'Outfit', sans-serif; font-size: 0.72rem;
-  font-weight: 600; letter-spacing: 0.5px; padding: 6px 13px; cursor: pointer;
-  transition: 0.18s; margin-right: 1.2rem; white-space: nowrap;
+  position: fixed; bottom: 22px; right: 22px; z-index: 250;
+  background: var(--white); border: 1.5px solid var(--rule); border-radius: 100px;
+  color: var(--charcoal); font-family: 'Outfit', sans-serif; font-size: 0.8rem;
+  font-weight: 600; letter-spacing: 0.3px; padding: 11px 20px; cursor: pointer;
+  box-shadow: 0 4px 18px rgba(24,24,26,0.16);
+  transition: 0.18s; white-space: nowrap;
 }
-.lang-toggle-btn:hover { border-color: var(--gold); color: var(--gold); }
+.lang-toggle-btn:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 22px rgba(24,24,26,0.2); }
 @media (max-width: 768px) {
-  .lang-toggle-btn { margin-right: 0.6rem; font-size: 0.68rem; padding: 5px 10px; }
+  .lang-toggle-btn { bottom: 16px; right: 16px; font-size: 0.74rem; padding: 9px 16px; }
 }
 .ham { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
 .ham span { width: 22px; height: 1.5px; background: var(--charcoal); transition: 0.25s; }
@@ -939,16 +942,18 @@ footer {
     <img src="/static/favicon.png" alt="Kaiser's Detail Co. Logo">
     Kaiser's <span>Detail Co.</span>
   </div>
-  <ul class="nav-links">
-    <li><a href="#book-online" data-i18n="nav_book">Book Online</a></li>
-    <li><a href="#services" data-i18n="nav_services">Services</a></li>
-    <li><a href="#gallery" data-i18n="nav_gallery">Gallery</a></li>
-    <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
-    <li><a href="#book-online" class="nav-call" data-i18n="nav_book_now">📅 Book Now</a></li>
-  </ul>
-  <button id="lang-toggle" class="lang-toggle-btn" onclick="toggleLang()" type="button" aria-label="Switch language">EN · Español</button>
-  <div class="ham" id="ham"><span></span><span></span><span></span></div>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#book-online" data-i18n="nav_book">Book Online</a></li>
+      <li><a href="#services" data-i18n="nav_services">Services</a></li>
+      <li><a href="#gallery" data-i18n="nav_gallery">Gallery</a></li>
+      <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+      <li><a href="#book-online" class="nav-call" data-i18n="nav_book_now">📅 Book Now</a></li>
+    </ul>
+    <div class="ham" id="ham"><span></span><span></span><span></span></div>
+  </div>
 </nav>
+<button id="lang-toggle" class="lang-toggle-btn" onclick="toggleLang()" type="button" aria-label="Switch language">EN · Español</button>
 <div class="mob-nav" id="mob-nav">
   <a href="#book-online" data-i18n="nav_book">Book Online</a>
   <a href="#services" data-i18n="nav_services">Services</a>
