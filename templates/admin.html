@@ -70,14 +70,6 @@ tr.past td{opacity:0.5;}
 .block-type{font-size:0.75rem;background:var(--cream2);border:1px solid var(--rule);border-radius:100px;padding:2px 10px;color:var(--muted);}
 .block-note{font-size:0.8rem;color:var(--muted);}
 .block-past{opacity:0.45;}
-.review-card{background:#fff;border:1px solid var(--rule);border-radius:var(--rl);padding:1.3rem 1.6rem;margin-bottom:0.9rem;}
-.review-top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;margin-bottom:0.6rem;}
-.review-stars{color:var(--gold);font-size:1.05rem;letter-spacing:2px;}
-.review-meta{font-size:0.75rem;color:var(--muted);margin-top:2px;}
-.review-ratings{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.7rem;}
-.review-pill{font-size:0.72rem;background:var(--cream2);border:1px solid var(--rule);border-radius:100px;padding:3px 11px;color:var(--ink);}
-.review-text{font-size:0.86rem;color:var(--ink);line-height:1.6;margin-bottom:0.3rem;}
-.review-text strong{color:var(--muted);font-weight:600;font-size:0.72rem;letter-spacing:0.5px;text-transform:uppercase;display:block;margin-bottom:2px;}
 @media(max-width:700px){.block-grid{grid-template-columns:1fr 1fr;}.grid2,.grid3{grid-template-columns:1fr;}}
 </style>
 </head>
@@ -99,7 +91,6 @@ tr.past td{opacity:0.5;}
     <div class="stat"><div class="n">{{ upcoming | length }}</div><div class="l">Upcoming Bookings</div></div>
     <div class="stat"><div class="n">{{ bookings | length }}</div><div class="l">Total Bookings</div></div>
     <div class="stat"><div class="n">${{ revenue }}</div><div class="l">Upcoming Revenue</div></div>
-    <div class="stat"><div class="n">{{ avg_quality if avg_quality else '—' }}{% if avg_quality %}<span style="font-size:1rem;color:var(--muted);">/5</span>{% endif %}</div><div class="l">Avg. Review Rating ({{ reviews|length }})</div></div>
   </div>
 
   <!-- BLOCKED TIMES -->
@@ -109,28 +100,20 @@ tr.past td{opacity:0.5;}
       <form method="POST" action="{{ url_for('admin_add_block') }}">
         <div class="block-grid">
           <div>
-            <label>Date</label>
-            <input type="date" name="block_date" min="{{ today }}" required>
+            <label>Start date</label>
+            <input type="date" name="start_date" id="blk-start-date" min="{{ today }}" required>
           </div>
           <div>
-            <label>Block Type</label>
-            <select name="block_type" id="block-type-sel" onchange="toggleBlockFields()">
-              <option value="full_day">Full Day</option>
-              <option value="before">Before a time</option>
-              <option value="after">After a time</option>
-            </select>
+            <label>Start time</label>
+            <input type="time" name="start_time" id="blk-start-time" value="00:00">
           </div>
-          <div id="before-field" style="display:none;">
-            <label>Block slots before</label>
-            <select name="before_time">
-              {% for t in time_slots %}<option>{{ t }}</option>{% endfor %}
-            </select>
+          <div>
+            <label>End date</label>
+            <input type="date" name="end_date" id="blk-end-date" min="{{ today }}" required>
           </div>
-          <div id="after-field" style="display:none;">
-            <label>Block slots after</label>
-            <select name="after_time">
-              {% for t in time_slots %}<option value="{{ t }}" {% if loop.last %}selected{% endif %}>{{ t }}</option>{% endfor %}
-            </select>
+          <div>
+            <label>End time</label>
+            <input type="time" name="end_time" id="blk-end-time" value="23:59">
           </div>
           <div>
             <label>Note (optional)</label>
@@ -141,22 +124,35 @@ tr.past td{opacity:0.5;}
             <button class="block-submit" type="submit">Block</button>
           </div>
         </div>
+        <p style="font-size:0.78rem;color:var(--muted);margin:0.6rem 0 0;">
+          Blocks every appointment slot from the start to the end. Leave times as-is to block whole days.
+        </p>
       </form>
     </div>
 
     {% if blocks %}
     <div class="block-list">
       {% for b in blocks %}
-      {% set is_past = b.block_date < today %}
+      {% if b.block_type == 'range' %}
+        {% set is_past = (b.end_dt[:10] if b.end_dt else b.block_date) < today %}
+      {% else %}
+        {% set is_past = b.block_date < today %}
+      {% endif %}
       <div class="block-item {{ 'block-past' if is_past else '' }}">
         <div class="block-info">
-          <span class="block-date">{{ b.block_date }}</span>
-          {% if b.block_type == 'full_day' %}
-            <span class="block-type">Full Day</span>
-          {% elif b.block_type == 'before' %}
-            <span class="block-type">Before {{ b.before_time }}</span>
-          {% elif b.block_type == 'after' %}
-            <span class="block-type">After {{ b.after_time }}</span>
+          {% if b.block_type == 'range' %}
+            <span class="block-date">{{ b.start_dt }}</span>
+            <span class="block-type">→</span>
+            <span class="block-date">{{ b.end_dt }}</span>
+          {% else %}
+            <span class="block-date">{{ b.block_date }}</span>
+            {% if b.block_type == 'full_day' %}
+              <span class="block-type">Full Day</span>
+            {% elif b.block_type == 'before' %}
+              <span class="block-type">Before {{ b.before_time }}</span>
+            {% elif b.block_type == 'after' %}
+              <span class="block-type">After {{ b.after_time }}</span>
+            {% endif %}
           {% endif %}
           {% if b.note %}<span class="block-note">{{ b.note }}</span>{% endif %}
           {% if is_past %}<span class="block-note">(past)</span>{% endif %}
@@ -222,40 +218,6 @@ tr.past td{opacity:0.5;}
     </div>
   </div>
 
-  <!-- CUSTOMER REVIEWS -->
-  <div class="section">
-    <h2>⭐ Customer Reviews</h2>
-    {% if reviews %}
-      {% for r in reviews %}
-      <div class="review-card">
-        <div class="review-top">
-          <div>
-            <span class="review-stars">{{ '★' * r.quality }}{{ '☆' * (5 - r.quality) }}</span>
-            <div class="review-meta">
-              {{ r.customer_name or 'Anonymous' }} · {{ r.service }} · {{ r.created_at }}
-              {% if r.email %} · <a href="mailto:{{ r.email }}" style="color:var(--gold);">{{ r.email }}</a>{% endif %}
-            </div>
-          </div>
-          <form method="POST" action="{{ url_for('admin_delete_review', review_id=r.id) }}" onsubmit="return confirm('Delete this review?');">
-            <button class="del" type="submit">Delete</button>
-          </form>
-        </div>
-        <div class="review-ratings">
-          <span class="review-pill">Website ease: {{ r.website_ease }}/5</span>
-          <span class="review-pill">Quality: {{ r.quality }}/5</span>
-          {% if r.communication %}<span class="review-pill">Communication: {{ r.communication }}/5</span>{% endif %}
-          {% if r.value_rating %}<span class="review-pill">Good value: {{ r.value_rating }}</span>{% endif %}
-          {% if r.recommend %}<span class="review-pill">Would recommend: {{ r.recommend }}/5</span>{% endif %}
-        </div>
-        {% if r.favorite %}<div class="review-text"><strong>Liked most</strong>{{ r.favorite }}</div>{% endif %}
-        {% if r.improve %}<div class="review-text"><strong>Could improve</strong>{{ r.improve }}</div>{% endif %}
-      </div>
-      {% endfor %}
-    {% else %}
-    <div class="create-card empty">No reviews yet. They'll appear here as customers submit feedback at /review.</div>
-    {% endif %}
-  </div>
-
   <!-- BOOKINGS TABLE -->
   <div class="section">
     <h2>All Bookings</h2>
@@ -319,11 +281,17 @@ function renderAdmAddons() {
 admService.addEventListener("change", renderAdmAddons);
 renderAdmAddons();
 
-function toggleBlockFields() {
-  const t = document.getElementById("block-type-sel").value;
-  document.getElementById("before-field").style.display = t === "before" ? "block" : "none";
-  document.getElementById("after-field").style.display  = t === "after"  ? "block" : "none";
-}
+// When the admin picks a start date, default the end date to match so
+// single-day blocks only need one date filled in.
+(function initBlockRange() {
+  const start = document.getElementById("blk-start-date");
+  const end   = document.getElementById("blk-end-date");
+  if (!start || !end) return;
+  start.addEventListener("change", () => {
+    if (!end.value || end.value < start.value) end.value = start.value;
+    end.min = start.value;
+  });
+})();
 
 async function testNotification() {
   const btn = document.getElementById("test-notif-btn");
