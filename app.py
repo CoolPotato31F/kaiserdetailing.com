@@ -71,11 +71,11 @@ app.config.update(
 # Prices are validated server-side so a tampered client can't change totals.
 # ──────────────────────────────────────────────────────────────────────────────
 SERVICES = {
-    "interior_detail":     {"name": "Interior Detail",         "price": 75,  "dur": "1h 30m"},
-    "exterior_detail":     {"name": "Exterior Detail",         "price": 50,  "dur": "1h 30m"},
-    "professional_detail": {"name": "Professional Detail",     "price": 125, "dur": "3h"},
-    "showroom_detail":     {"name": "Showroom Detail",         "price": 200, "dur": "4h"},
-    "engine_bay":          {"name": "Engine Bay Cleaning",     "price": 35,  "dur": "30m"},
+    "interior_detail":     {"name": "Interior Detail",         "price": 100, "dur": "4h 30m"},
+    "exterior_detail":     {"name": "Exterior Detail",         "price": 75,  "dur": "2h 30m"},
+    "professional_detail": {"name": "Professional Detail",     "price": 150, "dur": "4h"},
+    "showroom_detail":     {"name": "Showroom Detail",         "price": 225, "dur": "5h"},
+    "engine_bay":          {"name": "Engine Bay Cleaning",     "price": 55,  "dur": "30m"},
     "decal_removal":       {"name": "Sticker / Decal Removal", "price": 15,  "dur": "15m"},
 }
 
@@ -326,8 +326,8 @@ def init_db():
 # ──────────────────────────────────────────────────────────────────────────────
 # Helpers
 # ──────────────────────────────────────────────────────────────────────────────
-LARGE_VEHICLES = {"Truck", "Minivan", "SUV"}
-LARGE_VEHICLE_SURCHARGE = 20
+LARGE_VEHICLES = {"Minivan", "SUV"}
+LARGE_VEHICLE_SURCHARGE = 25
 # Only services that involve interior work qualify for the large-vehicle surcharge
 LARGE_VEHICLE_SERVICES = {
     "interior_detail", "professional_detail", "showroom_detail",
