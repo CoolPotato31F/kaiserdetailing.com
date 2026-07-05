@@ -102,32 +102,6 @@ TIME_SLOTS = [
     "12:00 PM", "1:00 PM", "2:00 PM",
 ]
 
-# Map each display slot to a "YYYY-MM-DD HH:MM"-comparable 24-hour time.
-SLOT_24H = {
-    "9:00 AM":  "09:00",
-    "10:00 AM": "10:00",
-    "11:00 AM": "11:00",
-    "12:00 PM": "12:00",
-    "1:00 PM":  "13:00",
-    "2:00 PM":  "14:00",
-}
-
-
-def slot_datetime(date_str, slot):
-    """Return 'YYYY-MM-DD HH:MM' for a booking date + display slot, or None."""
-    hhmm = SLOT_24H.get(slot)
-    if not date_str or not hhmm:
-        return None
-    return f"{date_str} {hhmm}"
-
-
-def slot_in_block_range(date_str, slot, start_dt, end_dt):
-    """True if the given date/slot falls within [start_dt, end_dt] (inclusive)."""
-    sd = slot_datetime(date_str, slot)
-    if not sd or not start_dt or not end_dt:
-        return False
-    return start_dt <= sd <= end_dt
-
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Pushover notifications
@@ -303,31 +277,31 @@ def init_db():
     conn.execute("""
         CREATE TABLE IF NOT EXISTS blocked_times (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,
-            block_date   TEXT NOT NULL,          -- legacy start date (YYYY-MM-DD); kept for compatibility
-            block_type   TEXT NOT NULL,           -- legacy: 'full_day'/'before'/'after'; new blocks use 'range'
-            before_time  TEXT DEFAULT NULL,       -- legacy
-            after_time   TEXT DEFAULT NULL,       -- legacy
-            start_dt     TEXT DEFAULT NULL,       -- range start "YYYY-MM-DD HH:MM"
-            end_dt       TEXT DEFAULT NULL,       -- range end   "YYYY-MM-DD HH:MM"
+            block_date   TEXT NOT NULL,          -- range START date (YYYY-MM-DD)
+            block_type   TEXT NOT NULL,           -- 'range' (legacy: 'full_day'/'before'/'after')
+            before_time  TEXT DEFAULT NULL,       -- legacy: block all slots before this time
+            after_time   TEXT DEFAULT NULL,       -- legacy: block all slots after this time
+            end_date     TEXT DEFAULT NULL,       -- range END date (YYYY-MM-DD)
+            start_time   TEXT DEFAULT NULL,       -- range START time (e.g. "9:00 AM")
+            end_time     TEXT DEFAULT NULL,       -- range END time (e.g. "2:00 PM")
             note         TEXT DEFAULT '',         -- admin note e.g. "Family trip"
             created_at   TEXT NOT NULL
         );
     """)
     conn.commit()
+    # Migration: add range columns to existing databases without losing data
+    for _col in ("end_date", "start_time", "end_time"):
+        try:
+            conn.execute(f"ALTER TABLE blocked_times ADD COLUMN {_col} TEXT DEFAULT NULL")
+            conn.commit()
+        except Exception:
+            pass  # column already exists — safe to ignore
     # Migration: add vehicle_type column to existing databases without losing data
     try:
         conn.execute("ALTER TABLE bookings ADD COLUMN vehicle_type TEXT NOT NULL DEFAULT ''")
         conn.commit()
     except Exception:
         pass  # column already exists — safe to ignore
-
-    # Migration: add start_dt / end_dt columns for range-based blocking
-    for _col in ("start_dt", "end_dt"):
-        try:
-            conn.execute(f"ALTER TABLE blocked_times ADD COLUMN {_col} TEXT DEFAULT NULL")
-            conn.commit()
-        except Exception:
-            pass  # column already exists — safe to ignore
 
     conn.execute("""
         CREATE TABLE IF NOT EXISTS reviews (
@@ -480,26 +454,27 @@ def availability():
     ).fetchall()
     taken = [r["booking_date"] for r in rows]
 
-    # Blocked times. Include any range block that ends on/after the earliest
-    # bookable date, plus legacy single-date blocks from that date forward.
-    block_rows = conn.execute("""
-        SELECT * FROM blocked_times
-        WHERE (block_type = 'range' AND (end_dt IS NULL OR end_dt >= ?))
-           OR (block_type != 'range' AND block_date >= ?)
-    """, (earliest, earliest)).fetchall()
+    # Blocked times — include any block that is still relevant today or later.
+    # For range blocks the relevant end is end_date; legacy rows only have block_date.
+    block_rows = conn.execute(
+        "SELECT * FROM blocked_times WHERE COALESCE(end_date, block_date) >= ?",
+        (earliest,)
+    ).fetchall()
     conn.close()
 
     blocks = []
     for b in block_rows:
+        row = dict(b)
         blocks.append({
-            "id":          b["id"],
-            "date":        b["block_date"],
-            "type":        b["block_type"],
-            "before_time": b["before_time"],
-            "after_time":  b["after_time"],
-            "start_dt":    b["start_dt"],
-            "end_dt":      b["end_dt"],
-            "note":        b["note"],
+            "id":          row["id"],
+            "date":        row["block_date"],       # start date (or the only date for legacy)
+            "type":        row["block_type"],
+            "before_time": row["before_time"],       # legacy
+            "after_time":  row["after_time"],        # legacy
+            "end_date":    row.get("end_date"),
+            "start_time":  row.get("start_time"),
+            "end_time":    row.get("end_time"),
+            "note":        row["note"],
         })
 
     return jsonify({
@@ -559,26 +534,39 @@ def book():
     except ValueError as e:
         return jsonify({"ok": False, "error": str(e)}), 400
 
-    # Check if the requested date/time is blocked. Range blocks may span
-    # multiple days, so we can't filter by a single date — fetch all and test.
+    # Check if the requested date/time is blocked (ranges + legacy blocks)
     conn = get_db()
-    block_rows = conn.execute("SELECT * FROM blocked_times").fetchall()
+    block_rows = conn.execute(
+        "SELECT * FROM blocked_times "
+        "WHERE block_date = ? OR (block_date <= ? AND COALESCE(end_date, block_date) >= ?)",
+        (booking_date, booking_date, booking_date)
+    ).fetchall()
     conn.close()
+    slot_idx = TIME_SLOTS.index(arrival_time)
+    unavailable = jsonify({"ok": False, "error": "Sorry — that time is not available for booking."}), 400
     for b in block_rows:
         if b["block_type"] == "range":
-            if slot_in_block_range(booking_date, arrival_time, b["start_dt"], b["end_dt"]):
-                return jsonify({"ok": False, "error": "Sorry — that date and time is not available for booking."}), 400
+            start_date = b["block_date"]
+            end_date   = b["end_date"] or b["block_date"]
+            if not (start_date <= booking_date <= end_date):
+                continue
+            # Lower bound: honor start_time only on the start day
+            first = TIME_SLOTS.index(b["start_time"]) if (booking_date == start_date and b["start_time"]) else 0
+            # Upper bound: honor end_time only on the end day
+            last  = TIME_SLOTS.index(b["end_time"])   if (booking_date == end_date   and b["end_time"])   else len(TIME_SLOTS) - 1
+            if first <= slot_idx <= last:
+                return unavailable
             continue
-        # ── Legacy block types (kept for older DB rows) ──
+        # legacy blocks (only apply on the exact date)
         if b["block_date"] != booking_date:
             continue
         if b["block_type"] == "full_day":
             return jsonify({"ok": False, "error": "Sorry — that day is not available for booking."}), 400
         if b["block_type"] == "before" and b["before_time"]:
-            if TIME_SLOTS.index(arrival_time) < TIME_SLOTS.index(b["before_time"]):
+            if slot_idx < TIME_SLOTS.index(b["before_time"]):
                 return jsonify({"ok": False, "error": f"Sorry — arrivals before {b['before_time']} are not available that day."}), 400
         if b["block_type"] == "after" and b["after_time"]:
-            if TIME_SLOTS.index(arrival_time) > TIME_SLOTS.index(b["after_time"]):
+            if slot_idx > TIME_SLOTS.index(b["after_time"]):
                 return jsonify({"ok": False, "error": f"Sorry — arrivals after {b['after_time']} are not available that day."}), 400
 
     service_name = SERVICES[service_key]["name"]
@@ -772,41 +760,44 @@ def admin_create():
 def admin_add_block():
     f = request.form
     start_date = (f.get("start_date") or "").strip()
-    start_time = (f.get("start_time") or "").strip()
     end_date   = (f.get("end_date") or "").strip()
-    end_time   = (f.get("end_time") or "").strip()
+    start_time = (f.get("start_time") or "").strip() or None
+    end_time   = (f.get("end_time") or "").strip() or None
     note       = (f.get("note") or "").strip()
 
-    if not (start_date and end_date):
-        return _admin_redirect("Please choose a start and end date.")
-
-    # Time defaults: start of day / end of day if not provided
-    start_time = start_time or "00:00"
-    end_time   = end_time or "23:59"
-
+    if not start_date or not end_date:
+        return _admin_redirect("Please select a start and end date.")
     try:
         from datetime import datetime as _dt
-        start_obj = _dt.strptime(f"{start_date} {start_time}", "%Y-%m-%d %H:%M")
-        end_obj   = _dt.strptime(f"{end_date} {end_time}", "%Y-%m-%d %H:%M")
+        sd = _dt.strptime(start_date, "%Y-%m-%d").date()
+        ed = _dt.strptime(end_date, "%Y-%m-%d").date()
     except ValueError:
-        return _admin_redirect("Invalid date or time.")
+        return _admin_redirect("Invalid date.")
+    if ed < sd:
+        return _admin_redirect("End date can't be before the start date.")
 
-    if end_obj < start_obj:
-        return _admin_redirect("End must be the same as or after the start.")
-
-    start_dt = start_obj.strftime("%Y-%m-%d %H:%M")
-    end_dt   = end_obj.strftime("%Y-%m-%d %H:%M")
+    # Validate times against the offered slots (a blank means the whole day edge)
+    if start_time and start_time not in TIME_SLOTS:
+        return _admin_redirect("Invalid start time.")
+    if end_time and end_time not in TIME_SLOTS:
+        return _admin_redirect("Invalid end time.")
+    # On a single-day block, end time must not be before start time
+    if sd == ed and start_time and end_time and \
+       TIME_SLOTS.index(end_time) < TIME_SLOTS.index(start_time):
+        return _admin_redirect("End time can't be before the start time.")
 
     conn = get_db()
     conn.execute("""
         INSERT INTO blocked_times
-        (block_date, block_type, before_time, after_time, start_dt, end_dt, note, created_at)
-        VALUES (?,?,?,?,?,?,?,?)
-    """, (start_date, "range", None, None, start_dt, end_dt, note,
+        (block_date, block_type, before_time, after_time,
+         end_date, start_time, end_time, note, created_at)
+        VALUES (?,?,?,?,?,?,?,?,?)
+    """, (start_date, "range", None, None,
+          end_date, start_time, end_time, note,
           datetime.now().isoformat(timespec="seconds")))
     conn.commit()
     conn.close()
-    return _admin_redirect("Time range blocked.", ok=True)
+    return _admin_redirect("Time period blocked.", ok=True)
 
 
 @app.route("/admin/block/delete/<int:block_id>", methods=["POST"])

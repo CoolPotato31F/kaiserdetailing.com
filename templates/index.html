@@ -2202,29 +2202,27 @@ let takenDates = [];
 let earliestDate = null;
 let blockedTimes = [];
 
-// Display slot -> 24h "HH:MM" so we can compare against range blocks.
-const SLOT_24H = {
-  "9:00 AM":"09:00","10:00 AM":"10:00","11:00 AM":"11:00",
-  "12:00 PM":"12:00","1:00 PM":"13:00","2:00 PM":"14:00"
-};
-const ALL_SLOTS = ["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM"];
+const SLOT_ORDER = ["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM"];
 
-// Is a specific date + display slot covered by a range block?
-function slotInRange(dateStr, slot, b) {
-  if (b.type !== "range" || !b.start_dt || !b.end_dt) return false;
-  const hhmm = SLOT_24H[slot];
-  if (!hhmm) return false;
-  const sd = `${dateStr} ${hhmm}`;
-  return b.start_dt <= sd && sd <= b.end_dt;
-}
-
-// A date is fully blocked if every slot that day is covered (range),
-// or a legacy full_day block exists.
+// True if EVERY offered time slot on dateStr is blocked (so the day can't be booked).
 function isFullyBlocked(dateStr) {
-  if (blockedTimes.some(b => b.date === dateStr && b.type === "full_day")) return true;
-  const ranges = blockedTimes.filter(b => b.type === "range");
-  if (!ranges.length) return false;
-  return ALL_SLOTS.every(slot => ranges.some(b => slotInRange(dateStr, slot, b)));
+  return blockedTimes.some(b => {
+    if (b.type === "range") {
+      const start = b.date;
+      const end   = b.end_date || b.date;
+      if (dateStr < start || dateStr > end) return false;
+      // Interior day of a multi-day range → whole day blocked
+      const startTimed = dateStr === start && b.start_time;
+      const endTimed   = dateStr === end   && b.end_time;
+      if (!startTimed && !endTimed) return true;
+      // Otherwise it's a partial day; only "full" if the time window covers all slots
+      const first = startTimed ? SLOT_ORDER.indexOf(b.start_time) : 0;
+      const last  = endTimed   ? SLOT_ORDER.indexOf(b.end_time)   : SLOT_ORDER.length - 1;
+      return first <= 0 && last >= SLOT_ORDER.length - 1;
+    }
+    // legacy
+    return b.date === dateStr && b.type === "full_day";
+  });
 }
 
 // Format a Date using its LOCAL calendar components (YYYY-MM-DD).
@@ -2247,27 +2245,34 @@ function nextOpenDate() {
   return earliestDate;
 }
 
+// Is a specific slot on dateStr blocked by any block?
+function isSlotBlocked(dateStr, t) {
+  const idx = SLOT_ORDER.indexOf(t);
+  return blockedTimes.some(b => {
+    if (b.type === "range") {
+      const start = b.date;
+      const end   = b.end_date || b.date;
+      if (dateStr < start || dateStr > end) return false;
+      // Lower bound: on the start day honor start_time, otherwise from the first slot
+      const first = (dateStr === start && b.start_time) ? SLOT_ORDER.indexOf(b.start_time) : 0;
+      // Upper bound: on the end day honor end_time, otherwise through the last slot
+      const last  = (dateStr === end   && b.end_time)   ? SLOT_ORDER.indexOf(b.end_time)   : SLOT_ORDER.length - 1;
+      return idx >= first && idx <= last;
+    }
+    // legacy
+    if (b.date !== dateStr) return false;
+    if (b.type === "full_day") return true;
+    if (b.type === "before" && b.before_time) return idx < SLOT_ORDER.indexOf(b.before_time);
+    if (b.type === "after" && b.after_time)  return idx > SLOT_ORDER.indexOf(b.after_time);
+    return false;
+  });
+}
+
 function updateTimeSlotsForDate(dateStr) {
   // Grey out / disable time slots that are blocked for this date
-  // Legacy per-date blocks + range blocks (which may span multiple days)
-  const dayBlocks = blockedTimes.filter(b => b.date === dateStr || b.type === "range");
   document.querySelectorAll(".bk-time").forEach(el => {
     const t = el.textContent.trim();
-    let blocked = false;
-    for (const b of dayBlocks) {
-      if (b.type === "range") {
-        if (slotInRange(dateStr, t, b)) { blocked = true; break; }
-        continue;
-      }
-      if (b.date !== dateStr) continue;
-      if (b.type === "full_day") { blocked = true; break; }
-      if (b.type === "before" && b.before_time) {
-        if (ALL_SLOTS.indexOf(t) < ALL_SLOTS.indexOf(b.before_time)) { blocked = true; break; }
-      }
-      if (b.type === "after" && b.after_time) {
-        if (ALL_SLOTS.indexOf(t) > ALL_SLOTS.indexOf(b.after_time)) { blocked = true; break; }
-      }
-    }
+    const blocked = isSlotBlocked(dateStr, t);
     el.style.opacity = blocked ? "0.35" : "";
     el.style.pointerEvents = blocked ? "none" : "";
     el.style.textDecoration = blocked ? "line-through" : "";
