@@ -254,7 +254,7 @@ def init_db():
     conn.execute("""
         CREATE TABLE IF NOT EXISTS bookings (
             id            INTEGER PRIMARY KEY AUTOINCREMENT,
-            booking_date  TEXT NOT NULL UNIQUE,   -- one booking per day (YYYY-MM-DD)
+            booking_date  TEXT NOT NULL,          -- one ACTIVE booking per day (see partial index)
             arrival_time  TEXT NOT NULL,
             service_key   TEXT NOT NULL,
             service_name  TEXT NOT NULL,
@@ -270,7 +270,8 @@ def init_db():
             notes         TEXT DEFAULT '',
             agreed_terms  INTEGER NOT NULL DEFAULT 0,
             source        TEXT NOT NULL DEFAULT 'web', -- 'web' or 'admin'
-            created_at    TEXT NOT NULL
+            created_at    TEXT NOT NULL,
+            deleted       INTEGER NOT NULL DEFAULT 0   -- soft-delete: 1 = hidden, never lost
         );
     """)
     conn.commit()
@@ -302,6 +303,76 @@ def init_db():
         conn.commit()
     except Exception:
         pass  # column already exists — safe to ignore
+
+    # Migration: add a soft-delete flag. Deleting a booking sets deleted=1 so the
+    # record is NEVER lost from the file — it's just hidden from the admin view.
+    try:
+        conn.execute("ALTER TABLE bookings ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0")
+        conn.commit()
+    except Exception:
+        pass  # column already exists — safe to ignore
+
+    # Enforce "one ACTIVE booking per day" at the DB level while still allowing a
+    # freed-up (soft-deleted) date to be booked again. The old table-level UNIQUE
+    # constraint on booking_date blocked that, so we use a partial unique index
+    # that only applies to non-deleted rows.
+    #
+    # Older databases were created with `booking_date TEXT NOT NULL UNIQUE`, which
+    # can't be dropped without rebuilding the table. Detect that and rebuild once.
+    cols = conn.execute("PRAGMA index_list('bookings')").fetchall()
+    has_table_unique = any(
+        (row[3] if len(row) > 3 else "") == "u"  # origin 'u' = created by a UNIQUE constraint
+        for row in cols
+    )
+    if has_table_unique:
+        conn.executescript("""
+            PRAGMA foreign_keys=off;
+            BEGIN TRANSACTION;
+            ALTER TABLE bookings RENAME TO bookings_old;
+            CREATE TABLE bookings (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                booking_date  TEXT NOT NULL,
+                arrival_time  TEXT NOT NULL,
+                service_key   TEXT NOT NULL,
+                service_name  TEXT NOT NULL,
+                addons_json   TEXT NOT NULL DEFAULT '[]',
+                total_price   INTEGER NOT NULL,
+                customer_name TEXT NOT NULL,
+                contact_type  TEXT NOT NULL,
+                contact_value TEXT NOT NULL,
+                vehicle_type  TEXT NOT NULL DEFAULT '',
+                street        TEXT NOT NULL,
+                city          TEXT NOT NULL,
+                state         TEXT NOT NULL,
+                notes         TEXT DEFAULT '',
+                agreed_terms  INTEGER NOT NULL DEFAULT 0,
+                source        TEXT NOT NULL DEFAULT 'web',
+                created_at    TEXT NOT NULL,
+                deleted       INTEGER NOT NULL DEFAULT 0
+            );
+            INSERT INTO bookings
+                (id, booking_date, arrival_time, service_key, service_name,
+                 addons_json, total_price, customer_name, contact_type, contact_value,
+                 vehicle_type, street, city, state, notes, agreed_terms, source,
+                 created_at, deleted)
+            SELECT
+                 id, booking_date, arrival_time, service_key, service_name,
+                 addons_json, total_price, customer_name, contact_type, contact_value,
+                 vehicle_type, street, city, state, notes, agreed_terms, source,
+                 created_at, COALESCE(deleted, 0)
+            FROM bookings_old;
+            DROP TABLE bookings_old;
+            COMMIT;
+            PRAGMA foreign_keys=on;
+        """)
+        conn.commit()
+
+    # Partial unique index: at most one non-deleted booking per date.
+    conn.execute("""
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_bookings_active_date
+        ON bookings (booking_date) WHERE deleted = 0
+    """)
+    conn.commit()
 
     conn.execute("""
         CREATE TABLE IF NOT EXISTS reviews (
@@ -449,7 +520,7 @@ def availability():
     earliest = (date.today() + timedelta(days=1)).isoformat()
     conn = get_db()
     rows = conn.execute(
-        "SELECT booking_date FROM bookings WHERE booking_date >= ?",
+        "SELECT booking_date FROM bookings WHERE booking_date >= ? AND deleted = 0",
         (earliest,)
     ).fetchall()
     taken = [r["booking_date"] for r in rows]
@@ -646,7 +717,7 @@ def admin_logout():
 def admin_dashboard():
     conn = get_db()
     rows = conn.execute(
-        "SELECT * FROM bookings ORDER BY booking_date ASC, arrival_time ASC"
+        "SELECT * FROM bookings WHERE deleted = 0 ORDER BY booking_date ASC, arrival_time ASC"
     ).fetchall()
 
     bookings = []
@@ -838,11 +909,12 @@ def admin_test_notification():
 @app.route("/admin/delete/<int:booking_id>", methods=["POST"])
 @login_required
 def admin_delete(booking_id):
+    # Soft delete: hide it from the admin view but keep the record on file forever.
     conn = get_db()
-    conn.execute("DELETE FROM bookings WHERE id = ?", (booking_id,))
+    conn.execute("UPDATE bookings SET deleted = 1 WHERE id = ?", (booking_id,))
     conn.commit()
     conn.close()
-    return _admin_redirect("Booking deleted.", ok=True)
+    return _admin_redirect("Booking removed from the list (kept on file).", ok=True)
 
 
 @app.route("/admin/review/delete/<int:review_id>", methods=["POST"])

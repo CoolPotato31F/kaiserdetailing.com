@@ -693,6 +693,7 @@ footer {
 .bk-summary-total { border-top: 1px solid var(--gold-bd); margin-top: 8px; padding-top: 10px; }
 .bk-summary-total .lbl { font-weight: 700; color: var(--charcoal); }
 .bk-summary-total .val { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--gold); }
+.bk-cause-note { margin: 0.9rem 0 0.4rem; padding: 10px 14px; background: var(--gold-bg); border: 1px solid var(--gold-bd); border-radius: var(--r); font-size: 0.82rem; line-height: 1.5; color: var(--gold-h); }
 .bk-terms { display: flex; align-items: flex-start; gap: 10px; font-size: 0.82rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.2rem; }
 .bk-terms input { accent-color: var(--gold); width: 17px; height: 17px; margin-top: 2px; flex-shrink: 0; cursor: pointer; }
 .bk-terms a { color: var(--gold); text-decoration: underline; cursor: pointer; }
@@ -1317,6 +1318,7 @@ footer {
           <div class="bk-summary-row" id="sum-vehicle" style="display:none;color:var(--muted);"></div>
           <div class="bk-summary-row bk-summary-total"><span class="lbl" data-i18n="sum_total_label">Total</span><span class="val" id="sum-total">$0</span></div>
         </div>
+        <div class="bk-cause-note" data-i18n="bk_cause_note">🎓 100% of what you pay goes toward a local Plainfield student's college tuition. Thank you for supporting that while getting a spotless car.</div>
         <div class="bk-terms">
           <input type="checkbox" id="bk-agree">
           <label for="bk-agree" data-i18n-html="bk_terms_label">I have read and agree to the <a onclick="openLegal()">Terms of Service, Privacy Policy &amp; Liability Terms</a>. I understand that <strong>payment is due in full upon completion of the service</strong>, before the operator leaves my location.</label>
@@ -1750,7 +1752,7 @@ toggle_phone: "📞 Phone", toggle_email: "✉️ Email",
 bk_address_label: "Service Address", bk_vehicle_label: "Vehicle Type",
 veh_sedan: "Sedan", veh_truck: "Truck", veh_minivan: "Minivan", veh_suv: "SUV", veh_other: "Other",
 bk_notes_label: "Additional Notes (optional)",
-bk_step4_h3: "Review &amp; Confirm", sum_datetime_label: "Date &amp; Time", sum_total_label: "Total",
+bk_step4_h3: "Review &amp; Confirm", sum_datetime_label: "Date &amp; Time", sum_total_label: "Total", bk_cause_note: "🎓 100% of what you pay goes toward a local Plainfield student's college tuition. Thank you for supporting that while getting a spotless car.",
 bk_terms_label: "I have read and agree to the <a onclick=\"openLegal()\">Terms of Service, Privacy Policy &amp; Liability Terms</a>. I understand that <strong>payment is due in full upon completion of the service</strong>, before the operator leaves my location.",
 bk_submit_btn: "Confirm Booking",
 bk_onebooking: "📅 Only one appointment is taken per day. If your preferred day is unavailable, please choose another. Questions? Text <a href=\"tel:8158239485\" style=\"color:var(--gold);\">815-823-9485</a>.",
@@ -1934,7 +1936,7 @@ toggle_phone: "📞 Teléfono", toggle_email: "✉️ Correo",
 bk_address_label: "Dirección del servicio", bk_vehicle_label: "Tipo de vehículo",
 veh_sedan: "Sedán", veh_truck: "Camioneta", veh_minivan: "Minivan", veh_suv: "SUV", veh_other: "Otro",
 bk_notes_label: "Notas adicionales (opcional)",
-bk_step4_h3: "Revisar y confirmar", sum_datetime_label: "Fecha y hora", sum_total_label: "Total",
+bk_step4_h3: "Revisar y confirmar", sum_datetime_label: "Fecha y hora", sum_total_label: "Total", bk_cause_note: "🎓 El 100% de lo que pagas se destina a la matrícula universitaria de un estudiante local de Plainfield. Gracias por apoyar esa causa mientras dejas tu auto impecable.",
 bk_terms_label: "He leído y acepto los <a onclick=\"openLegal()\">Términos de servicio, Política de privacidad y Términos de responsabilidad</a>. Entiendo que <strong>el pago debe realizarse en su totalidad al completar el servicio</strong>, antes de que el operador se retire de mi ubicación.",
 bk_submit_btn: "Confirmar reserva",
 bk_onebooking: "📅 Solo se toma una cita por día. Si tu día preferido no está disponible, elige otro. ¿Preguntas? Envía un mensaje de texto a <a href=\"tel:8158239485\" style=\"color:var(--gold);\">815-823-9485</a>.",
