@@ -346,20 +346,6 @@ nav {
 
 /* SERVICES */
 #services { padding: 100px 5%; background: var(--white); }
-.svc-tabs {
-  display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2.5rem;
-}
-.svc-tab {
-  padding: 8px 20px; border-radius: 100px;
-  border: 1.5px solid var(--rule);
-  background: transparent; color: var(--muted);
-  font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 500;
-  cursor: pointer; transition: 0.18s;
-}
-.svc-tab:hover { border-color: var(--gold-bd); color: var(--charcoal); }
-.svc-tab.active { background: var(--gold); border-color: var(--gold); color: #fff; font-weight: 600; }
-.svc-panel { display: none; }
-.svc-panel.active { display: block; }
 .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.4rem; }
 .svc-card {
   border-radius: var(--rl); border: 1px solid var(--rule);
@@ -799,8 +785,6 @@ footer {
   .svc-head { padding: 1.2rem 1.3rem; }
   .svc-body { padding: 1.1rem 1.3rem; }
   .svc-price { font-size: 1.7rem; }
-  .svc-tabs { gap: 0.35rem; flex-wrap: wrap; }
-  .svc-tab { padding: 7px 14px; font-size: 0.78rem; }
   .extras-grid { grid-template-columns: 1fr; }
   .extra-card { flex-direction: row; justify-content: space-between; }
 
@@ -885,10 +869,6 @@ footer {
 
   /* Display headings */
   .display { font-size: clamp(1.8rem, 8vw, 2.6rem); }
-
-  /* Service tabs — scroll horizontally if needed */
-  .svc-tabs { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
-  .svc-tab { white-space: nowrap; flex-shrink: 0; padding: 7px 12px; font-size: 0.75rem; }
 
   /* Service cards */
   .svc-head-left h3 { font-size: 1.1rem; }
@@ -1050,185 +1030,96 @@ footer {
   <h2 class="display" data-i18n-html="svc_h2">Services & <em>Pricing</em></h2>
   <p class="lead" style="margin-bottom:2.5rem;" data-i18n="svc_lead">Build your own detail below — check add-ons to see your total live. Then call or text to book. Every dollar goes toward college tuition.</p>
 
-  <div class="svc-tabs">
-    <button class="svc-tab active" onclick="switchTab(this,'all')" data-i18n="tab_all">All</button>
-    <button class="svc-tab" onclick="switchTab(this,'interior')" data-i18n="tab_interior">Interior</button>
-    <button class="svc-tab" onclick="switchTab(this,'exterior')" data-i18n="tab_exterior">Exterior</button>
-    <button class="svc-tab" onclick="switchTab(this,'full')" data-i18n="tab_full">Full Packages</button>
-    <button class="svc-tab" onclick="switchTab(this,'extras')" data-i18n-html="tab_extras">Add-Ons & Extras</button>
-  </div>
+  <!-- Single clean grid — cards render/hide based on admin package settings -->
+  <div class="services-grid" id="svc-grid">
 
-  <!-- ALL SERVICES -->
-  <div class="svc-panel active" id="tab-all">
-    <div class="services-grid">
-      <div class="svc-card featured">
-        <div class="svc-head">
-          <div class="svc-head-left"><h3 data-i18n="svc_showroom_name">Showroom Detail</h3><div class="dur" data-i18n="dur_5h">~5 hours</div></div>
-          <div class="svc-price"><sup>$</sup>225</div>
-        </div>
-        <div class="svc-body">
-          <div class="badge" data-i18n="badge_thorough">✨ Most Thorough</div>
-          <ul class="inc-list">
-            <li data-i18n="li_show_1">Everything in Professional Detail</li>
-            <li data-i18n="li_show_2">Deep extraction vacuuming & steam clean</li>
-            <li data-i18n="li_show_3">Full carpet shampoo & stain treatment</li>
-            <li data-i18n="li_show_4">Seat & upholstery scrub-down</li>
-            <li data-i18n="li_show_5">Air vent & crevice deep clean</li>
-            <li data-i18n="li_show_6">Leather conditioning (if applicable)</li>
-            <li data-i18n="li_show_7">Full odor elimination treatment</li>
-            <li data-i18n="li_show_8">Showroom-quality finish throughout</li>
-          </ul>
-          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="225">$225</span></div>
-          <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('showroom_detail')" >Book Now</a>
-        </div>
+    <div class="svc-card featured" data-svc="showroom_detail">
+      <div class="svc-head">
+        <div class="svc-head-left"><h3 data-i18n="svc_showroom_name">Showroom Detail</h3><div class="dur">~5 hours</div></div>
+        <div class="svc-price"><sup>$</sup>225</div>
       </div>
-
-      <div class="svc-card featured">
-        <div class="svc-head">
-          <div class="svc-head-left"><h3 data-i18n="svc_professional_name">Professional Detail</h3><div class="dur" data-i18n="dur_4h">~4 hours</div></div>
-          <div class="svc-price"><sup>$</sup>150</div>
-        </div>
-        <div class="svc-body">
-          <div class="badge" data-i18n="badge_value">⭐ Best Value</div>
-          <ul class="inc-list">
-            <li data-i18n="li_pro_1">Full interior detail — vacuum, wipe, glass, odor</li>
-            <li data-i18n="li_pro_2">Full exterior hand wash & rinse</li>
-            <li data-i18n="li_wheel_rim">Wheel & rim cleaning</li>
-            <li data-i18n="li_door_jamb">Door jamb wipe-down</li>
-            <li data-i18n="li_pro_5">Window clean inside & out</li>
-          </ul>
-          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_carpet">Carpet Shampoo</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="150">$150</span></div>
-          <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('professional_detail')" >Book Now</a>
-        </div>
-      </div>
-
-      <div class="svc-card">
-        <div class="svc-head">
-          <div class="svc-head-left"><h3 data-i18n="svc_interior_name">Interior Detail</h3><div class="dur" data-i18n="dur_interior">~4 hours 30 min</div></div>
-          <div class="svc-price"><sup>$</sup>100</div>
-        </div>
-        <div class="svc-body">
-          <ul class="inc-list">
-            <li data-i18n="li_int_1">Deep vacuum — seats, floors, crevices</li>
-            <li data-i18n="li_int_2">Dashboard, console & door panel wipe-down</li>
-            <li data-i18n="li_int_3">Interior glass cleaning</li>
-            <li data-i18n="li_int_4">Odor treatment & freshening</li>
-            <li data-i18n="li_int_5">Door pockets & cup holder clean-out</li>
-          </ul>
-          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_carpet">Carpet Shampoo</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="100">$100</span></div>
-          <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('interior_detail')" >Book Now</a>
-        </div>
-      </div>
-
-      <div class="svc-card">
-        <div class="svc-head">
-          <div class="svc-head-left"><h3 data-i18n="svc_exterior_name">Exterior Detail</h3><div class="dur" data-i18n="dur_exterior">~2 hours 30 min</div></div>
-          <div class="svc-price"><sup>$</sup>75</div>
-        </div>
-        <div class="svc-body">
-          <ul class="inc-list">
-            <li data-i18n="li_ext_1">Full hand wash & rinse</li>
-            <li data-i18n="li_wheel_rim">Wheel & rim cleaning</li>
-            <li data-i18n="li_ext_3">Window exterior cleaning</li>
-            <li data-i18n="li_door_jamb">Door jamb wipe-down</li>
-          </ul>
-          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_wax">Wax</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+45min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="75">$75</span></div>
-          <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('exterior_detail')" >Book Now</a>
-        </div>
-      </div>
-
-  <!-- INTERIOR -->
-  <div class="svc-panel" id="tab-interior">
-    <div class="services-grid">
-      <div class="svc-card">
-        <div class="svc-head"><div class="svc-head-left"><h3 data-i18n="svc_interior_name">Interior Detail</h3><div class="dur" data-i18n="dur_interior">~4 hours 30 min</div></div><div class="svc-price"><sup>$</sup>100</div></div>
-        <div class="svc-body">
-          <ul class="inc-list"><li data-i18n="li_int_1">Deep vacuum — seats, floors, crevices</li><li data-i18n="li_int_2">Dashboard, console & door panel wipe-down</li><li data-i18n="li_int_3">Interior glass cleaning</li><li data-i18n="li_int_4">Odor treatment & freshening</li><li data-i18n="li_int_5">Door pockets & cup holder clean-out</li></ul>
-          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_carpet">Carpet Shampoo</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="100">$100</span></div>
-          <a href="#book-online" class="svc-book-btn" data-i18n="book_now">Book Now</a>
-        </div>
+      <div class="svc-body">
+        <div class="badge" data-i18n="badge_thorough">✨ Most Thorough</div>
+        <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
+        <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
+        <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
+        <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="225">$225</span></div>
+        <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('showroom_detail')">Book Now</a>
       </div>
     </div>
-  </div>
 
-  <!-- EXTERIOR -->
-  <div class="svc-panel" id="tab-exterior">
-    <div class="services-grid">
-      <div class="svc-card">
-        <div class="svc-head"><div class="svc-head-left"><h3 data-i18n="svc_exterior_name">Exterior Detail</h3><div class="dur" data-i18n="dur_exterior">~2 hours 30 min</div></div><div class="svc-price"><sup>$</sup>75</div></div>
-        <div class="svc-body">
-          <ul class="inc-list"><li data-i18n="li_ext_1">Full hand wash & rinse</li><li data-i18n="li_wheel_rim">Wheel & rim cleaning</li><li data-i18n="li_ext_3">Window exterior cleaning</li><li data-i18n="li_door_jamb">Door jamb wipe-down</li></ul>
-          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_wax">Wax</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+45min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="75">$75</span></div>
-          <a href="#book-online" class="svc-book-btn" data-i18n="book_now">Book Now</a>
-        </div>
+    <div class="svc-card featured" data-svc="professional_detail">
+      <div class="svc-head">
+        <div class="svc-head-left"><h3 data-i18n="svc_professional_name">Professional Detail</h3><div class="dur">~4 hours</div></div>
+        <div class="svc-price"><sup>$</sup>150</div>
+      </div>
+      <div class="svc-body">
+        <div class="badge" data-i18n="badge_value">⭐ Best Value</div>
+        <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
+        <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_carpet">Carpet Shampoo</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
+        <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
+        <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
+        <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="150">$150</span></div>
+        <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('professional_detail')">Book Now</a>
       </div>
     </div>
-  </div>
 
-  <!-- FULL PACKAGES -->
-  <div class="svc-panel" id="tab-full">
-    <div class="services-grid">
-      <div class="svc-card featured">
-        <div class="svc-head"><div class="svc-head-left"><h3 data-i18n="svc_showroom_name">Showroom Detail</h3><div class="dur" data-i18n="dur_5h">~5 hours</div></div><div class="svc-price"><sup>$</sup>225</div></div>
-        <div class="svc-body">
-          <div class="badge" data-i18n="badge_thorough">✨ Most Thorough</div>
-          <ul class="inc-list"><li data-i18n="li_show_1">Everything in Professional Detail</li><li data-i18n="li_show_2">Deep extraction vacuuming & steam clean</li><li data-i18n="li_show_3">Full carpet shampoo & stain treatment</li><li data-i18n="li_show_4">Seat & upholstery scrub-down</li><li data-i18n="li_show_5">Air vent & crevice deep clean</li><li data-i18n="li_show_6">Leather conditioning (if applicable)</li><li data-i18n="li_show_7">Full odor elimination treatment</li><li data-i18n="li_show_8">Showroom-quality finish throughout</li></ul>
-          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="225">$225</span></div>
-          <a href="#book-online" class="svc-book-btn" data-i18n="book_now">Book Now</a>
-        </div>
+    <div class="svc-card" data-svc="interior_detail">
+      <div class="svc-head">
+        <div class="svc-head-left"><h3 data-i18n="svc_interior_name">Interior Detail</h3><div class="dur">~4 hours 30 min</div></div>
+        <div class="svc-price"><sup>$</sup>100</div>
       </div>
-      <div class="svc-card featured">
-        <div class="svc-head"><div class="svc-head-left"><h3 data-i18n="svc_professional_name">Professional Detail</h3><div class="dur" data-i18n="dur_4h">~4 hours</div></div><div class="svc-price"><sup>$</sup>150</div></div>
-        <div class="svc-body">
-          <div class="badge" data-i18n="badge_value">⭐ Best Value</div>
-          <ul class="inc-list"><li data-i18n="li_pro_1">Full interior detail — vacuum, wipe, glass, odor</li><li data-i18n="li_pro_2">Full exterior hand wash & rinse</li><li data-i18n="li_wheel_rim">Wheel & rim cleaning</li><li data-i18n="li_door_jamb">Door jamb wipe-down</li><li data-i18n="li_pro_5">Window clean inside & out</li></ul>
-          <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_carpet">Carpet Shampoo</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
-          <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
-          <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="150">$150</span></div>
-          <a href="#book-online" class="svc-book-btn" data-i18n="book_now">Book Now</a>
-        </div>
+      <div class="svc-body">
+        <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
+        <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_carpet">Carpet Shampoo</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+30min</span></label><span class="addon-cost">+$30</span></div>
+        <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="100">$100</span></div>
+        <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('interior_detail')">Book Now</a>
       </div>
     </div>
-    <div class="info-strip" data-i18n-html="info_strip_full">🎓 <strong>Your booking funds college.</strong> Every full-package appointment goes directly toward tuition. You're not just getting an incredible detail — you're investing in a Plainfield student's future.</div>
+
+    <div class="svc-card" data-svc="exterior_detail">
+      <div class="svc-head">
+        <div class="svc-head-left"><h3 data-i18n="svc_exterior_name">Exterior Detail</h3><div class="dur">~2 hours 30 min</div></div>
+        <div class="svc-price"><sup>$</sup>75</div>
+      </div>
+      <div class="svc-body">
+        <div class="addon-head" data-i18n="addons_head">Add-Ons</div>
+        <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="30"><span data-i18n="addon_wax">Wax</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+45min</span></label><span class="addon-cost">+$30</span></div>
+        <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="45"><span data-i18n="addon_clay">Clay Service</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+35min</span></label><span class="addon-cost">+$45</span></div>
+        <div class="addon-row" onclick="tick(this)"><label><input type="checkbox" data-p="10"><span data-i18n="addon_rainx">RainX</span> <span style="color:var(--muted);font-size:0.75rem;margin-left:4px;">+15min</span></label><span class="addon-cost">+$10</span></div>
+        <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="75">$75</span></div>
+        <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('exterior_detail')">Book Now</a>
+      </div>
+    </div>
+
+    <div class="svc-card" data-svc="engine_bay">
+      <div class="svc-head">
+        <div class="svc-head-left"><h3 data-i18n="svc_engine_name">Engine Bay Cleaning</h3><div class="dur">~30 min</div></div>
+        <div class="svc-price"><sup>$</sup>55</div>
+      </div>
+      <div class="svc-body">
+        <p style="font-size:0.86rem;color:var(--muted);line-height:1.6;margin-bottom:0.4rem;" data-i18n="extra_engine_desc">Degreased & detailed under the hood.</p>
+        <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="55">$55</span></div>
+        <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('engine_bay')">Book Now</a>
+      </div>
+    </div>
+
+    <div class="svc-card" data-svc="decal_removal">
+      <div class="svc-head">
+        <div class="svc-head-left"><h3 data-i18n="svc_decal_name">Sticker / Decal Removal</h3><div class="dur">~15 min</div></div>
+        <div class="svc-price"><sup>$</sup>15</div>
+      </div>
+      <div class="svc-body">
+        <p style="font-size:0.86rem;color:var(--muted);line-height:1.6;margin-bottom:0.4rem;" data-i18n="extra_decal_desc">Clean removal without damaging paint.</p>
+        <div class="svc-total"><span class="total-lbl" data-i18n="your_total">Your Total</span><span class="total-num" data-base="15">$15</span></div>
+        <a href="#book-online" class="svc-book-btn" data-i18n="book_now" onclick="bookService('decal_removal')">Book Now</a>
+      </div>
+    </div>
+
   </div>
 
-  <!-- ADD-ONS & EXTRAS -->
-  <div class="svc-panel" id="tab-extras">
-    <p style="font-size:0.9rem;color:var(--muted);margin-bottom:2rem;line-height:1.75;" data-i18n="extras_intro">These can be booked standalone or added to any package. Just mention them when you call or text.</p>
-    <div class="extras-grid">
-      <div class="extra-card"><div><h4 data-i18n="svc_engine_name">Engine Bay Cleaning</h4><p data-i18n="extra_engine_desc">~30 minutes · Degreased & detailed under the hood</p></div><div class="extra-price"><sup>$</sup>55</div></div>
-      <div class="extra-card"><div><h4 data-i18n="svc_decal_name">Sticker / Decal Removal</h4><p data-i18n="extra_decal_desc">~15 minutes · Clean removal without damaging paint</p></div><div class="extra-price"><sup>$</sup>15</div></div>
-      <div class="extra-card"><div><h4 data-i18n="addon_carpet">Carpet Shampoo</h4><p data-i18n="extra_carpet_desc">+30 min · Available on Interior, Professional & Maintenance Cleaning</p></div><div class="extra-price"><sup>$</sup>30</div></div>
-      <div class="extra-card"><div><h4 data-i18n="addon_wax">Wax</h4><p data-i18n="extra_wax_desc">+45 min · Available on Exterior Detail</p></div><div class="extra-price"><sup>$</sup>30</div></div>
-      <div class="extra-card"><div><h4 data-i18n="addon_clay">Clay Service</h4><p data-i18n="extra_clay_desc">+35 min · Available on Exterior, Professional & Showroom</p></div><div class="extra-price"><sup>$</sup>45</div></div>
-      <div class="extra-card"><div><h4 data-i18n="extra_rainx_name">RainX Treatment</h4><p data-i18n="extra_rainx_desc">+15 min · Available on Exterior, Professional & Showroom</p></div><div class="extra-price"><sup>$</sup>10</div></div>
-    </div>
-    <div class="info-strip" style="margin-top:1.8rem;" data-i18n-html="info_strip_extras">✨ <strong>Want to mix and match?</strong> Head to <a href="#booking" style="color:var(--gold);font-weight:600;">online booking</a> and build your detail — or text <a href="tel:8158239485" style="color:var(--gold);font-weight:600;">815-823-9485</a> with questions.</div>
-  </div>
+  <div class="info-strip" style="margin-top:2rem;" data-i18n-html="info_strip_full">🎓 <strong>Your booking funds college.</strong> Every appointment goes directly toward tuition. You're not just getting an incredible detail — you're investing in a local student's future.</div>
+
 
 </section>
 
@@ -1578,14 +1469,6 @@ document.getElementById('ham').addEventListener('click', () => {
 document.querySelectorAll('.mob-nav a').forEach(a =>
   a.addEventListener('click', () => document.getElementById('mob-nav').classList.remove('open'))
 );
-
-// Service tabs
-function switchTab(btn, id) {
-  document.querySelectorAll('.svc-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.svc-panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-' + id).classList.add('active');
-}
 
 // Before/After sliders
 document.querySelectorAll('[data-slider]').forEach(w => {
