@@ -70,14 +70,77 @@ app.config.update(
 # Service / add-on catalog (server-side source of truth for prices)
 # Prices are validated server-side so a tampered client can't change totals.
 # ──────────────────────────────────────────────────────────────────────────────
-SERVICES = {
-    "interior_detail":     {"name": "Interior Detail",         "price": 100, "dur": "4h 30m"},
-    "exterior_detail":     {"name": "Exterior Detail",         "price": 75,  "dur": "2h 30m"},
-    "professional_detail": {"name": "Professional Detail",     "price": 150, "dur": "4h"},
-    "showroom_detail":     {"name": "Showroom Detail",         "price": 225, "dur": "5h"},
-    "engine_bay":          {"name": "Engine Bay Cleaning",     "price": 55,  "dur": "30m"},
-    "decal_removal":       {"name": "Sticker / Decal Removal", "price": 15,  "dur": "15m"},
+# DEFAULT_SERVICES seeds the `packages` table the first time the DB is created.
+# After that, the ADMIN PANEL is the source of truth — prices, durations,
+# names, and visibility all live in the database and are edited from /admin.
+# The "order" field controls the display order (lower = shown first).
+DEFAULT_SERVICES = {
+    "showroom_detail":     {"name": "Showroom Detail",         "price": 225, "dur": "5h",     "visible": 1, "order": 1},
+    "professional_detail": {"name": "Professional Detail",     "price": 150, "dur": "4h",     "visible": 1, "order": 2},
+    "interior_detail":     {"name": "Interior Detail",         "price": 100, "dur": "4h 30m", "visible": 1, "order": 3},
+    "exterior_detail":     {"name": "Exterior Detail",         "price": 75,  "dur": "2h 30m", "visible": 1, "order": 4},
+    "engine_bay":          {"name": "Engine Bay Cleaning",     "price": 55,  "dur": "30m",    "visible": 1, "order": 5},
+    "decal_removal":       {"name": "Sticker / Decal Removal", "price": 15,  "dur": "15m",    "visible": 1, "order": 6},
 }
+
+
+def load_services(visible_only=False):
+    """
+    Load the service catalog from the database (the admin panel is the source
+    of truth). Returns an ordered dict keyed by service_key, each value holding
+    name / price / dur / visible / order. Falls back to DEFAULT_SERVICES if the
+    table isn't ready yet (e.g. during very first init).
+    """
+    try:
+        conn = get_db()
+        rows = conn.execute(
+            "SELECT * FROM packages"
+            + (" WHERE visible = 1" if visible_only else "")
+            + " ORDER BY sort_order ASC, id ASC"
+        ).fetchall()
+        conn.close()
+    except Exception:
+        rows = []
+
+    if not rows:
+        # Fallback so the site never breaks if the table is momentarily missing
+        out = {}
+        for k, v in sorted(DEFAULT_SERVICES.items(), key=lambda kv: kv[1]["order"]):
+            if visible_only and not v.get("visible", 1):
+                continue
+            out[k] = {"name": v["name"], "price": v["price"], "dur": v["dur"],
+                      "visible": v.get("visible", 1), "order": v["order"]}
+        return out
+
+    out = {}
+    for r in rows:
+        out[r["service_key"]] = {
+            "name":    r["name"],
+            "price":   r["price"],
+            "dur":     r["duration"],
+            "visible": r["visible"],
+            "order":   r["sort_order"],
+        }
+    return out
+
+
+# Backwards-compatible module-level catalog. Kept in sync at request time by
+# refresh_services() so existing references to SERVICES keep working, but the
+# database is always authoritative. Do NOT rely on this being static.
+# Seed with defaults at import time; the real values are loaded from the DB
+# after init_db() runs (get_db isn't defined yet at this point in the module).
+SERVICES = {
+    k: {"name": v["name"], "price": v["price"], "dur": v["dur"],
+        "visible": v.get("visible", 1), "order": v["order"]}
+    for k, v in sorted(DEFAULT_SERVICES.items(), key=lambda kv: kv[1]["order"])
+}
+
+
+def refresh_services():
+    """Reload SERVICES from the DB. Called at the start of price-sensitive requests."""
+    global SERVICES
+    SERVICES = load_services()
+    return SERVICES
 
 ADDONS = {
     "carpet_shampoo": {"name": "Carpet Shampoo", "price": 30, "dur": "30m"},
@@ -391,7 +454,41 @@ def init_db():
         );
     """)
     conn.commit()
+
+    # ── Packages (editable service catalog) ────────────────────────────────
+    # Prices, durations, names, and visibility all live here so the admin can
+    # change them from the dashboard and have them persist. Seeded once from
+    # DEFAULT_SERVICES; after that the admin panel owns this table.
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS packages (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            service_key  TEXT NOT NULL UNIQUE,    -- stable id used in bookings/URLs
+            name         TEXT NOT NULL,
+            price        INTEGER NOT NULL,
+            duration     TEXT NOT NULL DEFAULT '',
+            visible      INTEGER NOT NULL DEFAULT 1,  -- 1 = shown on site, 0 = hidden
+            sort_order   INTEGER NOT NULL DEFAULT 0
+        );
+    """)
+    conn.commit()
+
+    # Seed defaults only if the table is empty (first run). We never overwrite
+    # existing rows, so admin edits are preserved across restarts/deploys.
+    existing = conn.execute("SELECT COUNT(*) AS c FROM packages").fetchone()["c"]
+    if existing == 0:
+        for key, v in DEFAULT_SERVICES.items():
+            conn.execute(
+                "INSERT INTO packages (service_key, name, price, duration, visible, sort_order) "
+                "VALUES (?,?,?,?,?,?)",
+                (key, v["name"], v["price"], v["dur"], v.get("visible", 1), v["order"]),
+            )
+        conn.commit()
+
     conn.close()
+
+    # Now that the table exists and is seeded, load the real catalog into the
+    # module-level SERVICES so price validation uses the admin's values.
+    refresh_services()
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -517,6 +614,7 @@ def submit_review():
 @app.route("/api/availability")
 def availability():
     """Return taken dates and the earliest bookable date (tomorrow)."""
+    refresh_services()
     earliest = (date.today() + timedelta(days=1)).isoformat()
     conn = get_db()
     rows = conn.execute(
@@ -548,6 +646,14 @@ def availability():
             "note":        row["note"],
         })
 
+    # Visible packages, in display order, so the public site can hide disabled
+    # ones and apply admin-set price/duration/name overrides.
+    packages = [
+        {"key": k, "name": v["name"], "price": v["price"],
+         "dur": v["dur"], "order": v["order"]}
+        for k, v in load_services(visible_only=True).items()
+    ]
+
     return jsonify({
         "taken": taken,
         "earliest": earliest,
@@ -556,11 +662,13 @@ def availability():
         "large_vehicle_surcharge": LARGE_VEHICLE_SURCHARGE,
         "large_vehicle_services": list(LARGE_VEHICLE_SERVICES),
         "blocks": blocks,
+        "packages": packages,
     })
 
 
 @app.route("/api/book", methods=["POST"])
 def book():
+    refresh_services()
     data = request.get_json(silent=True) or {}
 
     # Required fields
@@ -715,6 +823,7 @@ def admin_logout():
 @app.route("/admin")
 @login_required
 def admin_dashboard():
+    refresh_services()
     conn = get_db()
     rows = conn.execute(
         "SELECT * FROM bookings WHERE deleted = 0 ORDER BY booking_date ASC, arrival_time ASC"
@@ -738,6 +847,14 @@ def admin_dashboard():
     ).fetchall()
     conn.close()
 
+    # Full package catalog (including hidden ones) for the editable board
+    conn2 = get_db()
+    package_rows = conn2.execute(
+        "SELECT * FROM packages ORDER BY sort_order ASC, id ASC"
+    ).fetchall()
+    conn2.close()
+    packages = [dict(p) for p in package_rows]
+
     blocks = [dict(b) for b in block_rows]
     reviews = [dict(r) for r in review_rows]
     avg_quality = round(sum(r["quality"] for r in reviews) / len(reviews), 1) if reviews else None
@@ -749,6 +866,7 @@ def admin_dashboard():
         reviews=reviews,
         avg_quality=avg_quality,
         services=SERVICES,
+        packages=packages,
         addons=ADDONS,
         service_addons=SERVICE_ADDONS,
         time_slots=TIME_SLOTS,
@@ -759,6 +877,7 @@ def admin_dashboard():
 @app.route("/admin/create", methods=["POST"])
 @login_required
 def admin_create():
+    refresh_services()
     f = request.form
     booking_date = (f.get("date") or "").strip()
     arrival_time = (f.get("time") or "").strip()
@@ -824,6 +943,60 @@ def admin_create():
     })
 
     return _admin_redirect("Booking created.", ok=True)
+
+
+@app.route("/admin/packages", methods=["POST"])
+@login_required
+def admin_save_packages():
+    """
+    Save the whole package board in one shot. For each package we accept:
+      visible_<key>   — checkbox ("on" if checked, absent if not)
+      name_<key>      — display name
+      price_<key>     — integer dollars
+      duration_<key>  — free-text duration e.g. "4h 30m"
+      order_<key>     — integer sort order
+    Only keys that already exist in the packages table are updated.
+    """
+    f = request.form
+    conn = get_db()
+    rows = conn.execute("SELECT service_key FROM packages").fetchall()
+    keys = [r["service_key"] for r in rows]
+
+    errors = []
+    for key in keys:
+        name = (f.get(f"name_{key}") or "").strip()
+        price_raw = (f.get(f"price_{key}") or "").strip()
+        duration = (f.get(f"duration_{key}") or "").strip()
+        order_raw = (f.get(f"order_{key}") or "").strip()
+        visible = 1 if f.get(f"visible_{key}") else 0
+
+        if not name:
+            errors.append(f"{key}: name can't be empty")
+            continue
+        try:
+            price = int(round(float(price_raw)))
+            if price < 0:
+                raise ValueError
+        except ValueError:
+            errors.append(f"{name}: invalid price")
+            continue
+        try:
+            order = int(order_raw) if order_raw != "" else 0
+        except ValueError:
+            order = 0
+
+        conn.execute(
+            "UPDATE packages SET name=?, price=?, duration=?, visible=?, sort_order=? "
+            "WHERE service_key=?",
+            (name, price, duration, visible, order, key),
+        )
+    conn.commit()
+    conn.close()
+    refresh_services()
+
+    if errors:
+        return _admin_redirect("Saved with issues: " + "; ".join(errors))
+    return _admin_redirect("Packages saved.", ok=True)
 
 
 @app.route("/admin/block", methods=["POST"])

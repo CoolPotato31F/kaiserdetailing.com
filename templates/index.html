@@ -2104,6 +2104,81 @@ let bk = {
   largeVehicleServices: new Set(["interior_detail","professional_detail","showroom_detail",]),
 };
 
+// ── Package visibility / pricing driven by the admin panel ────────────────
+// Map the title's i18n key back to a service key so we can find each card.
+const I18N_TO_KEY = {
+  svc_showroom_name:     "showroom_detail",
+  svc_professional_name: "professional_detail",
+  svc_interior_name:     "interior_detail",
+  svc_exterior_name:     "exterior_detail",
+  svc_engine_name:       "engine_bay",
+  svc_decal_name:        "decal_removal",
+};
+
+// Tag every pricing card (and the two "extra" cards) with a data-svc key so the
+// admin's show/hide + price/duration edits can target them.
+function tagServiceCards() {
+  document.querySelectorAll("#services .svc-card").forEach(card => {
+    if (card.dataset.svc) return;
+    const h = card.querySelector("h3[data-i18n]");
+    const key = h && I18N_TO_KEY[h.getAttribute("data-i18n")];
+    if (key) card.dataset.svc = key;
+  });
+  document.querySelectorAll("#services .extra-card").forEach(card => {
+    if (card.dataset.svc) return;
+    const h = card.querySelector("h4[data-i18n]");
+    const key = h && I18N_TO_KEY[h.getAttribute("data-i18n")];
+    if (key) card.dataset.svc = key;
+  });
+}
+tagServiceCards();
+
+// Apply the server's package list: hide disabled packages, override the
+// price/duration/name shown on each card, and keep the JS catalog in sync so
+// the booking dropdown and live totals match.
+let LAST_PACKAGES = null;
+function applyPackages(packages) {
+  if (!Array.isArray(packages) || !packages.length) return;
+  LAST_PACKAGES = packages;
+  const byKey = {};
+  packages.forEach(p => { byKey[p.key] = p; });
+
+  // 1) Update the JS SERVICES catalog (price + duration + name) for visible ones
+  Object.keys(SERVICES).forEach(k => {
+    if (byKey[k]) {
+      SERVICES[k].price = byKey[k].price;
+      SERVICES[k].dur   = byKey[k].dur || SERVICES[k].dur;
+      if (byKey[k].name) SERVICES[k].name = byKey[k].name;
+    }
+  });
+
+  // 2) Show/hide + re-price each pricing card
+  document.querySelectorAll("#services .svc-card, #services .extra-card").forEach(card => {
+    const key = card.dataset.svc;
+    if (!key) return;
+    const p = byKey[key];
+    if (!p) { card.style.display = "none"; return; }   // hidden by admin
+    card.style.display = "";
+
+    // Price in the header ($ + number)
+    const priceEl = card.querySelector(".svc-price, .extra-price");
+    if (priceEl) priceEl.innerHTML = '<sup>$</sup>' + p.price;
+
+    // Base total (drives the live add-on calculator)
+    const baseEl = card.querySelector("[data-base]");
+    if (baseEl) {
+      baseEl.dataset.base = p.price;
+      baseEl.textContent = "$" + p.price;
+      if (typeof recalc === "function") recalc(card);
+    }
+  });
+
+  // 3) Rebuild the booking dropdown to only list visible packages, in order
+  if (typeof rebuildServiceDropdown === "function") {
+    rebuildServiceDropdown(packages);
+  }
+}
+
 // Called by "Book Now" buttons on service cards
 function bookService(key) {
   if (!SERVICES[key]) return;
@@ -2137,6 +2212,33 @@ function populateServiceDropdown() {
   if (prev && SERVICES[prev]) svcSel.value = prev;
 }
 populateServiceDropdown();
+
+// Rebuild the dropdown from the server's visible package list (respects the
+// admin's show/hide + ordering). Keeps the current selection if still visible.
+function rebuildServiceDropdown(packages) {
+  const prev = svcSel.value;
+  svcSel.innerHTML = "";
+  const ordered = packages.slice().sort((a, b) => (a.order || 0) - (b.order || 0));
+  const visibleKeys = new Set();
+  ordered.forEach(p => {
+    const v = SERVICES[p.key] || { name: p.name, price: p.price, dur: p.dur, i18n: "" };
+    const o = document.createElement("option");
+    o.value = p.key;
+    o.textContent = `${localName(v)} — $${p.price} (${p.dur})`;
+    svcSel.appendChild(o);
+    visibleKeys.add(p.key);
+  });
+  // Keep selection if still available; otherwise fall back to the first option
+  if (prev && visibleKeys.has(prev)) {
+    svcSel.value = prev;
+  } else if (svcSel.options.length) {
+    svcSel.value = svcSel.options[0].value;
+    bk.service = svcSel.value;
+    bk.addons.clear();
+    if (typeof renderAddons === "function") renderAddons();
+    if (typeof renderSummary === "function") renderSummary();
+  }
+}
 
 // Read ?service= from URL or hash for deep-linking from cards
 (function preselect() {
@@ -2302,6 +2404,7 @@ async function loadAvailability() {
     bk.largeVehicles = new Set(d.large_vehicles || ["Minivan","SUV"]);
     bk.largeSurcharge = d.large_vehicle_surcharge || 25;
     bk.largeVehicleServices = new Set(d.large_vehicle_services || ["interior_detail","professional_detail","showroom_detail",]);
+    applyPackages(d.packages || []);
     renderTimes(d.time_slots || []);
     renderVehicleSurchargeLabels();
   } catch (e) {
@@ -2514,7 +2617,11 @@ async function submitBooking() {
 
 // Re-render all language-dependent dynamic content (called by applyLang on toggle)
 function refreshDynamicLang() {
-  if (typeof populateServiceDropdown === "function") populateServiceDropdown();
+  if (LAST_PACKAGES && typeof rebuildServiceDropdown === "function") {
+    rebuildServiceDropdown(LAST_PACKAGES);
+  } else if (typeof populateServiceDropdown === "function") {
+    populateServiceDropdown();
+  }
   if (typeof renderAddons === "function") renderAddons();
   if (typeof renderSummary === "function") renderSummary();
   if (typeof renderVehicleSurchargeLabels === "function") renderVehicleSurchargeLabels();

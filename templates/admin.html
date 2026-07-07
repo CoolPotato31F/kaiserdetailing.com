@@ -78,7 +78,26 @@ tr.past td{opacity:0.5;}
 .review-pill{font-size:0.72rem;background:var(--cream2);border:1px solid var(--rule);border-radius:100px;padding:3px 11px;color:var(--ink);}
 .review-text{font-size:0.86rem;color:var(--ink);line-height:1.6;margin-bottom:0.3rem;}
 .review-text strong{color:var(--muted);font-weight:600;font-size:0.72rem;letter-spacing:0.5px;text-transform:uppercase;display:block;margin-bottom:2px;}
-@media(max-width:700px){.block-grid{grid-template-columns:1fr 1fr;}.grid2,.grid3{grid-template-columns:1fr;}}
+/* Packages board */
+.pkg-board{background:#fff;border:1px solid var(--rule);border-radius:var(--rl);padding:1.4rem 1.6rem;}
+.pkg-row{display:grid;grid-template-columns:auto 2fr 1fr 1.2fr 0.8fr;gap:0.9rem;align-items:center;padding:12px 4px;border-top:1px solid var(--rule);}
+.pkg-row:first-of-type{border-top:none;}
+.pkg-row.hidden-pkg{opacity:0.5;}
+.pkg-head{display:grid;grid-template-columns:auto 2fr 1fr 1.2fr 0.8fr;gap:0.9rem;padding:0 4px 8px;font-size:0.66rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:600;}
+.pkg-board input[type=text],.pkg-board input[type=number]{width:100%;padding:8px 10px;background:var(--cream);border:1px solid var(--rule);border-radius:var(--r);font-family:'Outfit',sans-serif;font-size:0.85rem;}
+.pkg-board input:focus{outline:none;border-color:var(--gold);}
+.pkg-vis{display:flex;align-items:center;justify-content:center;}
+.pkg-vis input{width:20px;height:20px;cursor:pointer;accent-color:var(--gold);}
+.pkg-key{font-size:0.66rem;color:var(--muted);letter-spacing:0.5px;margin-top:3px;}
+.pkg-save{margin-top:1.2rem;padding:12px 26px;border:none;border-radius:var(--r);background:var(--gold);color:#fff;font-family:'Outfit',sans-serif;font-weight:600;font-size:0.9rem;cursor:pointer;}
+.pkg-save:hover{background:var(--gold-h);}
+.pkg-hint{font-size:0.8rem;color:var(--muted);margin:0.2rem 0 1.1rem;}
+@media(max-width:700px){
+  .block-grid{grid-template-columns:1fr 1fr;}.grid2,.grid3{grid-template-columns:1fr;}
+  .pkg-head{display:none;}
+  .pkg-row{grid-template-columns:1fr 1fr;gap:0.6rem;padding:14px 4px;}
+  .pkg-row .pkg-vis{grid-column:1 / -1;justify-content:flex-start;}
+}
 </style>
 </head>
 <body>
@@ -100,6 +119,34 @@ tr.past td{opacity:0.5;}
     <div class="stat"><div class="n">{{ bookings | length }}</div><div class="l">Total Bookings</div></div>
     <div class="stat"><div class="n">${{ revenue }}</div><div class="l">Upcoming Revenue</div></div>
     <div class="stat"><div class="n">{{ avg_quality if avg_quality else '—' }}{% if avg_quality %}<span style="font-size:1rem;color:var(--muted);">/5</span>{% endif %}</div><div class="l">Avg. Review Rating ({{ reviews|length }})</div></div>
+  </div>
+
+  <!-- PACKAGES -->
+  <div class="section">
+    <h2>🧰 Packages</h2>
+    <p class="pkg-hint">Uncheck a package to hide it from the website. Edit the name, price, duration, or display order, then press <strong>Save Packages</strong>. Changes are saved and shown on the site right away.</p>
+    <form method="POST" action="{{ url_for('admin_save_packages') }}">
+      <div class="pkg-board">
+        <div class="pkg-head">
+          <div>Show</div><div>Name</div><div>Price ($)</div><div>Duration</div><div>Order</div>
+        </div>
+        {% for p in packages %}
+        <div class="pkg-row {{ '' if p.visible else 'hidden-pkg' }}">
+          <div class="pkg-vis">
+            <input type="checkbox" name="visible_{{ p.service_key }}" {{ 'checked' if p.visible else '' }} title="Show on website">
+          </div>
+          <div>
+            <input type="text" name="name_{{ p.service_key }}" value="{{ p.name }}" required>
+            <div class="pkg-key">{{ p.service_key }}</div>
+          </div>
+          <div><input type="number" name="price_{{ p.service_key }}" value="{{ p.price }}" min="0" step="1" required></div>
+          <div><input type="text" name="duration_{{ p.service_key }}" value="{{ p.duration }}" placeholder="e.g. 4h 30m"></div>
+          <div><input type="number" name="order_{{ p.service_key }}" value="{{ p.sort_order }}" step="1"></div>
+        </div>
+        {% endfor %}
+      </div>
+      <button class="pkg-save" type="submit">💾 Save Packages</button>
+    </form>
   </div>
 
   <!-- BLOCKED TIMES -->
