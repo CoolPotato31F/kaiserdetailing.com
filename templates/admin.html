@@ -119,6 +119,7 @@ tr.past td{opacity:0.5;}
     <div class="stat"><div class="n">{{ bookings | length }}</div><div class="l">Total Bookings</div></div>
     <div class="stat"><div class="n">${{ revenue }}</div><div class="l">Upcoming Revenue</div></div>
     <div class="stat"><div class="n">{{ avg_quality if avg_quality else '—' }}{% if avg_quality %}<span style="font-size:1rem;color:var(--muted);">/5</span>{% endif %}</div><div class="l">Avg. Review Rating ({{ reviews|length }})</div></div>
+    <div class="stat"><div class="n">{{ fb_visits }}</div><div class="l">📘 Facebook Visits</div></div>
   </div>
 
   <!-- PACKAGES -->

@@ -472,6 +472,20 @@ def init_db():
     """)
     conn.commit()
 
+    # ── Site stats (persistent counters) ───────────────────────────────────
+    # A simple key/value counter table that survives server restarts. Used to
+    # track things like how many visitors arrived from Facebook (fbclid). The
+    # counters live in the same SQLite file as everything else, so they persist
+    # across restarts and deploys just like bookings do.
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS site_stats (
+            stat_key    TEXT PRIMARY KEY,
+            count       INTEGER NOT NULL DEFAULT 0,
+            updated_at  TEXT
+        );
+    """)
+    conn.commit()
+
     # Seed defaults only if the table is empty (first run). We never overwrite
     # existing rows, so admin edits are preserved across restarts/deploys.
     existing = conn.execute("SELECT COUNT(*) AS c FROM packages").fetchone()["c"]
@@ -522,6 +536,39 @@ def compute_total(service_key, addon_keys, vehicle_type=""):
     return total, clean_addons
 
 
+def bump_stat(key, amount=1):
+    """
+    Increment a persistent counter in the site_stats table by `amount`.
+    Creates the row if it doesn't exist yet. Any failure is swallowed so a
+    tracking hiccup never breaks the page the visitor is trying to load.
+    """
+    try:
+        conn = get_db()
+        conn.execute(
+            "INSERT INTO site_stats (stat_key, count, updated_at) VALUES (?,?,?) "
+            "ON CONFLICT(stat_key) DO UPDATE SET "
+            "count = count + excluded.count, updated_at = excluded.updated_at",
+            (key, amount, datetime.now().isoformat(timespec="seconds")),
+        )
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        app.logger.warning("bump_stat(%s) failed: %s", key, e)
+
+
+def get_stat(key):
+    """Read a persistent counter. Returns 0 if it doesn't exist."""
+    try:
+        conn = get_db()
+        row = conn.execute(
+            "SELECT count FROM site_stats WHERE stat_key = ?", (key,)
+        ).fetchone()
+        conn.close()
+        return row["count"] if row else 0
+    except Exception:
+        return 0
+
+
 def valid_future_date(d_str):
     """Date must be valid YYYY-MM-DD and tomorrow or later (no same-day booking)."""
     try:
@@ -545,6 +592,14 @@ def login_required(f):
 # ──────────────────────────────────────────────────────────────────────────────
 @app.route("/")
 def index():
+    # Facebook click tracking. When someone taps the link from a Facebook post,
+    # Facebook appends a ?fbclid=... parameter to the URL. We count each such
+    # visit in the persistent site_stats table so it survives server restarts.
+    # We only count once per browser session (via a session flag) so a single
+    # visitor refreshing the page doesn't inflate the number.
+    if request.args.get("fbclid") and not session.get("counted_fb"):
+        bump_stat("fb_visits")
+        session["counted_fb"] = True
     return render_template("index.html")
 
 
@@ -871,6 +926,7 @@ def admin_dashboard():
         service_addons=SERVICE_ADDONS,
         time_slots=TIME_SLOTS,
         today=(date.today() + timedelta(days=1)).isoformat(),
+        fb_visits=get_stat("fb_visits"),
     )
 
 
