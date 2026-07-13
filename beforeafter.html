@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaiser's Detail Co. — Before & After Maker</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#C9A84C;--gold-dark:#9A7A2E;--ink:#1A1A1A;--surface:#F8F6F1;--card:#FFFFFF;--muted:#888;--border:#E0DDD4;--r:12px}
+body{background:var(--surface);font-family:'Outfit',sans-serif;color:var(--ink);min-height:100vh;padding:2rem 1rem}
+h1{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;margin-bottom:0.25rem}
+.sub{color:var(--muted);font-size:0.95rem;margin-bottom:2rem}
+.app{max-width:860px;margin:0 auto}
+.gold{color:var(--gold)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1.25rem}
+.card-title{font-size:0.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:1rem}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.fg{display:flex;flex-direction:column;gap:6px}
+.fg label{font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+input[type=text],select{border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:0.9rem;font-family:'Outfit',sans-serif;background:#fff;outline:none;width:100%}
+input[type=text]:focus,select:focus{border-color:var(--gold)}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer}
+
+.dz{border:2px dashed var(--border);border-radius:var(--r);height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:border-color 0.2s,background 0.2s;position:relative;overflow:hidden;background:var(--surface);user-select:none}
+.dz:hover{border-color:var(--gold);background:#FDF9F0}
+.dz.filled{border-style:solid;border-color:#ddd}
+.dz img.prev{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:10px;pointer-events:none}
+.dz .ov{position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;border-radius:10px;opacity:0;transition:opacity 0.2s;pointer-events:none}
+.dz:hover .ov{opacity:1}
+.ov span{color:#fff;font-size:0.85rem;font-weight:600;letter-spacing:0.5px}
+.dz-badge{position:absolute;top:10px;left:10px;color:#fff;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:100px;display:none}
+.dz-icon{font-size:1.6rem;pointer-events:none}
+.dz-lbl{font-size:0.88rem;font-weight:600;pointer-events:none}
+.dz-sub{font-size:0.72rem;color:var(--muted);pointer-events:none}
+
+.swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:0.5rem}
+.sw{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:transform 0.15s,border-color 0.15s}
+.sw:hover{transform:scale(1.15)}
+.sw.on{border-color:var(--ink)}
+
+.chk{display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--muted);cursor:pointer;margin-top:0.75rem}
+.chk input{accent-color:var(--gold);width:15px;height:15px;cursor:pointer}
+
+.btn{width:100%;padding:14px;border:none;border-radius:var(--r);font-size:0.95rem;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;transition:background 0.15s;margin-top:0.5rem}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-dark:hover{background:#2a2a2a}
+.btn-dark:disabled{background:#bbb;cursor:not-allowed}
+.btn-gold{background:var(--gold);color:#fff;display:none}
+.btn-gold:hover{background:var(--gold-dark)}
+
+#preview-wrap{display:none;margin-top:1.5rem}
+.prev-lbl{font-size:0.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem}
+canvas{width:100%;height:auto;border-radius:var(--r);border:1px solid var(--border);display:block}
+
+@media(max-width:580px){.row2,.row3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div style="margin-bottom:2rem">
+    <h1>Before <span class="gold">&</span> After</h1>
+    <p class="sub">Kaiser's Detail Co. — social card maker</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Upload photos</div>
+    <div class="row2">
+      <div class="dz" id="dz-b" onclick="triggerPicker('b')">
+        <div class="dz-badge" id="badge-b" style="background:rgba(0,0,0,0.6)">Before</div>
+        <div class="ov"><span>Change photo</span></div>
+        <div class="dz-icon">📷</div>
+        <div class="dz-lbl">Before photo</div>
+        <div class="dz-sub">Click or drag &amp; drop</div>
+      </div>
+      <div class="dz" id="dz-a" onclick="triggerPicker('a')">
+        <div class="dz-badge" id="badge-a" style="background:rgba(201,168,76,0.85)">After</div>
+        <div class="ov"><span>Change photo</span></div>
+        <div class="dz-icon">📷</div>
+        <div class="dz-lbl">After photo</div>
+        <div class="dz-sub">Click or drag &amp; drop</div>
+      </div>
+    </div>
+    <input type="file" accept="image/*" id="inp-b" style="display:none">
+    <input type="file" accept="image/*" id="inp-a" style="display:none">
+  </div>
+
+  <div class="card">
+    <div class="card-title">Text</div>
+    <div class="row2" style="margin-bottom:0.75rem">
+      <div class="fg"><label>Business name</label><input type="text" id="biz" value="Kaiser's Detail Co."></div>
+      <div class="fg"><label>Caption (optional)</label><input type="text" id="cap" placeholder="Interior detail · Plainfield, IL"></div>
+    </div>
+    <div class="row2">
+      <div class="fg"><label>Tagline (optional)</label><input type="text" id="tag" value="Professional Mobile Detailing"></div>
+      <div class="fg"><label>Website (optional)</label><input type="text" id="web" value="kaiserdetailing.com"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Style</div>
+    <div class="row3" style="margin-bottom:1rem">
+      <div class="fg">
+        <label>Layout</label>
+        <select id="layout"><option value="side">Side by side</option><option value="stack">Top / bottom</option></select>
+      </div>
+      <div class="fg">
+        <label>Output size</label>
+        <select id="sz"><option value="1080">1080 × 1080</option><option value="1200">1200 × 1200</option><option value="800">800 × 800</option></select>
+      </div>
+      <div class="fg">
+        <label>Theme</label>
+        <select id="theme"><option value="dark">Dark</option><option value="light">Light</option><option value="charcoal">Charcoal</option></select>
+      </div>
+    </div>
+    <div class="fg">
+      <label>Accent color</label>
+      <div class="swatches" id="swatches">
+        <div class="sw on" data-c="#C9A84C" style="background:#C9A84C"></div>
+        <div class="sw" data-c="#FFFFFF" style="background:#fff;border-color:#ddd"></div>
+        <div class="sw" data-c="#378ADD" style="background:#378ADD"></div>
+        <div class="sw" data-c="#1D9E75" style="background:#1D9E75"></div>
+        <div class="sw" data-c="#D84040" style="background:#D84040"></div>
+        <div class="sw" data-c="#7F77DD" style="background:#7F77DD"></div>
+      </div>
+    </div>
+    <label class="chk"><input type="checkbox" id="wm" checked> Show business name watermark on photos</label>
+  </div>
+
+  <button class="btn btn-dark" id="btn-gen" disabled>Generate card</button>
+
+  <div id="preview-wrap">
+    <div class="prev-lbl">Preview</div>
+    <canvas id="c"></canvas>
+    <button class="btn btn-gold" id="btn-dl">Download PNG</button>
+  </div>
+</div>
+
+<script>
+const imgs = {b:null, a:null};
+let accent = '#C9A84C';
+
+const THEMES = {
+  dark:    {bg:'#111',panel:'#1C1C1C',panelB:'#222',lbBefore:'#888',footBg:'#1C1C1C',txt:'#FFF',txtSub:'#AAA'},
+  light:   {bg:'#F5F3EE',panel:'#FFF',panelB:'#EEE',lbBefore:'#999',footBg:'#FFF',txt:'#1A1A1A',txtSub:'#666'},
+  charcoal:{bg:'#2A2A2A',panel:'#333',panelB:'#3A3A3A',lbBefore:'#888',footBg:'#333',txt:'#FFF',txtSub:'#AAA'},
+};
+
+function triggerPicker(key) {
+  document.getElementById('inp-'+key).click();
+}
+
+['b','a'].forEach(key => {
+  const inp = document.getElementById('inp-'+key);
+  const dz = document.getElementById('dz-'+key);
+
+  inp.addEventListener('change', e => {
+    if(e.target.files && e.target.files[0]) handleFile(e.target.files[0], key);
+  });
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.style.borderColor='#C9A84C'; });
+  dz.addEventListener('dragleave', () => dz.style.borderColor='');
+  dz.addEventListener('drop', e => {
+    e.preventDefault(); dz.style.borderColor='';
+    if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], key);
+  });
+});
+
+function handleFile(file, key) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      imgs[key] = img;
+      const dz = document.getElementById('dz-'+key);
+      let prev = dz.querySelector('.prev');
+      if(!prev) { prev = document.createElement('img'); prev.className='prev'; dz.appendChild(prev); }
+      prev.src = e.target.result;
+      dz.classList.add('filled');
+      dz.querySelector('.dz-icon').style.display='none';
+      dz.querySelector('.dz-lbl').style.display='none';
+      dz.querySelector('.dz-sub').style.display='none';
+      document.getElementById('badge-'+key).style.display='block';
+      checkReady();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function checkReady() {
+  const ready = imgs.b && imgs.a;
+  document.getElementById('btn-gen').disabled = !ready;
+  if(ready) generate();
+}
+
+document.querySelectorAll('.sw').forEach(s => {
+  s.addEventListener('click', () => {
+    document.querySelectorAll('.sw').forEach(x=>x.classList.remove('on'));
+    s.classList.add('on');
+    accent = s.dataset.c;
+    if(imgs.b && imgs.a) generate();
+  });
+});
+
+['layout','sz','theme','biz','cap','tag','web','wm'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener(el.type==='checkbox'||el.tagName==='SELECT'?'change':'input', () => {
+    if(imgs.b && imgs.a) generate();
+  });
+});
+
+document.getElementById('btn-gen').addEventListener('click', generate);
+
+function fill(ctx, img, x, y, w, h) {
+  const sc = Math.max(w/img.width, h/img.height);
+  const dw=img.width*sc, dh=img.height*sc;
+  const dx=x+(w-dw)/2, dy=y+(h-dh)/2;
+  ctx.save(); ctx.beginPath(); ctx.rect(x,y,w,h); ctx.clip();
+  ctx.drawImage(img,dx,dy,dw,dh); ctx.restore();
+}
+
+function rr(ctx,x,y,w,h,r,col) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r);
+  ctx.closePath(); ctx.fillStyle=col; ctx.fill();
+}
+
+function generate() {
+  const sz=parseInt(document.getElementById('sz').value);
+  const layout=document.getElementById('layout').value;
+  const biz=document.getElementById('biz').value.trim()||"Kaiser's Detail Co.";
+  const cap=document.getElementById('cap').value.trim();
+  const tag=document.getElementById('tag').value.trim();
+  const web=document.getElementById('web').value.trim();
+  const wm=document.getElementById('wm').checked;
+  const T=THEMES[document.getElementById('theme').value];
+  const ac=accent;
+
+  const c=document.getElementById('c');
+  c.width=sz; c.height=sz;
+  const ctx=c.getContext('2d');
+
+  const pad=Math.round(sz*0.025);
+  const gap=Math.round(sz*0.01);
+  const cr=Math.round(sz*0.018);
+  const lblH=Math.round(sz*0.075);
+  const footH=Math.round(sz*0.112);
+  const iw=sz-pad*2;
+  const photoArea=sz-pad*2-lblH*2-gap-footH-gap*2;
+
+  ctx.fillStyle=T.bg; ctx.fillRect(0,0,sz,sz);
+
+  const drawPanel = (lbl, img, x, y, w, h, isAfter) => {
+    rr(ctx,x,y,w,h,cr,isAfter?T.panel:T.panelB);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x+cr,y); ctx.lineTo(x+w-cr,y); ctx.arcTo(x+w,y,x+w,y+cr,cr);
+    ctx.lineTo(x+w,y+lblH); ctx.lineTo(x,y+lblH); ctx.lineTo(x,y+cr); ctx.arcTo(x,y,x+cr,y,cr);
+    ctx.closePath();
+    ctx.fillStyle=isAfter?ac+'28':T.panelB; ctx.fill(); ctx.restore();
+
+    ctx.font=`700 ${Math.round(sz*0.025)}px 'Outfit',sans-serif`;
+    ctx.letterSpacing=`${Math.round(sz*0.004)}px`;
+    ctx.fillStyle=isAfter?ac:T.lbBefore;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(lbl,x+w/2,y+lblH/2);
+    ctx.letterSpacing='0px';
+
+    fill(ctx,img,x,y+lblH,w,h-lblH);
+
+    if(isAfter) { ctx.fillStyle=ac; ctx.fillRect(x,y+lblH,w,Math.round(sz*0.0035)); }
+
+    if(wm) {
+      const wmFs=Math.round(sz*(layout==='side'?0.016:0.018));
+      ctx.font=`600 ${wmFs}px 'Outfit',sans-serif`;
+      ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillStyle='rgba(255,255,255,0.5)';
+      ctx.fillText(biz,x+w/2,y+h-Math.round(sz*0.012));
+    }
+  };
+
+  if(layout==='side') {
+    const hw=(iw-gap)/2, ph=photoArea+lblH;
+    drawPanel('BEFORE',imgs.b,pad,pad,hw,ph+lblH,false);
+    drawPanel('AFTER', imgs.a,pad+hw+gap,pad,hw,ph+lblH,true);
+  } else {
+    const hh=(photoArea-gap)/2;
+    drawPanel('BEFORE',imgs.b,pad,pad,iw,hh+lblH,false);
+    drawPanel('AFTER', imgs.a,pad,pad+hh+lblH+gap,iw,hh+lblH,true);
+  }
+
+  const fy=sz-pad-footH;
+  rr(ctx,pad,fy,iw,footH,cr,T.footBg);
+  ctx.fillStyle=ac; ctx.fillRect(pad,fy,Math.round(sz*0.005),footH);
+
+  const tx=pad+Math.round(sz*0.02);
+  const bizFs=Math.round(sz*0.034);
+  const subFs=Math.round(sz*0.024);
+  ctx.textAlign='left';
+
+  if(cap && web) {
+    ctx.font=`700 ${bizFs}px 'Outfit',sans-serif`; ctx.fillStyle=T.txt; ctx.textBaseline='top';
+    ctx.fillText(biz,tx,fy+Math.round(footH*0.1));
+    ctx.font=`400 ${subFs}px 'Outfit',sans-serif`; ctx.fillStyle=T.txtSub;
+    ctx.fillText(cap,tx,fy+Math.round(footH*0.42));
+    ctx.font=`500 ${Math.round(subFs*0.9)}px 'Outfit',sans-serif`; ctx.fillStyle=ac;
+    ctx.fillText(web,tx,fy+Math.round(footH*0.66));
+  } else if(cap||web) {
+    ctx.font=`700 ${bizFs}px 'Outfit',sans-serif`; ctx.fillStyle=T.txt; ctx.textBaseline='top';
+    ctx.fillText(biz,tx,fy+Math.round(footH*0.14));
+    ctx.font=`400 ${subFs}px 'Outfit',sans-serif`; ctx.fillStyle=cap?T.txtSub:ac;
+    ctx.fillText(cap||web,tx,fy+Math.round(footH*0.52));
+  } else {
+    ctx.font=`700 ${bizFs}px 'Outfit',sans-serif`; ctx.fillStyle=T.txt; ctx.textBaseline='middle';
+    ctx.fillText(biz,tx,fy+footH/2);
+  }
+
+  if(tag) {
+    ctx.font=`400 ${Math.round(sz*0.019)}px 'Outfit',sans-serif`;
+    ctx.fillStyle=T.txtSub; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillText(tag,pad+iw-Math.round(sz*0.02),fy+footH/2);
+  }
+
+  document.getElementById('preview-wrap').style.display='block';
+  document.getElementById('btn-dl').style.display='block';
+  document.getElementById('btn-dl').onclick=()=>{
+    const a=document.createElement('a');
+    a.download=`kaiser-before-after-${Date.now()}.png`;
+    a.href=c.toDataURL('image/png'); a.click();
+  };
+}
+</script>
+</body>
+</html>
