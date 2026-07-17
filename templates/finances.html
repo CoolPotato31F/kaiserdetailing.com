@@ -47,8 +47,10 @@ header{background:var(--white);border-bottom:1px solid var(--rule);padding:1rem 
 .stat .sub{font-size:0.75rem;color:var(--muted);margin-top:0.2rem;}
 .stat.good .n{color:var(--green);} .stat.bad .n{color:var(--red);} .stat.gold .n{color:var(--gold);}
 
+/* Each card owns its own stacking context. Without this, a hovered arc or a
+   chart tooltip can paint across the card boundary onto its neighbor. */
 .section{background:var(--white);border:1px solid var(--rule);border-radius:var(--rl);
-  padding:1.5rem;margin-bottom:1.5rem;}
+  padding:1.5rem;margin-bottom:1.5rem;position:relative;isolation:isolate;z-index:0;}
 .section h2{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:600;
   margin-bottom:0.3rem;}
 .hint{font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem;}
@@ -58,10 +60,18 @@ header{background:var(--white);border-bottom:1px solid var(--rule);padding:1rem 
    gets its own minimum so long category names never wrap mid-word. */
 .donut-wrap{display:grid;grid-template-columns:minmax(200px,270px) minmax(280px,1fr);
   gap:3rem;align-items:center;}
-.donut{position:relative;max-width:270px;width:100%;margin:0 auto;}
-.donut svg{width:100%;height:auto;display:block;overflow:visible;}
-.donut .arc{transition:opacity 0.18s,transform 0.18s;transform-origin:center;cursor:pointer;}
-.donut .arc:hover{opacity:0.82;transform:scale(1.03);}
+/* isolation + z-index:0 give the donut its own stacking context so a scaled
+   arc can never paint over the section below it. */
+.donut{position:relative;max-width:270px;width:100%;margin:0 auto;
+  isolation:isolate;z-index:0;}
+/* The viewBox is padded (see the SVG) to fit the 26px stroke plus the hover
+   scale, so overflow stays hidden and nothing escapes onto the next section. */
+.donut svg{width:100%;height:auto;display:block;overflow:hidden;}
+/* Hover emphasis via stroke-width rather than transform:scale — scaling grew
+   the artwork past the viewBox and was what spilled onto the section below.
+   Growing the stroke reads the same and changes no layout geometry. */
+.donut .arc{transition:opacity 0.18s,stroke-width 0.18s;cursor:pointer;}
+.donut .arc:hover{opacity:0.85;stroke-width:30;}
 .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;
   align-items:center;justify-content:center;pointer-events:none;text-align:center;}
 .donut-center .cn{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;line-height:1.1;}
@@ -80,8 +90,11 @@ header{background:var(--white);border-bottom:1px solid var(--rule);padding:1rem 
 .empty{color:var(--muted);font-size:0.88rem;font-style:italic;padding:1.5rem 0;text-align:center;}
 
 /* ── Bar chart ─────────────────────────────────────── */
+/* padding-top gives the upward-pointing tooltips room inside the card instead
+   of escaping it. z-index stays low so tips never cross into another section. */
 .chart{display:grid;grid-template-columns:repeat(12,1fr);gap:0.5rem;align-items:end;
-  height:240px;padding:1rem 0 0;border-bottom:2px solid var(--rule);}
+  height:240px;padding:3.5rem 0 0;border-bottom:2px solid var(--rule);
+  position:relative;z-index:1;}
 .bar-col{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
   height:100%;gap:2px;position:relative;}
 .bars{display:flex;align-items:flex-end;gap:2px;height:100%;width:100%;justify-content:center;}
@@ -221,9 +234,13 @@ tr:last-child td{border-bottom:none;}
     {% set total = slices | sum(attribute='amount') %}
     <div class="donut-wrap">
       <div class="donut">
-        <svg viewBox="0 0 200 200" id="donut-svg">
-          {# Arcs drawn as stroked circle segments: stroke-dasharray splits the
-             circumference, stroke-dashoffset rotates each arc into place. #}
+        {# Arcs are stroked circle segments: stroke-dasharray splits the
+           circumference, stroke-dashoffset rotates each arc into place.
+           The viewBox is 210x210 (not 200) so the 26px stroke — which straddles
+           r=74, reaching r=87 — plus the 1.03 hover scale (~89.6) still fits
+           inside with room to spare. Without that padding the arcs overflow and
+           paint over the chart below. #}
+        <svg viewBox="0 0 210 210" id="donut-svg">
           {% set r = 74 %}
           {% set circ = 2 * 3.14159265 * r %}
           {% set ns = namespace(offset=0) %}
@@ -231,11 +248,11 @@ tr:last-child td{border-bottom:none;}
             {% set frac = s.amount / total if total > 0 else 0 %}
             {% set len = circ * frac %}
             <circle class="arc" data-key="{{ s.key }}"
-              cx="100" cy="100" r="{{ r }}"
+              cx="105" cy="105" r="{{ r }}"
               fill="none" stroke="{{ s.color }}" stroke-width="26"
               stroke-dasharray="{{ '%.3f'|format(len - 1.2 if len > 3 else len) }} {{ '%.3f'|format(circ - len + (1.2 if len > 3 else 0)) }}"
               stroke-dashoffset="{{ '%.3f'|format(-ns.offset) }}"
-              transform="rotate(-90 100 100)">
+              transform="rotate(-90 105 105)">
               <title>{{ s.label }} — ${{ '%.2f'|format(s.amount) }} ({{ '%.1f'|format(frac * 100) }}%)</title>
             </circle>
             {% set ns.offset = ns.offset + len %}
