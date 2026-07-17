@@ -105,6 +105,7 @@ tr.past td{opacity:0.5;}
   <div class="brand">Kaiser's <span>Detail Co.</span><small>Admin Dashboard</small></div>
   <div style="display:flex;align-items:center;gap:0.7rem;flex-wrap:wrap;">
     <button class="test-notif" id="test-notif-btn" onclick="testNotification()">🔔 Test Notification</button>
+    <a href="{{ url_for('finances') }}" class="test-notif" style="text-decoration:none;">💰 Finances</a>
     <a href="{{ url_for('admin_logout') }}" class="logout">Sign Out</a>
   </div>
 </header>
@@ -119,7 +120,6 @@ tr.past td{opacity:0.5;}
     <div class="stat"><div class="n">{{ bookings | length }}</div><div class="l">Total Bookings</div></div>
     <div class="stat"><div class="n">${{ revenue }}</div><div class="l">Upcoming Revenue</div></div>
     <div class="stat"><div class="n">{{ avg_quality if avg_quality else '—' }}{% if avg_quality %}<span style="font-size:1rem;color:var(--muted);">/5</span>{% endif %}</div><div class="l">Avg. Review Rating ({{ reviews|length }})</div></div>
-    <div class="stat"><div class="n">{{ fb_visits }}</div><div class="l">📘 Facebook Visits</div></div>
   </div>
 
   <!-- PACKAGES -->

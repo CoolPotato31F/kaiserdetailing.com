@@ -8,6 +8,8 @@ Production:     gunicorn -w 1 -b 0.0.0.0:8000 app:app
 """
 
 import os
+import io
+import csv
 import sqlite3
 import secrets
 import json
@@ -18,7 +20,7 @@ from functools import wraps
 
 from flask import (
     Flask, request, jsonify, render_template,
-    session, redirect, url_for, abort
+    session, redirect, url_for, abort, Response
 )
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -158,6 +160,49 @@ SERVICE_ADDONS = {
     "engine_bay":          [],
     "decal_removal":       [],
 }
+
+# ── Finances ──────────────────────────────────────────────────────────────────
+# Expense categories. Each gets its own arc color on the /finances donut.
+EXPENSE_CATEGORIES = {
+    "supplies":   {"name": "Supplies & Chemicals", "color": "#b87414"},
+    "equipment":  {"name": "Equipment",            "color": "#7d5ba6"},
+    "fuel":       {"name": "Fuel & Travel",        "color": "#2f7d7a"},
+    "marketing":  {"name": "Marketing",            "color": "#c0533f"},
+    "fees":       {"name": "Fees & Software",      "color": "#5b7fa6"},
+    "misc":       {"name": "Miscellaneous",        "color": "#8a8578"},
+}
+
+PAYMENT_METHODS = ["Cash", "Venmo", "Zelle", "Apple Pay", "Check", "Other"]
+
+# Percentages the dashboard uses for the set-aside calculator. Editable at
+# /finances and stored in the settings table.
+DEFAULT_SETTINGS = {
+    "tax_reserve_pct": "15",   # % of net profit to hold back for taxes
+    "college_pct":     "70",   # % of after-tax profit earmarked for tuition
+    "college_goal":    "0",    # optional tuition goal ($); 0 = no goal bar
+}
+
+
+def get_settings():
+    """Read the settings table into a plain dict, falling back to defaults."""
+    out = dict(DEFAULT_SETTINGS)
+    try:
+        conn = get_db()
+        for r in conn.execute("SELECT key, value FROM settings").fetchall():
+            out[r["key"]] = r["value"]
+        conn.close()
+    except Exception:
+        pass
+    return out
+
+
+def _f(v, default=0.0):
+    """Best-effort float parse."""
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return default
+
 
 # Available arrival time slots offered to customers
 TIME_SLOTS = [
@@ -472,20 +517,6 @@ def init_db():
     """)
     conn.commit()
 
-    # ── Site stats (persistent counters) ───────────────────────────────────
-    # A simple key/value counter table that survives server restarts. Used to
-    # track things like how many visitors arrived from Facebook (fbclid). The
-    # counters live in the same SQLite file as everything else, so they persist
-    # across restarts and deploys just like bookings do.
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS site_stats (
-            stat_key    TEXT PRIMARY KEY,
-            count       INTEGER NOT NULL DEFAULT 0,
-            updated_at  TEXT
-        );
-    """)
-    conn.commit()
-
     # Seed defaults only if the table is empty (first run). We never overwrite
     # existing rows, so admin edits are preserved across restarts/deploys.
     existing = conn.execute("SELECT COUNT(*) AS c FROM packages").fetchone()["c"]
@@ -497,6 +528,56 @@ def init_db():
                 (key, v["name"], v["price"], v["dur"], v.get("visible", 1), v["order"]),
             )
         conn.commit()
+
+    # ── Finances: payment tracking columns on bookings ─────────────────────
+    # Added incrementally so existing databases upgrade in place.
+    existing_cols = {r[1] for r in conn.execute("PRAGMA table_info(bookings)").fetchall()}
+    for col, ddl in [
+        ("payment_status", "TEXT NOT NULL DEFAULT 'unpaid'"),   # 'unpaid' | 'paid'
+        ("payment_method", "TEXT DEFAULT ''"),                  # cash / venmo / zelle / other
+        ("paid_at",        "TEXT DEFAULT ''"),
+        ("actual_price",   "INTEGER DEFAULT NULL"),             # what actually landed (tips/discounts)
+    ]:
+        if col not in existing_cols:
+            conn.execute(f"ALTER TABLE bookings ADD COLUMN {col} {ddl}")
+    conn.commit()
+
+    # ── Expenses ───────────────────────────────────────────────────────────
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS expenses (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            spent_date  TEXT NOT NULL,           -- YYYY-MM-DD
+            category    TEXT NOT NULL,           -- see EXPENSE_CATEGORIES
+            vendor      TEXT DEFAULT '',
+            amount      REAL NOT NULL,           -- dollars
+            notes       TEXT DEFAULT '',
+            created_at  TEXT NOT NULL
+        );
+    """)
+    conn.commit()
+
+    # ── College fund transfers ─────────────────────────────────────────────
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS college_fund (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            moved_date  TEXT NOT NULL,
+            amount      REAL NOT NULL,
+            note        TEXT DEFAULT '',
+            created_at  TEXT NOT NULL
+        );
+    """)
+    conn.commit()
+
+    # ── Settings (tax reserve %, college set-aside %) ──────────────────────
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS settings (
+            key   TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        );
+    """)
+    for k, v in DEFAULT_SETTINGS.items():
+        conn.execute("INSERT OR IGNORE INTO settings (key, value) VALUES (?,?)", (k, v))
+    conn.commit()
 
     conn.close()
 
@@ -536,39 +617,6 @@ def compute_total(service_key, addon_keys, vehicle_type=""):
     return total, clean_addons
 
 
-def bump_stat(key, amount=1):
-    """
-    Increment a persistent counter in the site_stats table by `amount`.
-    Creates the row if it doesn't exist yet. Any failure is swallowed so a
-    tracking hiccup never breaks the page the visitor is trying to load.
-    """
-    try:
-        conn = get_db()
-        conn.execute(
-            "INSERT INTO site_stats (stat_key, count, updated_at) VALUES (?,?,?) "
-            "ON CONFLICT(stat_key) DO UPDATE SET "
-            "count = count + excluded.count, updated_at = excluded.updated_at",
-            (key, amount, datetime.now().isoformat(timespec="seconds")),
-        )
-        conn.commit()
-        conn.close()
-    except Exception as e:
-        app.logger.warning("bump_stat(%s) failed: %s", key, e)
-
-
-def get_stat(key):
-    """Read a persistent counter. Returns 0 if it doesn't exist."""
-    try:
-        conn = get_db()
-        row = conn.execute(
-            "SELECT count FROM site_stats WHERE stat_key = ?", (key,)
-        ).fetchone()
-        conn.close()
-        return row["count"] if row else 0
-    except Exception:
-        return 0
-
-
 def valid_future_date(d_str):
     """Date must be valid YYYY-MM-DD and tomorrow or later (no same-day booking)."""
     try:
@@ -592,14 +640,6 @@ def login_required(f):
 # ──────────────────────────────────────────────────────────────────────────────
 @app.route("/")
 def index():
-    # Facebook click tracking. When someone taps the link from a Facebook post,
-    # Facebook appends a ?fbclid=... parameter to the URL. We count each such
-    # visit in the persistent site_stats table so it survives server restarts.
-    # We only count once per browser session (via a session flag) so a single
-    # visitor refreshing the page doesn't inflate the number.
-    if request.args.get("fbclid") and not session.get("counted_fb"):
-        bump_stat("fb_visits")
-        session["counted_fb"] = True
     return render_template("index.html")
 
 
@@ -926,7 +966,6 @@ def admin_dashboard():
         service_addons=SERVICE_ADDONS,
         time_slots=TIME_SLOTS,
         today=(date.today() + timedelta(days=1)).isoformat(),
-        fb_visits=get_stat("fb_visits"),
     )
 
 
@@ -1154,6 +1193,334 @@ def admin_delete_review(review_id):
     conn.commit()
     conn.close()
     return _admin_redirect("Review deleted.", ok=True)
+
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Finances
+# ──────────────────────────────────────────────────────────────────────────────
+def _revenue_of(b):
+    """Actual money collected for a booking, falling back to the quoted price."""
+    return _f(b["actual_price"]) if b["actual_price"] is not None else _f(b["total_price"])
+
+
+@app.route("/finances")
+@login_required
+def finances():
+    refresh_services()
+    settings = get_settings()
+    conn = get_db()
+
+    booking_rows = conn.execute(
+        "SELECT * FROM bookings WHERE deleted = 0 ORDER BY booking_date DESC"
+    ).fetchall()
+    expense_rows = conn.execute(
+        "SELECT * FROM expenses ORDER BY spent_date DESC, id DESC"
+    ).fetchall()
+    fund_rows = conn.execute(
+        "SELECT * FROM college_fund ORDER BY moved_date DESC, id DESC"
+    ).fetchall()
+    conn.close()
+
+    today = date.today().isoformat()
+    bookings, paid_total, unpaid_total = [], 0.0, 0.0
+    for r in booking_rows:
+        b = dict(r)
+        b["addon_names"] = [ADDONS[a]["name"] for a in json.loads(b["addons_json"]) if a in ADDONS]
+        b["revenue"] = _revenue_of(b)
+        b["is_past"] = b["booking_date"] < today
+        if b["payment_status"] == "paid":
+            paid_total += b["revenue"]
+        else:
+            unpaid_total += b["revenue"]
+        bookings.append(b)
+
+    expenses = [dict(e) for e in expense_rows]
+    fund = [dict(f) for f in fund_rows]
+
+    expense_total = sum(_f(e["amount"]) for e in expenses)
+    fund_total = sum(_f(f["amount"]) for f in fund)
+
+    # Only PAID work counts as revenue. Unpaid is a promise, not money.
+    revenue = paid_total
+    net_profit = revenue - expense_total
+
+    tax_pct = _f(settings["tax_reserve_pct"])
+    college_pct = _f(settings["college_pct"])
+    tax_reserve = max(net_profit, 0) * tax_pct / 100.0
+    after_tax = max(net_profit - tax_reserve, 0)
+    college_target = after_tax * college_pct / 100.0
+
+    # ── Donut arcs: expense categories + profit ───────────────────────────
+    by_cat = {}
+    for e in expenses:
+        by_cat[e["category"]] = by_cat.get(e["category"], 0.0) + _f(e["amount"])
+
+    slices = []
+    for key, meta in EXPENSE_CATEGORIES.items():
+        amt = by_cat.get(key, 0.0)
+        if amt > 0:
+            slices.append({"key": key, "label": meta["name"],
+                           "color": meta["color"], "amount": round(amt, 2)})
+    slices.sort(key=lambda s: -s["amount"])
+    if net_profit > 0:
+        slices.append({"key": "profit", "label": "Net Profit",
+                       "color": "#3f7d4f", "amount": round(net_profit, 2)})
+
+    # ── Revenue by month (last 12 months, paid only) ──────────────────────
+    months, cursor = [], date.today().replace(day=1)
+    for _ in range(12):
+        months.append(cursor.isoformat()[:7])
+        cursor = (cursor - timedelta(days=1)).replace(day=1)
+    months.reverse()
+
+    rev_by_month = {m: 0.0 for m in months}
+    exp_by_month = {m: 0.0 for m in months}
+    for b in bookings:
+        if b["payment_status"] == "paid":
+            m = b["booking_date"][:7]
+            if m in rev_by_month:
+                rev_by_month[m] += b["revenue"]
+    for e in expenses:
+        m = e["spent_date"][:7]
+        if m in exp_by_month:
+            exp_by_month[m] += _f(e["amount"])
+
+    monthly = [{
+        "month":   m,
+        "label":   datetime.strptime(m, "%Y-%m").strftime("%b"),
+        "year":    m[:4],
+        "revenue": round(rev_by_month[m], 2),
+        "expenses": round(exp_by_month[m], 2),
+        "profit":  round(rev_by_month[m] - exp_by_month[m], 2),
+    } for m in months]
+
+    return render_template(
+        "finances.html",
+        bookings=bookings,
+        expenses=expenses,
+        fund=fund,
+        slices=slices,
+        monthly=monthly,
+        categories=EXPENSE_CATEGORIES,
+        payment_methods=PAYMENT_METHODS,
+        settings=settings,
+        stats={
+            "revenue":       round(revenue, 2),
+            "unpaid":        round(unpaid_total, 2),
+            "expenses":      round(expense_total, 2),
+            "net_profit":    round(net_profit, 2),
+            "tax_reserve":   round(tax_reserve, 2),
+            "college_target": round(college_target, 2),
+            "fund_total":    round(fund_total, 2),
+            "college_goal":  _f(settings["college_goal"]),
+            "job_count":     sum(1 for b in bookings if b["payment_status"] == "paid"),
+            "avg_ticket":    round(revenue / max(sum(1 for b in bookings if b["payment_status"] == "paid"), 1), 2),
+        },
+        today=today,
+    )
+
+
+@app.route("/finances/expense", methods=["POST"])
+@login_required
+def finances_add_expense():
+    amount = _f(request.form.get("amount"), -1)
+    category = (request.form.get("category") or "").strip()
+    spent_date = (request.form.get("spent_date") or "").strip()
+
+    if amount <= 0:
+        return _fin_redirect("Enter an amount greater than $0.")
+    if category not in EXPENSE_CATEGORIES:
+        return _fin_redirect("Pick a valid category.")
+    try:
+        datetime.strptime(spent_date, "%Y-%m-%d")
+    except ValueError:
+        return _fin_redirect("Enter a valid date.")
+
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO expenses (spent_date, category, vendor, amount, notes, created_at) "
+        "VALUES (?,?,?,?,?,?)",
+        (spent_date, category, (request.form.get("vendor") or "").strip(),
+         round(amount, 2), (request.form.get("notes") or "").strip(),
+         datetime.now().isoformat(timespec="seconds")),
+    )
+    conn.commit()
+    conn.close()
+    return _fin_redirect(f"Logged ${amount:.2f} expense.", ok=True)
+
+
+@app.route("/finances/expense/delete/<int:expense_id>", methods=["POST"])
+@login_required
+def finances_delete_expense(expense_id):
+    conn = get_db()
+    conn.execute("DELETE FROM expenses WHERE id = ?", (expense_id,))
+    conn.commit()
+    conn.close()
+    return _fin_redirect("Expense deleted.", ok=True)
+
+
+@app.route("/finances/payment/<int:booking_id>", methods=["POST"])
+@login_required
+def finances_mark_payment(booking_id):
+    status = (request.form.get("payment_status") or "").strip()
+    if status not in ("paid", "unpaid"):
+        return _fin_redirect("Invalid payment status.")
+
+    method = (request.form.get("payment_method") or "").strip()
+    raw_actual = (request.form.get("actual_price") or "").strip()
+    actual = round(_f(raw_actual), 2) if raw_actual else None
+
+    conn = get_db()
+    if status == "paid":
+        conn.execute(
+            "UPDATE bookings SET payment_status='paid', payment_method=?, paid_at=?, "
+            "actual_price=COALESCE(?, actual_price, total_price) WHERE id=?",
+            (method, datetime.now().isoformat(timespec="seconds"), actual, booking_id),
+        )
+    else:
+        conn.execute(
+            "UPDATE bookings SET payment_status='unpaid', payment_method='', paid_at='' "
+            "WHERE id=?", (booking_id,),
+        )
+    conn.commit()
+    conn.close()
+    return _fin_redirect("Payment updated.", ok=True)
+
+
+@app.route("/finances/fund", methods=["POST"])
+@login_required
+def finances_add_fund():
+    amount = _f(request.form.get("amount"), -1)
+    moved_date = (request.form.get("moved_date") or "").strip()
+    if amount <= 0:
+        return _fin_redirect("Enter an amount greater than $0.")
+    try:
+        datetime.strptime(moved_date, "%Y-%m-%d")
+    except ValueError:
+        return _fin_redirect("Enter a valid date.")
+
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO college_fund (moved_date, amount, note, created_at) VALUES (?,?,?,?)",
+        (moved_date, round(amount, 2), (request.form.get("note") or "").strip(),
+         datetime.now().isoformat(timespec="seconds")),
+    )
+    conn.commit()
+    conn.close()
+    return _fin_redirect(f"${amount:.2f} added to the college fund.", ok=True)
+
+
+@app.route("/finances/fund/delete/<int:fund_id>", methods=["POST"])
+@login_required
+def finances_delete_fund(fund_id):
+    conn = get_db()
+    conn.execute("DELETE FROM college_fund WHERE id = ?", (fund_id,))
+    conn.commit()
+    conn.close()
+    return _fin_redirect("Entry deleted.", ok=True)
+
+
+@app.route("/finances/settings", methods=["POST"])
+@login_required
+def finances_save_settings():
+    conn = get_db()
+    for key, lo, hi in [("tax_reserve_pct", 0, 100), ("college_pct", 0, 100),
+                        ("college_goal", 0, 10_000_000)]:
+        val = _f(request.form.get(key), None)
+        if val is None or not (lo <= val <= hi):
+            conn.close()
+            return _fin_redirect(f"'{key.replace('_', ' ')}' must be between {lo} and {hi}.")
+        conn.execute("INSERT INTO settings (key, value) VALUES (?,?) "
+                     "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+                     (key, str(val)))
+    conn.commit()
+    conn.close()
+    return _fin_redirect("Settings saved.", ok=True)
+
+
+@app.route("/finances/export.csv")
+@login_required
+def finances_export_csv():
+    """
+    Tax-ready CSV: every paid job and every expense as one ledger, newest last,
+    plus a summary block with the tax reserve. Opens straight in Excel/Sheets.
+    """
+    year = (request.args.get("year") or "").strip()
+    settings = get_settings()
+
+    conn = get_db()
+    booking_rows = conn.execute(
+        "SELECT * FROM bookings WHERE deleted = 0 ORDER BY booking_date ASC"
+    ).fetchall()
+    expense_rows = conn.execute(
+        "SELECT * FROM expenses ORDER BY spent_date ASC"
+    ).fetchall()
+    conn.close()
+
+    def in_year(d):
+        return (not year) or d.startswith(year)
+
+    rows, income_total, expense_total = [], 0.0, 0.0
+
+    for r in booking_rows:
+        b = dict(r)
+        if b["payment_status"] != "paid" or not in_year(b["booking_date"]):
+            continue
+        amt = _revenue_of(b)
+        income_total += amt
+        addons = ", ".join(ADDONS[a]["name"] for a in json.loads(b["addons_json"]) if a in ADDONS)
+        rows.append([
+            b["booking_date"], "Income", b["service_name"],
+            b["customer_name"], b["payment_method"] or "",
+            f"{amt:.2f}", "",
+            " | ".join(x for x in [addons, b["vehicle_type"], b["notes"]] if x),
+        ])
+
+    for r in expense_rows:
+        e = dict(r)
+        if not in_year(e["spent_date"]):
+            continue
+        amt = _f(e["amount"])
+        expense_total += amt
+        rows.append([
+            e["spent_date"], "Expense",
+            EXPENSE_CATEGORIES.get(e["category"], {}).get("name", e["category"]),
+            e["vendor"] or "", "", "", f"{amt:.2f}", e["notes"] or "",
+        ])
+
+    rows.sort(key=lambda x: x[0])
+
+    net = income_total - expense_total
+    tax_pct = _f(settings["tax_reserve_pct"])
+    reserve = max(net, 0) * tax_pct / 100.0
+
+    buf = io.StringIO()
+    w = csv.writer(buf)
+    w.writerow(["Kaiser's Detail Co. — Financial Ledger"])
+    w.writerow(["Period", year or "All time"])
+    w.writerow(["Generated", datetime.now().strftime("%Y-%m-%d %H:%M")])
+    w.writerow([])
+    w.writerow(["Date", "Type", "Description", "Customer / Vendor",
+                "Method", "Income", "Expense", "Notes"])
+    w.writerows(rows)
+    w.writerow([])
+    w.writerow(["", "", "", "", "TOTAL INCOME",  f"{income_total:.2f}"])
+    w.writerow(["", "", "", "", "TOTAL EXPENSES", f"{expense_total:.2f}"])
+    w.writerow(["", "", "", "", "NET PROFIT",     f"{net:.2f}"])
+    w.writerow(["", "", "", "", f"TAX RESERVE ({tax_pct:g}%)", f"{reserve:.2f}"])
+    w.writerow(["", "", "", "", "AFTER TAX",      f"{net - reserve:.2f}"])
+
+    fname = f"kaiser-detail-finances-{year or 'all'}.csv"
+    return Response(
+        buf.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{fname}"'},
+    )
+
+
+def _fin_redirect(msg, ok=False):
+    session["flash"] = {"msg": msg, "ok": ok}
+    return redirect(url_for("finances"))
 
 
 def _admin_redirect(msg, ok=False):

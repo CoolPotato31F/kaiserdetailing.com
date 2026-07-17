@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Finances — Kaiser's Detail Co.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Outfit:wght@300;400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#faf7f2;--cream2:#f2ede4;--white:#fff;--charcoal:#18181a;--ink:#2e2d2b;
+  --muted:#6b6860;--rule:#e0d9ce;--gold:#b87414;--gold-h:#9a600e;--gold-bg:#fdf3e0;
+  --gold-bd:#e8c47a;--green:#3f7d4f;--green-bg:#eef6f0;--red:#c0533f;--red-bg:#fdeeea;
+  --r:6px;--rl:12px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--charcoal);font-family:'Outfit',sans-serif;line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+
+header{background:var(--white);border-bottom:1px solid var(--rule);padding:1rem 1.6rem;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  position:sticky;top:0;z-index:20;}
+.brand{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;}
+.brand span{color:var(--gold);}
+.brand small{display:block;font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;
+  font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.hbtn{padding:8px 15px;border:1px solid var(--gold-bd);border-radius:var(--r);
+  background:var(--gold-bg);color:var(--gold);font-family:'Outfit',sans-serif;font-weight:600;
+  font-size:0.8rem;cursor:pointer;transition:0.18s;}
+.hbtn:hover{background:var(--gold);color:#fff;border-color:var(--gold);}
+.logout{padding:8px 15px;border:1px solid var(--rule);border-radius:var(--r);
+  font-size:0.8rem;font-weight:500;color:var(--muted);}
+.logout:hover{border-color:var(--charcoal);color:var(--charcoal);}
+
+.wrap{max-width:1180px;margin:0 auto;padding:1.8rem 1.4rem 4rem;}
+.flash{padding:12px 16px;border-radius:var(--r);font-size:0.88rem;margin-bottom:1.4rem;}
+.flash.ok{background:var(--green-bg);border:1px solid #b6d5be;color:#2c5c39;}
+.flash.err{background:var(--red-bg);border:1px solid #e8b4b4;color:#a33;}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin-bottom:1.8rem;}
+.stat{background:var(--white);border:1px solid var(--rule);border-radius:var(--rl);padding:1.15rem 1.3rem;}
+.stat .n{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:700;line-height:1.15;}
+.stat .l{font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:0.15rem;}
+.stat .sub{font-size:0.75rem;color:var(--muted);margin-top:0.2rem;}
+.stat.good .n{color:var(--green);} .stat.bad .n{color:var(--red);} .stat.gold .n{color:var(--gold);}
+
+.section{background:var(--white);border:1px solid var(--rule);border-radius:var(--rl);
+  padding:1.5rem;margin-bottom:1.5rem;}
+.section h2{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:600;
+  margin-bottom:0.3rem;}
+.hint{font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem;}
+
+/* ── Donut ─────────────────────────────────────────── */
+.donut-wrap{display:grid;grid-template-columns:320px 1fr;gap:2rem;align-items:center;}
+.donut{position:relative;}
+.donut svg{width:100%;height:auto;overflow:visible;}
+.donut .arc{transition:opacity 0.18s,transform 0.18s;transform-origin:center;cursor:pointer;}
+.donut .arc:hover{opacity:0.82;transform:scale(1.03);}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;pointer-events:none;text-align:center;}
+.donut-center .cn{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;line-height:1.1;}
+.donut-center .cl{font-family:'Barlow Condensed',sans-serif;font-size:0.66rem;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.legend{display:flex;flex-direction:column;gap:0.55rem;}
+.leg{display:grid;grid-template-columns:14px 1fr auto auto;gap:0.7rem;align-items:center;
+  padding:8px 10px;border-radius:var(--r);transition:background 0.15s;}
+.leg:hover{background:var(--cream);}
+.leg .dot{width:14px;height:14px;border-radius:4px;}
+.leg .nm{font-size:0.88rem;font-weight:500;}
+.leg .amt{font-weight:600;font-size:0.9rem;}
+.leg .pct{font-size:0.78rem;color:var(--muted);min-width:44px;text-align:right;}
+.empty{color:var(--muted);font-size:0.88rem;font-style:italic;padding:1.5rem 0;text-align:center;}
+
+/* ── Bar chart ─────────────────────────────────────── */
+.chart{display:grid;grid-template-columns:repeat(12,1fr);gap:0.5rem;align-items:end;
+  height:240px;padding:1rem 0 0;border-bottom:2px solid var(--rule);}
+.bar-col{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+  height:100%;gap:2px;position:relative;}
+.bars{display:flex;align-items:flex-end;gap:2px;height:100%;width:100%;justify-content:center;}
+.bar{width:42%;min-height:2px;border-radius:3px 3px 0 0;transition:opacity 0.15s;}
+.bar.rev{background:var(--gold);} .bar.exp{background:#d9c7a8;}
+.bar-col:hover .bar{opacity:0.75;}
+.tip{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:6px;
+  background:var(--charcoal);color:#fff;padding:7px 10px;border-radius:var(--r);
+  font-size:0.72rem;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:5;}
+.tip b{color:var(--gold-bd);}
+.bar-col:hover .tip{opacity:1;}
+.xaxis{display:grid;grid-template-columns:repeat(12,1fr);gap:0.5rem;margin-top:0.5rem;}
+.xlab{text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;
+  font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.chart-key{display:flex;gap:1.2rem;justify-content:flex-end;margin-bottom:0.8rem;}
+.ck{display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:var(--muted);}
+.ck i{width:11px;height:11px;border-radius:3px;display:block;}
+
+/* ── Forms & tables ────────────────────────────────── */
+.grid4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0.8rem;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem;}
+.f{display:flex;flex-direction:column;gap:0.3rem;}
+label{font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+input,select,textarea{padding:10px 12px;background:var(--cream);border:1px solid var(--rule);
+  border-radius:var(--r);font-family:'Outfit',sans-serif;font-size:0.9rem;color:var(--charcoal);width:100%;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
+.btn{padding:11px 24px;border:none;border-radius:var(--r);background:var(--gold);color:#fff;
+  font-family:'Outfit',sans-serif;font-weight:600;font-size:0.88rem;cursor:pointer;transition:background 0.18s;}
+.btn:hover{background:var(--gold-h);}
+.btn.ghost{background:transparent;border:1px solid var(--rule);color:var(--muted);}
+.btn.ghost:hover{background:var(--cream2);color:var(--charcoal);}
+
+table{width:100%;border-collapse:collapse;font-size:0.88rem;}
+th{font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted);text-align:left;padding:0 10px 10px;
+  border-bottom:1px solid var(--rule);}
+td{padding:12px 10px;border-bottom:1px solid var(--cream2);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+.tag{display:inline-block;padding:3px 9px;border-radius:20px;font-size:0.72rem;font-weight:600;}
+.tag.paid{background:var(--green-bg);color:#2c5c39;}
+.tag.unpaid{background:var(--gold-bg);color:var(--gold);}
+.tag.cat{background:var(--cream2);color:var(--ink);}
+.del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:4px 6px;border-radius:4px;}
+.del:hover{background:var(--red-bg);color:var(--red);}
+.inline-f{display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;}
+.inline-f select,.inline-f input{padding:6px 8px;font-size:0.8rem;width:auto;}
+.inline-f input[type=number]{width:78px;}
+.mini{padding:6px 12px;font-size:0.78rem;border-radius:var(--r);border:none;cursor:pointer;
+  background:var(--gold);color:#fff;font-family:'Outfit',sans-serif;font-weight:600;}
+.mini:hover{background:var(--gold-h);}
+.mini.undo{background:var(--cream2);color:var(--muted);}
+.mini.undo:hover{background:var(--rule);color:var(--charcoal);}
+
+.goal-bar{height:12px;background:var(--cream2);border-radius:20px;overflow:hidden;margin:0.7rem 0 0.4rem;}
+.goal-fill{height:100%;background:linear-gradient(90deg,var(--gold),#d99a3c);border-radius:20px;}
+.scroll{overflow-x:auto;}
+
+@media(max-width:900px){
+  .donut-wrap{grid-template-columns:1fr;}
+  .grid4,.grid3{grid-template-columns:1fr 1fr;}
+  .chart{height:180px;gap:0.25rem;} .xaxis{gap:0.25rem;} .xlab{font-size:0.6rem;}
+}
+@media(max-width:560px){ .grid4,.grid3{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Kaiser's <span>Detail Co.</span><small>Finances</small></div>
+  <div style="display:flex;align-items:center;gap:0.7rem;flex-wrap:wrap;">
+    <a href="{{ url_for('admin_dashboard') }}" class="hbtn">← Dashboard</a>
+    <a href="{{ url_for('finances_export_csv') }}" class="hbtn">⬇ Export CSV</a>
+    <a href="{{ url_for('admin_logout') }}" class="logout">Sign Out</a>
+  </div>
+</header>
+
+<div class="wrap">
+  {% if flash %}<div class="flash {{ 'ok' if flash.ok else 'err' }}">{{ flash.msg }}</div>{% endif %}
+
+  <!-- ── STATS ─────────────────────────────────────── -->
+  <div class="stats">
+    <div class="stat gold">
+      <div class="n">${{ '%.0f'|format(stats.revenue) }}</div>
+      <div class="l">Revenue Collected</div>
+      <div class="sub">{{ stats.job_count }} paid job{{ '' if stats.job_count == 1 else 's' }}</div>
+    </div>
+    <div class="stat">
+      <div class="n" style="color:var(--muted);">${{ '%.0f'|format(stats.unpaid) }}</div>
+      <div class="l">Awaiting Payment</div>
+      <div class="sub">Not counted as revenue</div>
+    </div>
+    <div class="stat bad">
+      <div class="n">${{ '%.0f'|format(stats.expenses) }}</div>
+      <div class="l">Total Expenses</div>
+    </div>
+    <div class="stat {{ 'good' if stats.net_profit >= 0 else 'bad' }}">
+      <div class="n">${{ '%.0f'|format(stats.net_profit) }}</div>
+      <div class="l">Net Profit</div>
+      <div class="sub">Revenue − expenses</div>
+    </div>
+    <div class="stat">
+      <div class="n" style="color:var(--ink);">${{ '%.0f'|format(stats.tax_reserve) }}</div>
+      <div class="l">Tax Reserve</div>
+      <div class="sub">Set aside — don't spend</div>
+    </div>
+    <div class="stat gold">
+      <div class="n">${{ '%.0f'|format(stats.fund_total) }}</div>
+      <div class="l">College Fund</div>
+      <div class="sub">${{ '%.0f'|format(stats.college_target) }} available to move</div>
+    </div>
+  </div>
+
+  <!-- ── DONUT ─────────────────────────────────────── -->
+  <div class="section">
+    <h2>🍩 Where the Money Goes</h2>
+    <p class="hint">Every dollar collected, split by expense category with net profit as the final arc.
+      Hover a slice to highlight it.</p>
+
+    {% if slices %}
+    {% set total = slices | sum(attribute='amount') %}
+    <div class="donut-wrap">
+      <div class="donut">
+        <svg viewBox="0 0 200 200" id="donut-svg">
+          {# Arcs drawn as stroked circle segments: stroke-dasharray splits the
+             circumference, stroke-dashoffset rotates each arc into place. #}
+          {% set r = 74 %}
+          {% set circ = 2 * 3.14159265 * r %}
+          {% set ns = namespace(offset=0) %}
+          {% for s in slices %}
+            {% set frac = s.amount / total if total > 0 else 0 %}
+            {% set len = circ * frac %}
+            <circle class="arc" data-key="{{ s.key }}"
+              cx="100" cy="100" r="{{ r }}"
+              fill="none" stroke="{{ s.color }}" stroke-width="26"
+              stroke-dasharray="{{ '%.3f'|format(len - 1.2 if len > 3 else len) }} {{ '%.3f'|format(circ - len + (1.2 if len > 3 else 0)) }}"
+              stroke-dashoffset="{{ '%.3f'|format(-ns.offset) }}"
+              transform="rotate(-90 100 100)">
+              <title>{{ s.label }} — ${{ '%.2f'|format(s.amount) }} ({{ '%.1f'|format(frac * 100) }}%)</title>
+            </circle>
+            {% set ns.offset = ns.offset + len %}
+          {% endfor %}
+        </svg>
+        <div class="donut-center">
+          <div class="cn">${{ '%.0f'|format(total) }}</div>
+          <div class="cl">Collected</div>
+        </div>
+      </div>
+
+      <div class="legend">
+        {% for s in slices %}
+        <div class="leg" data-key="{{ s.key }}">
+          <span class="dot" style="background:{{ s.color }}"></span>
+          <span class="nm">{{ s.label }}</span>
+          <span class="amt">${{ '%.2f'|format(s.amount) }}</span>
+          <span class="pct">{{ '%.1f'|format(s.amount / total * 100 if total > 0 else 0) }}%</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <div class="empty">Mark a job paid or log an expense and the breakdown appears here.</div>
+    {% endif %}
+  </div>
+
+  <!-- ── MONTHLY CHART ─────────────────────────────── -->
+  <div class="section">
+    <h2>📊 Revenue by Month</h2>
+    <p class="hint">Last 12 months. Only paid jobs count toward revenue.</p>
+    <div class="chart-key">
+      <span class="ck"><i style="background:var(--gold);"></i> Revenue</span>
+      <span class="ck"><i style="background:#d9c7a8;"></i> Expenses</span>
+    </div>
+    {% set peak = monthly | map(attribute='revenue') | list %}
+    {% set peak2 = monthly | map(attribute='expenses') | list %}
+    {% set maxv = [peak | max, peak2 | max, 1] | max %}
+    <div class="chart">
+      {% for m in monthly %}
+      <div class="bar-col">
+        <div class="tip">
+          {{ m.label }} {{ m.year }}<br>
+          Revenue <b>${{ '%.0f'|format(m.revenue) }}</b><br>
+          Expenses <b>${{ '%.0f'|format(m.expenses) }}</b><br>
+          Profit <b>${{ '%.0f'|format(m.profit) }}</b>
+        </div>
+        <div class="bars">
+          <div class="bar rev" style="height:{{ (m.revenue / maxv * 100) if maxv else 0 }}%"></div>
+          <div class="bar exp" style="height:{{ (m.expenses / maxv * 100) if maxv else 0 }}%"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="xaxis">
+      {% for m in monthly %}<div class="xlab">{{ m.label }}</div>{% endfor %}
+    </div>
+  </div>
+
+  <!-- ── PAYMENTS ──────────────────────────────────── -->
+  <div class="section">
+    <h2>💵 Payments</h2>
+    <p class="hint">A booking isn't revenue until it's marked paid. Enter the real amount if it
+      differed from the quote (tips, discounts).</p>
+    {% if bookings %}
+    <div class="scroll">
+    <table>
+      <thead><tr>
+        <th>Date</th><th>Customer</th><th>Service</th><th>Quoted</th><th>Status</th><th>Mark Paid</th>
+      </tr></thead>
+      <tbody>
+      {% for b in bookings %}
+      <tr>
+        <td style="white-space:nowrap;">{{ b.booking_date }}</td>
+        <td>{{ b.customer_name }}</td>
+        <td>
+          {{ b.service_name }}
+          {% if b.addon_names %}<div style="font-size:0.75rem;color:var(--muted);">+ {{ b.addon_names | join(', ') }}</div>{% endif %}
+        </td>
+        <td style="white-space:nowrap;">
+          ${{ b.total_price }}
+          {% if b.actual_price is not none and b.actual_price != b.total_price %}
+            <div style="font-size:0.75rem;color:var(--green);">got ${{ '%.2f'|format(b.actual_price) }}</div>
+          {% endif %}
+        </td>
+        <td>
+          {% if b.payment_status == 'paid' %}
+            <span class="tag paid">Paid</span>
+            {% if b.payment_method %}<div style="font-size:0.72rem;color:var(--muted);">{{ b.payment_method }}</div>{% endif %}
+          {% else %}
+            <span class="tag unpaid">Unpaid</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if b.payment_status == 'paid' %}
+            <form method="POST" action="{{ url_for('finances_mark_payment', booking_id=b.id) }}">
+              <input type="hidden" name="payment_status" value="unpaid">
+              <button class="mini undo" type="submit">Undo</button>
+            </form>
+          {% else %}
+            <form method="POST" action="{{ url_for('finances_mark_payment', booking_id=b.id) }}" class="inline-f">
+              <input type="hidden" name="payment_status" value="paid">
+              <select name="payment_method">
+                {% for m in payment_methods %}<option value="{{ m }}">{{ m }}</option>{% endfor %}
+              </select>
+              <input type="number" name="actual_price" step="0.01" min="0"
+                     value="{{ b.total_price }}" title="Amount actually received">
+              <button class="mini" type="submit">Paid</button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty">No bookings yet.</div>
+    {% endif %}
+  </div>
+
+  <!-- ── EXPENSES ──────────────────────────────────── -->
+  <div class="section">
+    <h2>🧾 Expenses</h2>
+    <p class="hint">Log every purchase. Each category becomes an arc on the donut and a
+      deduction on the tax export.</p>
+
+    <form method="POST" action="{{ url_for('finances_add_expense') }}">
+      <div class="grid4">
+        <div class="f">
+          <label>Date</label>
+          <input type="date" name="spent_date" value="{{ today }}" required>
+        </div>
+        <div class="f">
+          <label>Category</label>
+          <select name="category" required>
+            {% for key, c in categories.items() %}<option value="{{ key }}">{{ c.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="f">
+          <label>Vendor</label>
+          <input type="text" name="vendor" placeholder="Walmart, Chemical Guys…">
+        </div>
+        <div class="f">
+          <label>Amount ($)</label>
+          <input type="number" name="amount" step="0.01" min="0.01" placeholder="24.99" required>
+        </div>
+      </div>
+      <div class="f" style="margin-top:0.8rem;">
+        <label>Notes</label>
+        <input type="text" name="notes" placeholder="Ceramic spray + 2 microfiber towels">
+      </div>
+      <button class="btn" type="submit" style="margin-top:1rem;">Log Expense</button>
+    </form>
+
+    {% if expenses %}
+    <div class="scroll" style="margin-top:1.6rem;">
+    <table>
+      <thead><tr><th>Date</th><th>Category</th><th>Vendor</th><th>Notes</th><th>Amount</th><th></th></tr></thead>
+      <tbody>
+      {% for e in expenses %}
+      <tr>
+        <td style="white-space:nowrap;">{{ e.spent_date }}</td>
+        <td>
+          <span class="tag cat" style="border-left:3px solid {{ categories[e.category].color if e.category in categories else '#999' }};">
+            {{ categories[e.category].name if e.category in categories else e.category }}
+          </span>
+        </td>
+        <td>{{ e.vendor or '—' }}</td>
+        <td style="color:var(--muted);font-size:0.82rem;">{{ e.notes or '—' }}</td>
+        <td style="font-weight:600;white-space:nowrap;">${{ '%.2f'|format(e.amount) }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('finances_delete_expense', expense_id=e.id) }}"
+                onsubmit="return confirm('Delete this expense?');">
+            <button class="del" type="submit" title="Delete">✕</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty">No expenses logged yet.</div>
+    {% endif %}
+  </div>
+
+  <!-- ── COLLEGE FUND ──────────────────────────────── -->
+  <div class="section">
+    <h2>🎓 College Fund</h2>
+    <p class="hint">Log each transfer to savings. This is the number that makes the promise on
+      your site real.</p>
+
+    {% if stats.college_goal > 0 %}
+      {% set pct = (stats.fund_total / stats.college_goal * 100) if stats.college_goal else 0 %}
+      <div class="goal-bar">
+        <div class="goal-fill" style="width:{{ pct if pct < 100 else 100 }}%"></div>
+      </div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem;">
+        ${{ '%.0f'|format(stats.fund_total) }} of ${{ '%.0f'|format(stats.college_goal) }}
+        — {{ '%.1f'|format(pct) }}% there
+      </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('finances_add_fund') }}">
+      <div class="grid3">
+        <div class="f">
+          <label>Date</label>
+          <input type="date" name="moved_date" value="{{ today }}" required>
+        </div>
+        <div class="f">
+          <label>Amount ($)</label>
+          <input type="number" name="amount" step="0.01" min="0.01"
+                 placeholder="{{ '%.2f'|format(stats.college_target) }}" required>
+        </div>
+        <div class="f">
+          <label>Note</label>
+          <input type="text" name="note" placeholder="July transfer to savings">
+        </div>
+      </div>
+      <button class="btn" type="submit" style="margin-top:1rem;">Add to Fund</button>
+    </form>
+
+    {% if fund %}
+    <div class="scroll" style="margin-top:1.6rem;">
+    <table>
+      <thead><tr><th>Date</th><th>Note</th><th>Amount</th><th></th></tr></thead>
+      <tbody>
+      {% for f in fund %}
+      <tr>
+        <td style="white-space:nowrap;">{{ f.moved_date }}</td>
+        <td style="color:var(--muted);">{{ f.note or '—' }}</td>
+        <td style="font-weight:600;color:var(--gold);">${{ '%.2f'|format(f.amount) }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('finances_delete_fund', fund_id=f.id) }}"
+                onsubmit="return confirm('Delete this entry?');">
+            <button class="del" type="submit" title="Delete">✕</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ── SETTINGS + EXPORT ─────────────────────────── -->
+  <div class="section">
+    <h2>⚙️ Set-Aside & Tax Export</h2>
+    <p class="hint">Tax reserve is a percentage of net profit held back. College % applies to
+      what's left after tax.</p>
+
+    <form method="POST" action="{{ url_for('finances_save_settings') }}">
+      <div class="grid3">
+        <div class="f">
+          <label>Tax Reserve (%)</label>
+          <input type="number" name="tax_reserve_pct" step="0.5" min="0" max="100"
+                 value="{{ settings.tax_reserve_pct }}" required>
+        </div>
+        <div class="f">
+          <label>College Set-Aside (%)</label>
+          <input type="number" name="college_pct" step="0.5" min="0" max="100"
+                 value="{{ settings.college_pct }}" required>
+        </div>
+        <div class="f">
+          <label>Tuition Goal ($) — 0 to hide</label>
+          <input type="number" name="college_goal" step="1" min="0"
+                 value="{{ settings.college_goal }}" required>
+        </div>
+      </div>
+      <button class="btn" type="submit" style="margin-top:1rem;">Save Settings</button>
+    </form>
+
+    <div style="margin-top:1.8rem;padding-top:1.5rem;border-top:1px solid var(--rule);">
+      <label style="display:block;margin-bottom:0.5rem;">Download Ledger</label>
+      <p class="hint" style="margin-bottom:0.8rem;">
+        Every paid job and expense in one CSV, with income, expense, net profit, and tax
+        reserve totals at the bottom. Opens in Excel or Google Sheets.
+      </p>
+      <div class="inline-f">
+        <a class="btn ghost" href="{{ url_for('finances_export_csv') }}">All Time</a>
+        {% for y in monthly | map(attribute='year') | unique | list | reverse %}
+          <a class="btn ghost" href="{{ url_for('finances_export_csv', year=y) }}">{{ y }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Legend row ↔ donut arc highlighting. Hovering either dims everything else.
+(function () {
+  const arcs = Array.from(document.querySelectorAll('.arc'));
+  const legs = Array.from(document.querySelectorAll('.leg'));
+  if (!arcs.length) return;
+
+  function focus(key) {
+    arcs.forEach(a => { a.style.opacity = (!key || a.dataset.key === key) ? '1' : '0.25'; });
+    legs.forEach(l => { l.style.opacity = (!key || l.dataset.key === key) ? '1' : '0.4'; });
+  }
+  legs.forEach(l => {
+    l.addEventListener('mouseenter', () => focus(l.dataset.key));
+    l.addEventListener('mouseleave', () => focus(null));
+  });
+  arcs.forEach(a => {
+    a.addEventListener('mouseenter', () => focus(a.dataset.key));
+    a.addEventListener('mouseleave', () => focus(null));
+  });
+})();
+</script>
+</body>
+</html>
