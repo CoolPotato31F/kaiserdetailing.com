@@ -16,37 +16,35 @@ echo "🔌 Clearing port 8000..."
 sudo fuser -k 8000/tcp 2>/dev/null || true
 sleep 1
 
-# Back up the live database BEFORE touching git.
-# `git reset --hard` overwrites every tracked file, so if bookings.db was ever
-# committed, this reset would clobber real bookings with an old snapshot. We
-# stash the live DB aside, do the reset, then restore it — the server's data
-# always wins over anything in the repo.
-echo "💾 Backing up live database..."
-DB_BACKUP=""
+# ── Back up the database BEFORE touching git ─────────────────────────────────
+# `git reset --hard` below will overwrite any tracked file. If bookings.db ever
+# got committed, that reset would wipe live data. Back up first, always.
+echo "💾 Backing up database..."
+mkdir -p "$APP_DIR/backups"
 if [ -f "$APP_DIR/bookings.db" ]; then
-    DB_BACKUP="$APP_DIR/bookings.db.deploy-backup"
-    cp -f "$APP_DIR/bookings.db" "$DB_BACKUP"
-    # Copy WAL side-files too, if present, so no committed writes are lost.
-    [ -f "$APP_DIR/bookings.db-wal" ] && cp -f "$APP_DIR/bookings.db-wal" "$DB_BACKUP-wal"
-    [ -f "$APP_DIR/bookings.db-shm" ] && cp -f "$APP_DIR/bookings.db-shm" "$DB_BACKUP-shm"
-    echo "   Backed up $(du -h "$APP_DIR/bookings.db" | cut -f1) database"
+    BACKUP="$APP_DIR/backups/bookings-$(date +%Y%m%d-%H%M%S).db"
+    # .backup is safe on a live DB; a plain cp can catch a half-written WAL.
+    sqlite3 "$APP_DIR/bookings.db" ".backup '$BACKUP'" 2>/dev/null \
+        || cp "$APP_DIR/bookings.db" "$BACKUP"
+    echo "   Saved $(basename $BACKUP)"
+    # Keep the 30 most recent, delete older ones.
+    ls -1t "$APP_DIR/backups"/bookings-*.db 2>/dev/null | tail -n +31 | xargs -r rm --
+else
+    echo "   No database yet — skipping (first deploy?)"
+fi
+
+# If the DB was ever committed, stop tracking it so future resets can't clobber
+# it. This removes it from git's index only — the file on disk is untouched.
+if git ls-files --error-unmatch bookings.db >/dev/null 2>&1; then
+    echo "⚠️  bookings.db is tracked by git — untracking it now."
+    git rm --cached bookings.db -q
+    echo "   Commit this change and push, or it'll warn again next deploy."
 fi
 
 # Pull latest from GitHub
 echo "📥 Pulling latest code from GitHub..."
 git fetch origin main
-# Stop tracking the DB in case an older commit still has it (belt and braces).
-git rm --cached --ignore-unmatch bookings.db bookings.db-wal bookings.db-shm bookings.db-journal >/dev/null 2>&1 || true
 git reset --hard origin/main
-
-# Restore the live database that we stashed before the reset.
-if [ -n "$DB_BACKUP" ] && [ -f "$DB_BACKUP" ]; then
-    echo "♻️  Restoring live database..."
-    mv -f "$DB_BACKUP" "$APP_DIR/bookings.db"
-    [ -f "$DB_BACKUP-wal" ] && mv -f "$DB_BACKUP-wal" "$APP_DIR/bookings.db-wal"
-    [ -f "$DB_BACKUP-shm" ] && mv -f "$DB_BACKUP-shm" "$APP_DIR/bookings.db-shm"
-    echo "   Database restored — existing bookings preserved"
-fi
 
 # Install/update dependencies
 echo "📦 Installing dependencies..."

@@ -54,9 +54,12 @@ header{background:var(--white);border-bottom:1px solid var(--rule);padding:1rem 
 .hint{font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem;}
 
 /* ── Donut ─────────────────────────────────────────── */
-.donut-wrap{display:grid;grid-template-columns:320px 1fr;gap:2rem;align-items:center;}
-.donut{position:relative;}
-.donut svg{width:100%;height:auto;overflow:visible;}
+/* minmax() lets the donut shrink instead of shoving the legend; the legend
+   gets its own minimum so long category names never wrap mid-word. */
+.donut-wrap{display:grid;grid-template-columns:minmax(200px,270px) minmax(280px,1fr);
+  gap:3rem;align-items:center;}
+.donut{position:relative;max-width:270px;width:100%;margin:0 auto;}
+.donut svg{width:100%;height:auto;display:block;overflow:visible;}
 .donut .arc{transition:opacity 0.18s,transform 0.18s;transform-origin:center;cursor:pointer;}
 .donut .arc:hover{opacity:0.82;transform:scale(1.03);}
 .donut-center{position:absolute;inset:0;display:flex;flex-direction:column;
@@ -64,14 +67,16 @@ header{background:var(--white);border-bottom:1px solid var(--rule);padding:1rem 
 .donut-center .cn{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;line-height:1.1;}
 .donut-center .cl{font-family:'Barlow Condensed',sans-serif;font-size:0.66rem;font-weight:600;
   letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
-.legend{display:flex;flex-direction:column;gap:0.55rem;}
-.leg{display:grid;grid-template-columns:14px 1fr auto auto;gap:0.7rem;align-items:center;
-  padding:8px 10px;border-radius:var(--r);transition:background 0.15s;}
+.legend{display:flex;flex-direction:column;gap:0.4rem;min-width:0;}
+.leg{display:grid;grid-template-columns:14px minmax(0,1fr) auto auto;gap:0.8rem;
+  align-items:center;padding:9px 12px;border-radius:var(--r);transition:background 0.15s;}
 .leg:hover{background:var(--cream);}
-.leg .dot{width:14px;height:14px;border-radius:4px;}
-.leg .nm{font-size:0.88rem;font-weight:500;}
-.leg .amt{font-weight:600;font-size:0.9rem;}
-.leg .pct{font-size:0.78rem;color:var(--muted);min-width:44px;text-align:right;}
+.leg .dot{width:14px;height:14px;border-radius:4px;flex-shrink:0;}
+.leg .nm{font-size:0.88rem;font-weight:500;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.leg .amt{font-weight:600;font-size:0.9rem;white-space:nowrap;}
+.leg .pct{font-size:0.78rem;color:var(--muted);min-width:48px;text-align:right;
+  white-space:nowrap;}
 .empty{color:var(--muted);font-size:0.88rem;font-style:italic;padding:1.5rem 0;text-align:center;}
 
 /* ── Bar chart ─────────────────────────────────────── */
@@ -110,6 +115,18 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
 .btn.ghost{background:transparent;border:1px solid var(--rule);color:var(--muted);}
 .btn.ghost:hover{background:var(--cream2);color:var(--charcoal);}
 
+.addon-box{display:flex;flex-wrap:wrap;gap:0.5rem;padding:10px;background:var(--cream);
+  border:1px solid var(--rule);border-radius:var(--r);min-height:44px;align-items:center;}
+.addon-none{font-size:0.82rem;color:var(--muted);font-style:italic;}
+.addon-chip{display:flex;align-items:center;gap:0.45rem;padding:6px 12px;background:var(--white);
+  border:1px solid var(--rule);border-radius:20px;font-size:0.82rem;cursor:pointer;
+  transition:0.15s;user-select:none;}
+.addon-chip:hover{border-color:var(--gold-bd);}
+.addon-chip input{width:15px;height:15px;accent-color:var(--gold);cursor:pointer;margin:0;}
+.addon-chip.on{background:var(--gold-bg);border-color:var(--gold-bd);color:var(--gold);font-weight:600;}
+.calc-note{font-size:0.76rem;color:var(--muted);margin-top:0.25rem;}
+.calc-note b{color:var(--gold);}
+
 table{width:100%;border-collapse:collapse;font-size:0.88rem;}
 th{font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:600;letter-spacing:1.5px;
   text-transform:uppercase;color:var(--muted);text-align:left;padding:0 10px 10px;
@@ -135,8 +152,13 @@ tr:last-child td{border-bottom:none;}
 .goal-fill{height:100%;background:linear-gradient(90deg,var(--gold),#d99a3c);border-radius:20px;}
 .scroll{overflow-x:auto;}
 
+/* Stack before the two columns get tight — 900px was too late and the donut
+   crowded the legend in the 760–900px band. */
+@media(max-width:980px){
+  .donut-wrap{grid-template-columns:1fr;gap:1.8rem;justify-items:center;}
+  .legend{width:100%;max-width:460px;}
+}
 @media(max-width:900px){
-  .donut-wrap{grid-template-columns:1fr;}
   .grid4,.grid3{grid-template-columns:1fr 1fr;}
   .chart{height:180px;gap:0.25rem;} .xaxis{gap:0.25rem;} .xlab{font-size:0.6rem;}
 }
@@ -271,6 +293,72 @@ tr:last-child td{border-bottom:none;}
     <div class="xaxis">
       {% for m in monthly %}<div class="xlab">{{ m.label }}</div>{% endfor %}
     </div>
+  </div>
+
+  <!-- ── PAST CLIENT ───────────────────────────────── -->
+  <div class="section">
+    <h2>➕ Add a Past Client</h2>
+    <p class="hint">Log a job you already did — cash work, a friend's car, anything from before
+      the site went live. It's saved as paid and counts toward revenue, the donut, the chart,
+      and your tax export.</p>
+
+    <form method="POST" action="{{ url_for('finances_add_past_client') }}">
+      <div class="grid4">
+        <div class="f">
+          <label>Job Date</label>
+          <input type="date" name="booking_date" max="{{ today }}" value="{{ today }}" required>
+        </div>
+        <div class="f">
+          <label>Customer Name</label>
+          <input type="text" name="customer_name" placeholder="Mark R." required>
+        </div>
+        <div class="f">
+          <label>Service</label>
+          <select name="service_key" id="pc-service" required>
+            {% for key, s in services.items() %}
+              <option value="{{ key }}" data-price="{{ s.price }}">{{ s.name }} — ${{ s.price }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="f">
+          <label>Vehicle Type</label>
+          <select name="vehicle_type" id="pc-vehicle">
+            <option value="">Car / Sedan</option>
+            <option value="SUV">SUV (+$25)</option>
+            <option value="Minivan">Minivan (+$25)</option>
+            <option value="Truck">Truck</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="f" style="margin-top:0.9rem;">
+        <label>Add-ons</label>
+        <div id="pc-addons" class="addon-box">
+          <span class="addon-none">No add-ons available for this service.</span>
+        </div>
+      </div>
+
+      <div class="grid3" style="margin-top:0.9rem;">
+        <div class="f">
+          <label>Amount Received ($)</label>
+          <input type="number" name="amount" id="pc-amount" step="0.01" min="0"
+                 placeholder="Leave blank for list price">
+          <span class="calc-note">List price: <b id="pc-calc">$0</b></span>
+        </div>
+        <div class="f">
+          <label>Paid With</label>
+          <select name="payment_method">
+            {% for m in payment_methods %}<option value="{{ m }}">{{ m }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="f">
+          <label>Notes</label>
+          <input type="text" name="notes" placeholder="Neighbor, paid cash">
+        </div>
+      </div>
+
+      <button class="btn" type="submit" style="margin-top:1rem;">Add Past Client</button>
+    </form>
   </div>
 
   <!-- ── PAYMENTS ──────────────────────────────────── -->
@@ -505,6 +593,67 @@ tr:last-child td{border-bottom:none;}
 </div>
 
 <script>
+// ── Past client form: show only the add-ons valid for the chosen service,
+// and keep a live list price in sync. The server re-validates all of this in
+// compute_total(), so this is convenience, not enforcement.
+(function () {
+  const ADDONS         = {{ addons | tojson }};
+  const SERVICE_ADDONS = {{ service_addons | tojson }};
+  const SERVICES       = {{ services | tojson }};
+  const LARGE_SVC      = {{ large_vehicle_services | tojson }};
+  const LARGE_FEE      = {{ large_vehicle_surcharge }};
+
+  const svc     = document.getElementById('pc-service');
+  const veh     = document.getElementById('pc-vehicle');
+  const box     = document.getElementById('pc-addons');
+  const calc    = document.getElementById('pc-calc');
+  const amount  = document.getElementById('pc-amount');
+  if (!svc || !box) return;
+
+  function price() {
+    const key = svc.value;
+    let total = (SERVICES[key] || {}).price || 0;
+    if ((veh.value === 'SUV' || veh.value === 'Minivan') && LARGE_SVC.includes(key)) {
+      total += LARGE_FEE;
+    }
+    box.querySelectorAll('input:checked').forEach(i => {
+      total += (ADDONS[i.value] || {}).price || 0;
+    });
+    calc.textContent = '$' + total;
+    amount.placeholder = total.toFixed(2);
+    return total;
+  }
+
+  function renderAddons() {
+    const allowed = SERVICE_ADDONS[svc.value] || [];
+    box.innerHTML = '';
+    if (!allowed.length) {
+      box.innerHTML = '<span class="addon-none">No add-ons available for this service.</span>';
+      price();
+      return;
+    }
+    allowed.forEach(k => {
+      const a = ADDONS[k];
+      if (!a) return;
+      const chip = document.createElement('label');
+      chip.className = 'addon-chip';
+      chip.innerHTML = '<input type="checkbox" name="addons" value="' + k + '">' +
+                       '<span>' + a.name + ' +$' + a.price + '</span>';
+      const cb = chip.querySelector('input');
+      cb.addEventListener('change', () => {
+        chip.classList.toggle('on', cb.checked);
+        price();
+      });
+      box.appendChild(chip);
+    });
+    price();
+  }
+
+  svc.addEventListener('change', renderAddons);
+  veh.addEventListener('change', price);
+  renderAddons();
+})();
+
 // Legend row ↔ donut arc highlighting. Hovering either dims everything else.
 (function () {
   const arcs = Array.from(document.querySelectorAll('.arc'));

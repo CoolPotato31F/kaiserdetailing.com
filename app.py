@@ -476,9 +476,19 @@ def init_db():
         conn.commit()
 
     # Partial unique index: at most one non-deleted booking per date.
+    # The calendar allows one real booking per day. Backfilled past jobs
+    # (source='past') are exempt — you may have detailed three cars on one
+    # Saturday last summer, and those records must not block each other or
+    # collide with a live booking. Rebuild the old index if it predates this.
+    old_idx = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE type='index' AND name='idx_bookings_active_date'"
+    ).fetchone()
+    if old_idx and "source" not in (old_idx["sql"] or ""):
+        conn.execute("DROP INDEX idx_bookings_active_date")
+        conn.commit()
     conn.execute("""
         CREATE UNIQUE INDEX IF NOT EXISTS idx_bookings_active_date
-        ON bookings (booking_date) WHERE deleted = 0
+        ON bookings (booking_date) WHERE deleted = 0 AND source != 'past'
     """)
     conn.commit()
 
@@ -1304,6 +1314,11 @@ def finances():
         categories=EXPENSE_CATEGORIES,
         payment_methods=PAYMENT_METHODS,
         settings=settings,
+        services=SERVICES,
+        addons=ADDONS,
+        service_addons=SERVICE_ADDONS,
+        large_vehicle_services=sorted(LARGE_VEHICLE_SERVICES),
+        large_vehicle_surcharge=LARGE_VEHICLE_SURCHARGE,
         stats={
             "revenue":       round(revenue, 2),
             "unpaid":        round(unpaid_total, 2),
@@ -1318,6 +1333,74 @@ def finances():
         },
         today=today,
     )
+
+
+@app.route("/finances/past-client", methods=["POST"])
+@login_required
+def finances_add_past_client():
+    """
+    Backfill a job that happened before/outside the booking system — cash jobs,
+    friends' cars, work done pre-launch. Recorded as a normal booking marked
+    paid, so it flows into revenue, the donut, the monthly chart, and the CSV.
+
+    Unlike /api/book this allows past dates and does NOT enforce one-per-day:
+    you may well have detailed two cars on the same Saturday last summer.
+    """
+    refresh_services()
+
+    job_date = (request.form.get("booking_date") or "").strip()
+    try:
+        parsed = datetime.strptime(job_date, "%Y-%m-%d").date()
+    except ValueError:
+        return _fin_redirect("Enter a valid date for the job.")
+    if parsed > date.today():
+        return _fin_redirect("That date is in the future — use the admin panel to book it.")
+
+    customer = (request.form.get("customer_name") or "").strip()
+    if not customer:
+        return _fin_redirect("Enter the customer's name.")
+
+    service_key = (request.form.get("service_key") or "").strip()
+    if service_key not in SERVICES:
+        return _fin_redirect("Pick a valid service.")
+
+    vehicle_type = (request.form.get("vehicle_type") or "").strip()
+    addon_keys = request.form.getlist("addons")
+
+    try:
+        quoted, clean_addons = compute_total(service_key, addon_keys, vehicle_type)
+    except ValueError as e:
+        return _fin_redirect(str(e))
+
+    # If they typed what they actually got, use it; otherwise fall back to the
+    # computed catalog price.
+    raw_amount = (request.form.get("amount") or "").strip()
+    actual = round(_f(raw_amount), 2) if raw_amount else float(quoted)
+    if actual < 0:
+        return _fin_redirect("Amount can't be negative.")
+
+    method = (request.form.get("payment_method") or "").strip()
+    now = datetime.now().isoformat(timespec="seconds")
+
+    conn = get_db()
+    conn.execute("""
+        INSERT INTO bookings
+        (booking_date, arrival_time, service_key, service_name, addons_json,
+         total_price, customer_name, contact_type, contact_value, vehicle_type,
+         street, city, state, notes, agreed_terms, source, created_at, deleted,
+         payment_status, payment_method, paid_at, actual_price)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    """, (
+        job_date, "—", service_key, SERVICES[service_key]["name"],
+        json.dumps(clean_addons), quoted, customer,
+        "none", "", vehicle_type,
+        "", "", "", (request.form.get("notes") or "").strip(),
+        1, "past", now, 0,
+        "paid", method, now, actual,
+    ))
+    conn.commit()
+    conn.close()
+    return _fin_redirect(f"Added {customer} — ${actual:.2f} on {job_date}.", ok=True)
 
 
 @app.route("/finances/expense", methods=["POST"])
