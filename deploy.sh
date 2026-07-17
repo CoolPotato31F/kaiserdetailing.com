@@ -3,42 +3,58 @@
 set -e
 
 APP_DIR="/home/fechnerkaiser1/kaiserdetailing.com"
+# The database lives OUTSIDE the repo so git operations can never touch it.
+DATA_DIR="${KAISER_DATA_DIR:-/home/fechnerkaiser1/kaiser-data}"
+DB="$DATA_DIR/bookings.db"
 VENV="$APP_DIR/venv"
 SERVICE="kaiser"
 
 echo "🚀 Kaiser's Detail Co. — Deploying..."
 echo "──────────────────────────────────────"
 
-cd $APP_DIR
+mkdir -p "$DATA_DIR"
+cd "$APP_DIR"
 
-# Kill anything holding port 8000 before we do anything
-echo "🔌 Clearing port 8000..."
-sudo fuser -k 8000/tcp 2>/dev/null || true
-sleep 1
-
-# ── Back up the database BEFORE touching git ─────────────────────────────────
-# `git reset --hard` below will overwrite any tracked file. If bookings.db ever
-# got committed, that reset would wipe live data. Back up first, always.
-echo "💾 Backing up database..."
-mkdir -p "$APP_DIR/backups"
+# ── Safety: the DB must not be inside the repo ───────────────────────────────
+# If bookings.db is sitting in APP_DIR, the `git reset --hard` below can wipe
+# it. Refuse to deploy until it's been migrated out.
 if [ -f "$APP_DIR/bookings.db" ]; then
-    BACKUP="$APP_DIR/backups/bookings-$(date +%Y%m%d-%H%M%S).db"
-    # .backup is safe on a live DB; a plain cp can catch a half-written WAL.
-    sqlite3 "$APP_DIR/bookings.db" ".backup '$BACKUP'" 2>/dev/null \
-        || cp "$APP_DIR/bookings.db" "$BACKUP"
-    echo "   Saved $(basename $BACKUP)"
-    # Keep the 30 most recent, delete older ones.
-    ls -1t "$APP_DIR/backups"/bookings-*.db 2>/dev/null | tail -n +31 | xargs -r rm --
-else
-    echo "   No database yet — skipping (first deploy?)"
+    echo "❌ Found bookings.db inside the repo at $APP_DIR."
+    echo "   A deploy would risk overwriting it. Run ./migrate_db_out_of_repo.sh first."
+    exit 1
 fi
 
-# If the DB was ever committed, stop tracking it so future resets can't clobber
-# it. This removes it from git's index only — the file on disk is untouched.
+# Refuse to deploy if the DB is tracked by git — a reset would clobber it.
 if git ls-files --error-unmatch bookings.db >/dev/null 2>&1; then
-    echo "⚠️  bookings.db is tracked by git — untracking it now."
-    git rm --cached bookings.db -q
-    echo "   Commit this change and push, or it'll warn again next deploy."
+    echo "❌ bookings.db is tracked by git. Run ./migrate_db_out_of_repo.sh first."
+    exit 1
+fi
+
+# ── Back up the database BEFORE touching git ─────────────────────────────────
+echo "💾 Backing up database..."
+mkdir -p "$DATA_DIR/backups"
+if [ -f "$DB" ]; then
+    BACKUP="$DATA_DIR/backups/bookings-$(date +%Y%m%d-%H%M%S).db"
+    # Fold the WAL back into the main DB first. The app runs in WAL mode, so
+    # recent writes live in bookings.db-wal until a checkpoint. Backing up the
+    # main file alone would silently miss them.
+    sqlite3 "$DB" "PRAGMA wal_checkpoint(TRUNCATE);" >/dev/null 2>&1 || true
+    # .backup is safe on a live DB; a plain cp can catch a half-written WAL.
+    sqlite3 "$DB" ".backup '$BACKUP'" 2>/dev/null || cp "$DB" "$BACKUP"
+
+    # Verify the backup is readable before trusting it.
+    if sqlite3 "$BACKUP" "PRAGMA integrity_check;" 2>/dev/null | grep -q "^ok$"; then
+        ROWS=$(sqlite3 "$BACKUP" "SELECT COUNT(*) FROM bookings;" 2>/dev/null || echo "?")
+        echo "   Saved $(basename "$BACKUP") ($ROWS bookings)"
+    else
+        echo "❌ Backup failed its integrity check. Aborting deploy."
+        exit 1
+    fi
+
+    # Keep the 30 most recent, delete older ones.
+    ls -1t "$DATA_DIR/backups"/bookings-*.db 2>/dev/null | tail -n +31 | xargs -r rm --
+else
+    echo "   No database yet — skipping (first deploy?)"
 fi
 
 # Pull latest from GitHub
@@ -52,7 +68,7 @@ $VENV/bin/pip install -r requirements.txt -q
 
 # Apply any DB migrations (init_db is safe to run repeatedly)
 echo "🗄️  Running DB migrations..."
-$VENV/bin/python3 -c "from app import init_db; init_db(); print('   DB OK')"
+KAISER_DATA_DIR="$DATA_DIR" $VENV/bin/python3 -c "from app import init_db; init_db(); print('   DB OK')"
 
 # Restart the service
 echo "🔄 Restarting $SERVICE service..."
@@ -80,6 +96,11 @@ if [ "$HTTP" = "200" ]; then
     echo "✅ Site responding (HTTP $HTTP)"
 else
     echo "⚠️  Site returned HTTP $HTTP"
+fi
+
+# Confirm data survived the deploy.
+if [ -f "$DB" ]; then
+    echo "✅ Bookings intact: $(sqlite3 "$DB" "SELECT COUNT(*) FROM bookings;" 2>/dev/null || echo "?")"
 fi
 
 echo "──────────────────────────────────────"

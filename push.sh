@@ -6,13 +6,27 @@ echo "------------------------------------"
 # Navigate to the project folder (adjust to wherever you keep it)
 cd "$(dirname "$0")"
 
-# Make sure the database is NOT tracked. If it was ever committed, remove it
-# from the repo (this does NOT delete your local file — only untracks it).
-# Keeping it out of git is what stops deploys from resurrecting old bookings.
-git rm --cached --ignore-unmatch bookings.db bookings.db-wal bookings.db-shm bookings.db-journal >/dev/null 2>&1 || true
+# Never let a database file reach the repo. If one gets committed, the deploy's
+# `git reset --hard` will overwrite the live DB on the VM and destroy real
+# bookings and finances. .gitignore covers this, but check anyway.
+if git ls-files --error-unmatch bookings.db >/dev/null 2>&1; then
+    echo "⚠️  bookings.db is tracked by git — untracking it now."
+    git rm --cached bookings.db -q
+fi
 
-# Add all changes (the .gitignore keeps the DB and local files out).
+# Stage everything, then defensively unstage any DB files that slipped through.
 git add .
+git reset -q -- '*.db' '*.db-wal' '*.db-shm' backups/ 2>/dev/null || true
+
+if git diff --cached --name-only | grep -qE '\.db($|-wal|-shm)'; then
+    echo "❌ A database file is still staged. Aborting push."
+    exit 1
+fi
+
+if git diff --cached --quiet; then
+    echo "ℹ️  Nothing to commit."
+    exit 0
+fi
 
 # Commit with a timestamp message
 git commit -m "update $(date '+%Y-%m-%d %H:%M:%S')"
@@ -22,4 +36,4 @@ git push origin main
 
 echo "------------------------------------"
 echo "✅ Done! Changes pushed to GitHub."
-echo "On the VM, run:  git pull && sudo systemctl restart kaiser"
+echo "On the VM, run:  ./deploy.sh"

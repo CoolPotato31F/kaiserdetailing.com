@@ -1,37 +1,23 @@
-# ── Kaiser's Detail Co. — files that must NEVER be committed ──────────────
-# The live database lives only on the server. If it gets committed, every
-# `git reset --hard` on deploy overwrites real bookings with an old snapshot
-# (this is what caused deleted bookings to reappear after each deploy).
+# ── Database — NEVER commit these ────────────────────────────────────────────
+# If the DB gets committed, `git reset --hard` during deploy will overwrite the
+# live database and destroy real bookings and finances.
 bookings.db
 bookings.db-wal
 bookings.db-shm
-bookings.db-journal
 *.db
 *.db-wal
 *.db-shm
-*.db-journal
-*.sqlite
-*.sqlite3
+*.migrated-*
+backups/
 
-# Server-side session secret — generated per machine, must stay local.
+# Secrets
 .flask_secret
+.env
 
-# Python cruft
-__pycache__/
-*.py[cod]
-*.egg-info/
+# Python
 venv/
-.venv/
-env/
+__pycache__/
+*.pyc
 
-# OS / editor noise
+# OS
 .DS_Store
-Thumbs.db
-*.swp
-*.swo
-*~
-.idea/
-.vscode/
-
-# Logs
-*.log

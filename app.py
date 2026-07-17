@@ -28,7 +28,17 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 # Config
 # ──────────────────────────────────────────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "bookings.db")
+
+# The database MUST live outside the git repo. If it sits in BASE_DIR, a
+# `git reset --hard` during deploy can overwrite it with a committed copy and
+# destroy live bookings/finances. DATA_DIR defaults to a sibling of the repo,
+# so git has no way to reach it. Override with the KAISER_DATA_DIR env var.
+DATA_DIR = os.environ.get(
+    "KAISER_DATA_DIR",
+    os.path.join(os.path.dirname(BASE_DIR), "kaiser-data"),
+)
+os.makedirs(DATA_DIR, exist_ok=True)
+DB_PATH = os.path.join(DATA_DIR, "bookings.db")
 
 # Admin password. Override with the ADMIN_PASSWORD env var in production.
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Kaiser556!?!")
