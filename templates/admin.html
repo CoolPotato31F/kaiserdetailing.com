@@ -317,20 +317,10 @@ tr.past td{opacity:0.5;}
     {% endif %}
   </div>
 
-  <!-- BOOKINGS TABLE -->
-  <div class="section">
-    <h2>All Bookings</h2>
-    {% if bookings %}
-    <div class="scroll">
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th><th>Time</th><th>Customer</th><th>Vehicle</th><th>Contact</th>
-          <th>Service &amp; Add-Ons</th><th>Address</th><th>Notes</th><th>Total</th><th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for b in bookings %}
+  <!-- BOOKINGS: split into upcoming vs. other (past) -->
+  {% set upcoming_bookings = bookings | selectattr('is_past', 'equalto', False) | list %}
+  {% set other_bookings = bookings | selectattr('is_past', 'equalto', True) | list | reverse | list %}
+  {% macro booking_row(b) %}
         <tr class="{{ 'past' if b.is_past else '' }}">
           <td class="date-cell">{{ b.booking_date }}<br><span class="src">{{ b.source }}</span></td>
           <td>{{ b.arrival_time }}</td>
@@ -351,12 +341,49 @@ tr.past td{opacity:0.5;}
             </form>
           </td>
         </tr>
-        {% endfor %}
+  {% endmacro %}
+
+  <!-- UPCOMING BOOKINGS -->
+  <div class="section">
+    <h2>Upcoming Bookings {% if upcoming_bookings %}<span class="src">({{ upcoming_bookings | length }})</span>{% endif %}</h2>
+    {% if upcoming_bookings %}
+    <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th><th>Time</th><th>Customer</th><th>Vehicle</th><th>Contact</th>
+          <th>Service &amp; Add-Ons</th><th>Address</th><th>Notes</th><th>Total</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in upcoming_bookings %}{{ booking_row(b) }}{% endfor %}
       </tbody>
     </table>
     </div>
     {% else %}
-    <div class="create-card empty">No bookings yet. They'll appear here as customers reserve days.</div>
+    <div class="create-card empty">No upcoming bookings. New reservations will appear here.</div>
+    {% endif %}
+  </div>
+
+  <!-- OTHER (PAST) BOOKINGS -->
+  <div class="section">
+    <h2>Other Bookings {% if other_bookings %}<span class="src">({{ other_bookings | length }})</span>{% endif %}</h2>
+    {% if other_bookings %}
+    <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th><th>Time</th><th>Customer</th><th>Vehicle</th><th>Contact</th>
+          <th>Service &amp; Add-Ons</th><th>Address</th><th>Notes</th><th>Total</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in other_bookings %}{{ booking_row(b) }}{% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="create-card empty">No past bookings yet.</div>
     {% endif %}
   </div>
 </div>
