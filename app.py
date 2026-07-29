@@ -28,17 +28,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 # Config
 # ──────────────────────────────────────────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# The database MUST live outside the git repo. If it sits in BASE_DIR, a
-# `git reset --hard` during deploy can overwrite it with a committed copy and
-# destroy live bookings/finances. DATA_DIR defaults to a sibling of the repo,
-# so git has no way to reach it. Override with the KAISER_DATA_DIR env var.
-DATA_DIR = os.environ.get(
-    "KAISER_DATA_DIR",
-    os.path.join(os.path.dirname(BASE_DIR), "kaiser-data"),
-)
-os.makedirs(DATA_DIR, exist_ok=True)
-DB_PATH = os.path.join(DATA_DIR, "bookings.db")
+DB_PATH = os.path.join(BASE_DIR, "bookings.db")
 
 # Admin password. Override with the ADMIN_PASSWORD env var in production.
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Kaiser556!?!")
@@ -188,8 +178,6 @@ PAYMENT_METHODS = ["Cash", "Venmo", "Zelle", "Apple Pay", "Check", "Other"]
 # /finances and stored in the settings table.
 DEFAULT_SETTINGS = {
     "tax_reserve_pct": "15",   # % of net profit to hold back for taxes
-    "college_pct":     "70",   # % of after-tax profit earmarked for tuition
-    "college_goal":    "0",    # optional tuition goal ($); 0 = no goal bar
 }
 
 
@@ -576,19 +564,7 @@ def init_db():
     """)
     conn.commit()
 
-    # ── College fund transfers ─────────────────────────────────────────────
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS college_fund (
-            id          INTEGER PRIMARY KEY AUTOINCREMENT,
-            moved_date  TEXT NOT NULL,
-            amount      REAL NOT NULL,
-            note        TEXT DEFAULT '',
-            created_at  TEXT NOT NULL
-        );
-    """)
-    conn.commit()
-
-    # ── Settings (tax reserve %, college set-aside %) ──────────────────────
+    # ── Settings (tax reserve %) ───────────────────────────────────────────
     conn.execute("""
         CREATE TABLE IF NOT EXISTS settings (
             key   TEXT PRIMARY KEY,
@@ -1236,9 +1212,6 @@ def finances():
     expense_rows = conn.execute(
         "SELECT * FROM expenses ORDER BY spent_date DESC, id DESC"
     ).fetchall()
-    fund_rows = conn.execute(
-        "SELECT * FROM college_fund ORDER BY moved_date DESC, id DESC"
-    ).fetchall()
     conn.close()
 
     today = date.today().isoformat()
@@ -1255,20 +1228,15 @@ def finances():
         bookings.append(b)
 
     expenses = [dict(e) for e in expense_rows]
-    fund = [dict(f) for f in fund_rows]
 
     expense_total = sum(_f(e["amount"]) for e in expenses)
-    fund_total = sum(_f(f["amount"]) for f in fund)
 
     # Only PAID work counts as revenue. Unpaid is a promise, not money.
     revenue = paid_total
     net_profit = revenue - expense_total
 
     tax_pct = _f(settings["tax_reserve_pct"])
-    college_pct = _f(settings["college_pct"])
     tax_reserve = max(net_profit, 0) * tax_pct / 100.0
-    after_tax = max(net_profit - tax_reserve, 0)
-    college_target = after_tax * college_pct / 100.0
 
     # ── Donut arcs: expense categories + profit ───────────────────────────
     by_cat = {}
@@ -1318,7 +1286,6 @@ def finances():
         "finances.html",
         bookings=bookings,
         expenses=expenses,
-        fund=fund,
         slices=slices,
         monthly=monthly,
         categories=EXPENSE_CATEGORIES,
@@ -1335,9 +1302,6 @@ def finances():
             "expenses":      round(expense_total, 2),
             "net_profit":    round(net_profit, 2),
             "tax_reserve":   round(tax_reserve, 2),
-            "college_target": round(college_target, 2),
-            "fund_total":    round(fund_total, 2),
-            "college_goal":  _f(settings["college_goal"]),
             "job_count":     sum(1 for b in bookings if b["payment_status"] == "paid"),
             "avg_ticket":    round(revenue / max(sum(1 for b in bookings if b["payment_status"] == "paid"), 1), 2),
         },
@@ -1480,45 +1444,11 @@ def finances_mark_payment(booking_id):
     return _fin_redirect("Payment updated.", ok=True)
 
 
-@app.route("/finances/fund", methods=["POST"])
-@login_required
-def finances_add_fund():
-    amount = _f(request.form.get("amount"), -1)
-    moved_date = (request.form.get("moved_date") or "").strip()
-    if amount <= 0:
-        return _fin_redirect("Enter an amount greater than $0.")
-    try:
-        datetime.strptime(moved_date, "%Y-%m-%d")
-    except ValueError:
-        return _fin_redirect("Enter a valid date.")
-
-    conn = get_db()
-    conn.execute(
-        "INSERT INTO college_fund (moved_date, amount, note, created_at) VALUES (?,?,?,?)",
-        (moved_date, round(amount, 2), (request.form.get("note") or "").strip(),
-         datetime.now().isoformat(timespec="seconds")),
-    )
-    conn.commit()
-    conn.close()
-    return _fin_redirect(f"${amount:.2f} added to the college fund.", ok=True)
-
-
-@app.route("/finances/fund/delete/<int:fund_id>", methods=["POST"])
-@login_required
-def finances_delete_fund(fund_id):
-    conn = get_db()
-    conn.execute("DELETE FROM college_fund WHERE id = ?", (fund_id,))
-    conn.commit()
-    conn.close()
-    return _fin_redirect("Entry deleted.", ok=True)
-
-
 @app.route("/finances/settings", methods=["POST"])
 @login_required
 def finances_save_settings():
     conn = get_db()
-    for key, lo, hi in [("tax_reserve_pct", 0, 100), ("college_pct", 0, 100),
-                        ("college_goal", 0, 10_000_000)]:
+    for key, lo, hi in [("tax_reserve_pct", 0, 100)]:
         val = _f(request.form.get(key), None)
         if val is None or not (lo <= val <= hi):
             conn.close()

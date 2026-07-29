@@ -241,8 +241,6 @@ def build(out="kaiser_appointment_form.pdf"):
     c.setFillColor(colors.white)
     c.setFont("Helvetica", 6.5)
     c.drawString(M+5, M+5, "Kaiser's Detail Co.  ·  kaiserdetailing.com  ·  KaoFechner@outlook.com")
-    c.setFont("Helvetica-Bold", 6.5)
-    c.drawRightString(M+CW-5, M+5, "Supporting a local student through college")
 
     c.save()
     print(f"✅ Saved: {out}")
