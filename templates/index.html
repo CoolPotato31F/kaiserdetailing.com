@@ -2463,6 +2463,15 @@ async function submitBooking() {
     });
     const d = await r.json();
     if (d.ok) {
+      // Google Ads conversion — fires when a booking is completed
+      if (typeof gtag === "function") {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-18210533417/yfjqCKOp4tgcEKnguutD',
+          'value': d.total,
+          'currency': 'USD',
+          'transaction_id': d.booking_id || (d.date + '-' + d.time),
+        });
+      }
       document.getElementById("booking-form").style.display = "none";
       const succ = document.getElementById("booking-success");
       const svcLabel = SERVICES[bk.service] ? localName(SERVICES[bk.service]) : d.service;
@@ -2504,13 +2513,14 @@ renderSummary();
 loadAvailability();
 </script>
 
-<!-- Google Analytics -->
+<!-- Google tag (gtag.js) — Analytics + Google Ads -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6VD5HCKFRD"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-6VD5HCKFRD');
+  gtag('config', 'AW-18210533417');
 </script>
 </body>
 </html>
