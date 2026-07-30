@@ -28,7 +28,31 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 # Config
 # ──────────────────────────────────────────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "bookings.db")
+
+# ── Database location ─────────────────────────────────────────────────────────
+# The DB must live OUTSIDE the git working tree. deploy.sh runs
+# `git reset --hard origin/main`, which overwrites every tracked file. If the
+# database sits in BASE_DIR and ever gets committed, every deploy wipes live
+# bookings/finances back to the committed copy. Keeping it in a separate data
+# directory makes that impossible.
+#
+# Priority:
+#   1. DB_PATH env var, if set (explicit override)
+#   2. <BASE_DIR>/data/bookings.db  — a sibling dir that is gitignored
+# A one-time migration below moves any legacy DB from the old location.
+DATA_DIR = os.environ.get("DATA_DIR", os.path.join(BASE_DIR, "data"))
+os.makedirs(DATA_DIR, exist_ok=True)
+DB_PATH = os.environ.get("DB_PATH", os.path.join(DATA_DIR, "bookings.db"))
+
+# One-time migration: if a legacy DB exists in BASE_DIR and there's no DB in the
+# new location yet, move it (and its WAL/SHM sidecars) so no data is lost.
+_legacy_db = os.path.join(BASE_DIR, "bookings.db")
+if os.path.exists(_legacy_db) and not os.path.exists(DB_PATH):
+    import shutil
+    for _suffix in ("", "-wal", "-shm"):
+        _src = _legacy_db + _suffix
+        if os.path.exists(_src):
+            shutil.move(_src, DB_PATH + _suffix)
 
 # Admin password. Override with the ADMIN_PASSWORD env var in production.
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Kaiser556!?!")
@@ -178,6 +202,8 @@ PAYMENT_METHODS = ["Cash", "Venmo", "Zelle", "Apple Pay", "Check", "Other"]
 # /finances and stored in the settings table.
 DEFAULT_SETTINGS = {
     "tax_reserve_pct": "15",   # % of net profit to hold back for taxes
+    "college_pct":     "70",   # % of after-tax profit earmarked for tuition
+    "college_goal":    "0",    # optional tuition goal ($); 0 = no goal bar
 }
 
 
@@ -352,6 +378,12 @@ def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL;")
+    # FULL synchronous ensures a committed write survives a power loss or an
+    # abrupt process kill (systemctl restart) instead of sitting unflushed.
+    conn.execute("PRAGMA synchronous=FULL;")
+    # Auto-checkpoint the WAL back into the main DB file regularly so data isn't
+    # stranded in bookings.db-wal if the process is terminated hard.
+    conn.execute("PRAGMA wal_autocheckpoint=100;")
     return conn
 
 
@@ -564,7 +596,19 @@ def init_db():
     """)
     conn.commit()
 
-    # ── Settings (tax reserve %) ───────────────────────────────────────────
+    # ── College fund transfers ─────────────────────────────────────────────
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS college_fund (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            moved_date  TEXT NOT NULL,
+            amount      REAL NOT NULL,
+            note        TEXT DEFAULT '',
+            created_at  TEXT NOT NULL
+        );
+    """)
+    conn.commit()
+
+    # ── Settings (tax reserve %, college set-aside %) ──────────────────────
     conn.execute("""
         CREATE TABLE IF NOT EXISTS settings (
             key   TEXT PRIMARY KEY,
@@ -1212,6 +1256,9 @@ def finances():
     expense_rows = conn.execute(
         "SELECT * FROM expenses ORDER BY spent_date DESC, id DESC"
     ).fetchall()
+    fund_rows = conn.execute(
+        "SELECT * FROM college_fund ORDER BY moved_date DESC, id DESC"
+    ).fetchall()
     conn.close()
 
     today = date.today().isoformat()
@@ -1228,15 +1275,20 @@ def finances():
         bookings.append(b)
 
     expenses = [dict(e) for e in expense_rows]
+    fund = [dict(f) for f in fund_rows]
 
     expense_total = sum(_f(e["amount"]) for e in expenses)
+    fund_total = sum(_f(f["amount"]) for f in fund)
 
     # Only PAID work counts as revenue. Unpaid is a promise, not money.
     revenue = paid_total
     net_profit = revenue - expense_total
 
     tax_pct = _f(settings["tax_reserve_pct"])
+    college_pct = _f(settings["college_pct"])
     tax_reserve = max(net_profit, 0) * tax_pct / 100.0
+    after_tax = max(net_profit - tax_reserve, 0)
+    college_target = after_tax * college_pct / 100.0
 
     # ── Donut arcs: expense categories + profit ───────────────────────────
     by_cat = {}
@@ -1286,6 +1338,7 @@ def finances():
         "finances.html",
         bookings=bookings,
         expenses=expenses,
+        fund=fund,
         slices=slices,
         monthly=monthly,
         categories=EXPENSE_CATEGORIES,
@@ -1302,6 +1355,9 @@ def finances():
             "expenses":      round(expense_total, 2),
             "net_profit":    round(net_profit, 2),
             "tax_reserve":   round(tax_reserve, 2),
+            "college_target": round(college_target, 2),
+            "fund_total":    round(fund_total, 2),
+            "college_goal":  _f(settings["college_goal"]),
             "job_count":     sum(1 for b in bookings if b["payment_status"] == "paid"),
             "avg_ticket":    round(revenue / max(sum(1 for b in bookings if b["payment_status"] == "paid"), 1), 2),
         },
@@ -1444,11 +1500,45 @@ def finances_mark_payment(booking_id):
     return _fin_redirect("Payment updated.", ok=True)
 
 
+@app.route("/finances/fund", methods=["POST"])
+@login_required
+def finances_add_fund():
+    amount = _f(request.form.get("amount"), -1)
+    moved_date = (request.form.get("moved_date") or "").strip()
+    if amount <= 0:
+        return _fin_redirect("Enter an amount greater than $0.")
+    try:
+        datetime.strptime(moved_date, "%Y-%m-%d")
+    except ValueError:
+        return _fin_redirect("Enter a valid date.")
+
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO college_fund (moved_date, amount, note, created_at) VALUES (?,?,?,?)",
+        (moved_date, round(amount, 2), (request.form.get("note") or "").strip(),
+         datetime.now().isoformat(timespec="seconds")),
+    )
+    conn.commit()
+    conn.close()
+    return _fin_redirect(f"${amount:.2f} added to the college fund.", ok=True)
+
+
+@app.route("/finances/fund/delete/<int:fund_id>", methods=["POST"])
+@login_required
+def finances_delete_fund(fund_id):
+    conn = get_db()
+    conn.execute("DELETE FROM college_fund WHERE id = ?", (fund_id,))
+    conn.commit()
+    conn.close()
+    return _fin_redirect("Entry deleted.", ok=True)
+
+
 @app.route("/finances/settings", methods=["POST"])
 @login_required
 def finances_save_settings():
     conn = get_db()
-    for key, lo, hi in [("tax_reserve_pct", 0, 100)]:
+    for key, lo, hi in [("tax_reserve_pct", 0, 100), ("college_pct", 0, 100),
+                        ("college_goal", 0, 10_000_000)]:
         val = _f(request.form.get(key), None)
         if val is None or not (lo <= val <= hi):
             conn.close()

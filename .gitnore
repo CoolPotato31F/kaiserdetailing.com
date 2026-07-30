@@ -1,23 +1,34 @@
-# ── Database — NEVER commit these ────────────────────────────────────────────
-# If the DB gets committed, `git reset --hard` during deploy will overwrite the
-# live database and destroy real bookings and finances.
+# ── Database (NEVER commit — this is live customer data) ─────────────────
+# Committing the DB means `git reset --hard` on the server wipes real
+# bookings/finances back to the committed copy on every deploy.
 bookings.db
 bookings.db-wal
 bookings.db-shm
 *.db
 *.db-wal
 *.db-shm
-*.migrated-*
+
+# Backups created by deploy.sh
 backups/
 
-# Secrets
+# Flask session secret (machine-specific; committing it breaks/leaks sessions)
 .flask_secret
-.env
 
 # Python
 venv/
 __pycache__/
 *.pyc
+*.pyo
+.Python
+*.egg-info/
 
-# OS
+# OS / editor cruft
 .DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Env files (may hold ADMIN_PASSWORD, PUSHOVER tokens, etc.)
+.env
+.env.*
