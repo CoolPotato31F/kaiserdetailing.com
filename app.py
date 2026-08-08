@@ -1131,8 +1131,8 @@ def admin_add_block():
     except ValueError:
         return _admin_redirect("Invalid date.")
 
-    # Open-ended block: no end date → block every day from the start date onward.
-    open_ended = not end_date
+    # Open-ended block: no end date, or the "Block onward" button was used.
+    open_ended = (not end_date) or (f.get("onward") == "1")
     if open_ended:
         conn = get_db()
         conn.execute("""
