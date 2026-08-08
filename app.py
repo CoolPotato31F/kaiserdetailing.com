@@ -28,31 +28,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 # Config
 # ──────────────────────────────────────────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# ── Database location ─────────────────────────────────────────────────────────
-# The DB must live OUTSIDE the git working tree. deploy.sh runs
-# `git reset --hard origin/main`, which overwrites every tracked file. If the
-# database sits in BASE_DIR and ever gets committed, every deploy wipes live
-# bookings/finances back to the committed copy. Keeping it in a separate data
-# directory makes that impossible.
-#
-# Priority:
-#   1. DB_PATH env var, if set (explicit override)
-#   2. <BASE_DIR>/data/bookings.db  — a sibling dir that is gitignored
-# A one-time migration below moves any legacy DB from the old location.
-DATA_DIR = os.environ.get("DATA_DIR", os.path.join(BASE_DIR, "data"))
-os.makedirs(DATA_DIR, exist_ok=True)
-DB_PATH = os.environ.get("DB_PATH", os.path.join(DATA_DIR, "bookings.db"))
-
-# One-time migration: if a legacy DB exists in BASE_DIR and there's no DB in the
-# new location yet, move it (and its WAL/SHM sidecars) so no data is lost.
-_legacy_db = os.path.join(BASE_DIR, "bookings.db")
-if os.path.exists(_legacy_db) and not os.path.exists(DB_PATH):
-    import shutil
-    for _suffix in ("", "-wal", "-shm"):
-        _src = _legacy_db + _suffix
-        if os.path.exists(_src):
-            shutil.move(_src, DB_PATH + _suffix)
+DB_PATH = os.path.join(BASE_DIR, "bookings.db")
 
 # Admin password. Override with the ADMIN_PASSWORD env var in production.
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "Kaiser556!?!")
@@ -378,12 +354,6 @@ def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL;")
-    # FULL synchronous ensures a committed write survives a power loss or an
-    # abrupt process kill (systemctl restart) instead of sitting unflushed.
-    conn.execute("PRAGMA synchronous=FULL;")
-    # Auto-checkpoint the WAL back into the main DB file regularly so data isn't
-    # stranded in bookings.db-wal if the process is terminated hard.
-    conn.execute("PRAGMA wal_autocheckpoint=100;")
     return conn
 
 
@@ -417,7 +387,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS blocked_times (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,
             block_date   TEXT NOT NULL,          -- range START date (YYYY-MM-DD)
-            block_type   TEXT NOT NULL,           -- 'range' (legacy: 'full_day'/'before'/'after')
+            block_type   TEXT NOT NULL,           -- 'range' / 'from' (legacy: 'full_day'/'before'/'after')
             before_time  TEXT DEFAULT NULL,       -- legacy: block all slots before this time
             after_time   TEXT DEFAULT NULL,       -- legacy: block all slots after this time
             end_date     TEXT DEFAULT NULL,       -- range END date (YYYY-MM-DD)
@@ -761,7 +731,8 @@ def availability():
     # Blocked times — include any block that is still relevant today or later.
     # For range blocks the relevant end is end_date; legacy rows only have block_date.
     block_rows = conn.execute(
-        "SELECT * FROM blocked_times WHERE COALESCE(end_date, block_date) >= ?",
+        "SELECT * FROM blocked_times "
+        "WHERE block_type = 'from' OR COALESCE(end_date, block_date) >= ?",
         (earliest,)
     ).fetchall()
     conn.close()
@@ -852,13 +823,20 @@ def book():
     conn = get_db()
     block_rows = conn.execute(
         "SELECT * FROM blocked_times "
-        "WHERE block_date = ? OR (block_date <= ? AND COALESCE(end_date, block_date) >= ?)",
-        (booking_date, booking_date, booking_date)
+        "WHERE block_date = ? "
+        "OR (block_type = 'range' AND block_date <= ? AND COALESCE(end_date, block_date) >= ?) "
+        "OR (block_type = 'from' AND block_date <= ?)",
+        (booking_date, booking_date, booking_date, booking_date)
     ).fetchall()
     conn.close()
     slot_idx = TIME_SLOTS.index(arrival_time)
     unavailable = jsonify({"ok": False, "error": "Sorry — that time is not available for booking."}), 400
     for b in block_rows:
+        if b["block_type"] == "from":
+            # Open-ended block: everything on/after block_date is unavailable.
+            if booking_date >= b["block_date"]:
+                return jsonify({"ok": False, "error": "Sorry — that day is not available for booking."}), 400
+            continue
         if b["block_type"] == "range":
             start_date = b["block_date"]
             end_date   = b["end_date"] or b["block_date"]
@@ -1144,11 +1122,32 @@ def admin_add_block():
     end_time   = (f.get("end_time") or "").strip() or None
     note       = (f.get("note") or "").strip()
 
-    if not start_date or not end_date:
-        return _admin_redirect("Please select a start and end date.")
+    from datetime import datetime as _dt
+
+    if not start_date:
+        return _admin_redirect("Please select a start date.")
     try:
-        from datetime import datetime as _dt
         sd = _dt.strptime(start_date, "%Y-%m-%d").date()
+    except ValueError:
+        return _admin_redirect("Invalid date.")
+
+    # Open-ended block: no end date → block every day from the start date onward.
+    open_ended = not end_date
+    if open_ended:
+        conn = get_db()
+        conn.execute("""
+            INSERT INTO blocked_times
+            (block_date, block_type, before_time, after_time,
+             end_date, start_time, end_time, note, created_at)
+            VALUES (?,?,?,?,?,?,?,?,?)
+        """, (start_date, "from", None, None,
+              None, None, None, note,
+              datetime.now().isoformat(timespec="seconds")))
+        conn.commit()
+        conn.close()
+        return _admin_redirect(f"Bookings blocked from {start_date} onward.", ok=True)
+
+    try:
         ed = _dt.strptime(end_date, "%Y-%m-%d").date()
     except ValueError:
         return _admin_redirect("Invalid date.")

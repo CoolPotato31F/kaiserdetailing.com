@@ -168,8 +168,8 @@ tr.past td{opacity:0.5;}
             </select>
           </div>
           <div>
-            <label>End date</label>
-            <input type="date" name="end_date" id="blk-end-date" min="{{ today }}" required>
+            <label>End date <span style="text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400;">(leave blank = block onward)</span></label>
+            <input type="date" name="end_date" id="blk-end-date" min="{{ today }}">
           </div>
           <div>
             <label>End time <span style="text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400;">(optional)</span></label>
@@ -194,10 +194,13 @@ tr.past td{opacity:0.5;}
     <div class="block-list">
       {% for b in blocks %}
       {% set effective_end = b.end_date if b.end_date else b.block_date %}
-      {% set is_past = effective_end < today %}
+      {% set is_past = b.block_type != 'from' and effective_end < today %}
       <div class="block-item {{ 'block-past' if is_past else '' }}">
         <div class="block-info">
-          {% if b.block_type == 'range' %}
+          {% if b.block_type == 'from' %}
+            <span class="block-date">{{ b.block_date }} →</span>
+            <span class="block-type">Onward (no end date)</span>
+          {% elif b.block_type == 'range' %}
             {% if b.end_date and b.end_date != b.block_date %}
               <span class="block-date">{{ b.block_date }}{% if b.start_time %} {{ b.start_time }}{% endif %} → {{ b.end_date }}{% if b.end_time %} {{ b.end_time }}{% endif %}</span>
             {% else %}

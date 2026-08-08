@@ -2183,6 +2183,10 @@ const SLOT_ORDER = ["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 P
 // True if EVERY offered time slot on dateStr is blocked (so the day can't be booked).
 function isFullyBlocked(dateStr) {
   return blockedTimes.some(b => {
+    if (b.type === "from") {
+      // Open-ended: every day on/after the start date is fully blocked.
+      return dateStr >= b.date;
+    }
     if (b.type === "range") {
       const start = b.date;
       const end   = b.end_date || b.date;
@@ -2225,6 +2229,9 @@ function nextOpenDate() {
 function isSlotBlocked(dateStr, t) {
   const idx = SLOT_ORDER.indexOf(t);
   return blockedTimes.some(b => {
+    if (b.type === "from") {
+      return dateStr >= b.date;
+    }
     if (b.type === "range") {
       const start = b.date;
       const end   = b.end_date || b.date;
@@ -2463,15 +2470,6 @@ async function submitBooking() {
     });
     const d = await r.json();
     if (d.ok) {
-      // Google Ads conversion — fires when a booking is completed
-      if (typeof gtag === "function") {
-        gtag('event', 'conversion', {
-          'send_to': 'AW-18210533417/yfjqCKOp4tgcEKnguutD',
-          'value': d.total,
-          'currency': 'USD',
-          'transaction_id': d.booking_id || (d.date + '-' + d.time),
-        });
-      }
       document.getElementById("booking-form").style.display = "none";
       const succ = document.getElementById("booking-success");
       const svcLabel = SERVICES[bk.service] ? localName(SERVICES[bk.service]) : d.service;
@@ -2513,14 +2511,13 @@ renderSummary();
 loadAvailability();
 </script>
 
-<!-- Google tag (gtag.js) — Analytics + Google Ads -->
+<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6VD5HCKFRD"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-6VD5HCKFRD');
-  gtag('config', 'AW-18210533417');
 </script>
 </body>
 </html>
