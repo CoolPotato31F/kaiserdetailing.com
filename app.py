@@ -77,12 +77,11 @@ app.config.update(
 # names, and visibility all live in the database and are edited from /admin.
 # The "order" field controls the display order (lower = shown first).
 DEFAULT_SERVICES = {
-    "showroom_detail":     {"name": "Showroom Detail",         "price": 225, "dur": "5h",     "visible": 1, "order": 1},
-    "professional_detail": {"name": "Professional Detail",     "price": 150, "dur": "4h",     "visible": 1, "order": 2},
-    "interior_detail":     {"name": "Interior Detail",         "price": 100, "dur": "4h 30m", "visible": 1, "order": 3},
-    "exterior_detail":     {"name": "Exterior Detail",         "price": 75,  "dur": "2h 30m", "visible": 1, "order": 4},
-    "engine_bay":          {"name": "Engine Bay Cleaning",     "price": 55,  "dur": "30m",    "visible": 1, "order": 5},
-    "decal_removal":       {"name": "Sticker / Decal Removal", "price": 15,  "dur": "15m",    "visible": 1, "order": 6},
+    "professional_detail": {"name": "Professional Detail",     "price": 150, "dur": "4h",     "visible": 1, "order": 1},
+    "interior_detail":     {"name": "Interior Detail",         "price": 100, "dur": "4h 30m", "visible": 1, "order": 2},
+    "exterior_detail":     {"name": "Exterior Detail",         "price": 75,  "dur": "2h 30m", "visible": 1, "order": 3},
+    "engine_bay":          {"name": "Engine Bay Cleaning",     "price": 55,  "dur": "30m",    "visible": 1, "order": 4},
+    "decal_removal":       {"name": "Sticker / Decal Removal", "price": 15,  "dur": "15m",    "visible": 1, "order": 5},
 }
 
 
@@ -156,7 +155,6 @@ SERVICE_ADDONS = {
     "interior_detail":     ["carpet_shampoo"],
     "exterior_detail":     ["wax", "clay", "rainx"],
     "professional_detail": ["carpet_shampoo", "clay", "rainx"],
-    "showroom_detail":     ["clay", "rainx"],
     "engine_bay":          [],
     "decal_removal":       [],
 }
@@ -603,7 +601,7 @@ LARGE_VEHICLES = {"Minivan", "SUV"}
 LARGE_VEHICLE_SURCHARGE = 25
 # Only services that involve interior work qualify for the large-vehicle surcharge
 LARGE_VEHICLE_SERVICES = {
-    "interior_detail", "professional_detail", "showroom_detail",
+    "interior_detail", "professional_detail",
 }
 
 
@@ -1203,7 +1201,7 @@ def admin_test_notification():
         "contact_type":  "phone",
         "contact_value": "815-823-9485",
         "vehicle_type":  "Sedan",
-        "street": "123 Main St", "city": "Plainfield", "state": "IL",
+        "street": "123 Main St", "city": "Greencastle", "state": "IN",
         "notes":  "This is a test notification from the admin panel.",
         "source": "admin",
     })

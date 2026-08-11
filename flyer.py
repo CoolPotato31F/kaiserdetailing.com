@@ -42,66 +42,42 @@ SERVICES = [
         'addons': [('Tire Shine', '+$10'), ('Wax', '+$30'), ('RainX', '+$10')],
     },
     {
-        'name': 'Quick Interior Clean',
-        'dur': '30 min', 'price': '$35',
-        'desc': 'Vacuum, wipe-down & freshen up',
+        'name': 'Interior Detail',
+        'dur': '4 hr 30 min', 'price': '$100',
+        'desc': 'Deep vacuum, panels, glass & odor',
         'addons': [('Carpet Shampoo', '+$30')],
     },
     {
-        'name': 'Quick Detail',
-        'dur': '1 hr', 'price': '$55',
-        'desc': 'Interior vacuum + exterior wash',
-        'addons': [('Tire Shine', '+$10')],
-    },
-    {
         'name': 'Exterior Detail',
-        'dur': '1 hr 30 min', 'price': '$75',
+        'dur': '2 hr 30 min', 'price': '$75',
         'desc': 'Hand wash, wheels, windows & jambs',
         'addons': [
-            ('Wax', '+$30'), ('Clay Service', '+$45'),
-            ('RainX', '+$10'), ('Headlight Restore', '+$40'),
-            ('Decal Removal', '+$15'),
+            ('Wax', '+$30'), ('Clay Service', '+$45'), ('RainX', '+$10'),
         ],
-    },
-    {
-        'name': 'Interior Detail',
-        'dur': '1 hr 30 min', 'price': '$100',
-        'desc': 'Deep vacuum, panels, glass & odor',
-        'addons': [('Carpet Shampoo', '+$30'), ('Headlight Restore', '+$40')],
     },
     {
         'name': 'Professional Detail',
-        'dur': '3 hrs', 'price': '$150',
+        'dur': '4 hrs', 'price': '$150',
         'desc': 'Full interior + exterior package',
         'addons': [
-            ('Carpet Shampoo', '+$30'), ('Clay Service', '+$45'),
-            ('RainX', '+$10'), ('Headlight Restore', '+$40'),
-        ],
-    },
-    {
-        'name': 'Showroom Detail',
-        'dur': '4 hrs', 'price': '$225',
-        'desc': 'Top-to-bottom showroom-quality finish',
-        'addons': [
-            ('Clay Service', '+$45'), ('RainX', '+$10'),
-            ('Headlight Restore', '+$40'),
+            ('Carpet Shampoo', '+$30'), ('Clay Service', '+$45'), ('RainX', '+$10'),
         ],
     },
     {
         'name': 'Engine Bay Cleaning',
-        'dur': '30 min', 'price': '$35',
+        'dur': '30 min', 'price': '$55',
         'desc': 'Degreased & detailed under the hood',
         'addons': [],
     },
 ]
 
 EXTRAS = [
-    ('Headlight Restoration', '40 min', '$40', 'Restores cloudy lenses to like-new clarity'),
     ('Sticker / Decal Removal', '15 min', '$15', 'Clean removal without damaging paint'),
 ]
 
 # ── SIZING CONSTANTS ──────────────────────────────────────────────────────────
 HEADER_H   = 130
+COLLEGE_H  = 48
 FOOTER_H   = 72
 EYEBROW_H  = 18
 EXTRA_H    = 42
@@ -175,9 +151,11 @@ def draw_header(c):
         c.setFillColor(GOLD); c.circle(W/2, ly + ls/2, ls/2, fill=1, stroke=0)
 
     txt(c, "Kaiser's Detail Co.", W/2, ly - 16, 'Times-Bold', 24, WHITE, 'center')
-    txt(c, 'AUTO DETAILING  ·  PLAINFIELD, IL', W/2, ly - 30, 'Helvetica', 8.5, HexColor('#cccccc'), 'center')
+    txt(c, 'AUTO DETAILING  ·  GREENCASTLE, IN', W/2, ly - 30, 'Helvetica', 8.5, HexColor('#cccccc'), 'center')
     txt(c, '"Your Car, Spotless."', W/2, ly - 46, 'Times-BoldItalic', 12,
         HexColor('#f2f2f2'), 'center')
+    txt(c, 'Greencastle, IN & within 25 miles', W/2, ly - 60,
+        'Helvetica', 7.5, HexColor('#aaaaaa'), 'center')
 
     # QR code — top-right corner of header band
     qr_size = 72
@@ -188,6 +166,18 @@ def draw_header(c):
         'Helvetica-Bold', 5.5, HexColor('#aaaaaa'), 'center')
 
     return H - HEADER_H
+
+
+def draw_college_strip(c, y):
+    by = y - COLLEGE_H - 6
+    rr(c, MARGIN, by, INNER, COLLEGE_H, r=6, fc=GOLD_LIGHT, sc=GOLD_BD, lw=0.75)
+    txt(c, 'Local, mobile & meticulous.',
+        MARGIN + CARD_PAD, by + COLLEGE_H - 17, 'Helvetica-Bold', 9.5, CHARCOAL)
+    txt(c, 'Kaiser\u2019s Detail Co. comes to you in Greencastle and within 25 miles with professional-grade tools.',
+        MARGIN + CARD_PAD, by + COLLEGE_H - 31, 'Helvetica', 7.5, MUTED)
+    txt(c, 'One booking a day means your car gets full, undivided attention.',
+        MARGIN + CARD_PAD, by + COLLEGE_H - 43, 'Helvetica', 7.5, MUTED)
+    return by - 6
 
 
 def eyebrow(c, text, y):
@@ -257,7 +247,7 @@ def draw_footer(c):
         'Helvetica-Bold', 12, WHITE, 'center')
     txt(c, 'kaiserdetailing.com  ·  815-823-9485  ·  KaoFechner@outlook.com',
         W/2, mid + 3, 'Helvetica', 8, HexColor('#cccccc'), 'center')
-    txt(c, 'Plainfield, IL & surrounding areas',
+    txt(c, 'Greencastle, IN & within 25 miles  ·  One booking a day — full attention on your car',
         W/2, mid - 12, 'Helvetica', 7.5, WHITE, 'center')
 
 
@@ -267,9 +257,9 @@ PANEL_H = H / 3   # 264 pt — the visible top-third when folded
 
 HERO_SVCS = [
     ('Quick Wash',       '$20',  '30 min'),
-    ('Exterior Detail',  '$75',  '1h 30m'),
-    ('Interior Detail',  '$100', '1h 30m'),
-    ('Full Detail',      '$150', '3 hrs'),
+    ('Exterior Detail',  '$75',  '2h 30m'),
+    ('Interior Detail',  '$100', '4h 30m'),
+    ('Full Detail',      '$150', '4 hrs'),
 ]
 
 def draw_back_page(c):
@@ -309,12 +299,20 @@ def draw_back_page(c):
                     mask='auto', preserveAspectRatio=True)
     lbl_x = logo_x + ls + 8
     txt(c, "Kaiser's Detail Co.", lbl_x, logo_y + 10, 'Times-Bold', 15, WHITE)
-    txt(c, 'AUTO DETAILING  ·  PLAINFIELD, IL', lbl_x, logo_y - 2, 'Helvetica', 7, HexColor('#aaaaaa'))
+    txt(c, 'AUTO DETAILING  ·  GREENCASTLE, IN', lbl_x, logo_y - 2, 'Helvetica', 7, HexColor('#aaaaaa'))
 
     # ── Big tagline ───────────────────────────────────────────────────────────
     tag_y = logo_y - 26
     txt(c, 'Your Car,', MARGIN, tag_y, 'Times-Bold', 28, WHITE)
     txt(c, 'Spotless.', MARGIN, tag_y - 30, 'Times-BoldItalic', 28, HexColor('#dddddd'))
+
+    # ── Mission line ──────────────────────────────────────────────────────────
+    mis_y = tag_y - 56
+    c.setStrokeColor(HexColor('#555555'))
+    c.setLineWidth(0.5)
+    c.line(MARGIN, mis_y + 14, MARGIN + TEXT_W * 0.55, mis_y + 14)
+    txt(c, 'Local, mobile & meticulous.', MARGIN, mis_y + 2, 'Helvetica-Bold', 8.5, HexColor('#eeeeee'))
+    txt(c, 'One booking a day — full attention on your car.', MARGIN, mis_y - 12, 'Helvetica', 8, HexColor('#aaaaaa'))
 
     # ── Mini service strip ────────────────────────────────────────────────────
     strip_y  = fold_y + 28
@@ -352,7 +350,8 @@ def build():
     cv.rect(0, 0, W, H, fill=1, stroke=0)
 
     y = draw_header(cv)
-    y -= 20
+    y = draw_college_strip(cv, y)
+    y -= 15
     y = eyebrow(cv, 'SERVICES & PRICING', y)
 
     left_svcs  = SERVICES[:4]

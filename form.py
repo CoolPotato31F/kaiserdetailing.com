@@ -146,48 +146,23 @@ def build(out="kaiser_appointment_form.pdf"):
 
     # LEFT COLUMN
     ly = svc(ly, L, "Interior Detail", "$100", truck="+$25")
-    ly = addon(ly, L, "Trunk Cleaning", "+$30")
     ly = addon(ly, L, "Carpet Shampoo", "+$30")
     ly -= 3
 
     ly = svc(ly, L, "Professional Detail", "$150", truck="+$25")
-    ly = addon(ly, L, "Clay Service", "+$45")
-    ly -= 3
-
-    ly = svc(ly, L, "Quick Wash", "$20")
-    ly = addon(ly, L, "Tire Shine", "+$10")
-    ly = addon(ly, L, "RainX", "+$10")
-    ly = addon(ly, L, "Wax", "+$30")
-    ly -= 3
-
-    ly = svc(ly, L, "Quick Detail", "$55")
-    ly = addon(ly, L, "Tire Shine", "+$10")
-    ly = addon(ly, L, "RainX", "+$10")
-    ly = addon(ly, L, "Wax", "+$30")
     ly = addon(ly, L, "Carpet Shampoo", "+$30")
+    ly = addon(ly, L, "Clay Service", "+$45")
+    ly = addon(ly, L, "RainX", "+$10")
     ly -= 3
 
-    ly = svc(ly, L, "Engine Bay Cleaning", "$35")
+    ly = svc(ly, L, "Engine Bay Cleaning", "$55")
     ly -= 3
 
     # RIGHT COLUMN
     ry = svc(ry, R, "Exterior Detail", "$75")
+    ry = addon(ry, R, "Wax", "+$30")
     ry = addon(ry, R, "Clay Service", "+$45")
     ry = addon(ry, R, "RainX", "+$10")
-    ry = addon(ry, R, "Tire Shine", "+$10")
-    ry = addon(ry, R, "Wax", "+$30")
-    ry = addon(ry, R, "Sticker/Decal Removal", "+$15")
-    ry = addon(ry, R, "Engine Bay Cleaning", "+$35")
-    ry -= 3
-
-    ry = svc(ry, R, "Showroom Detail", "$225", truck="+$25")
-    ry -= 3
-
-    ry = svc(ry, R, "Quick Interior Cleaning", "$35", truck="+$10")
-    ry = addon(ry, R, "Carpet Shampoo", "+$30")
-    ry -= 3
-
-    ry = svc(ry, R, "Headlight Restoration", "$40")
     ry -= 3
 
     ry = svc(ry, R, "Sticker/Decal Removal", "$15")
@@ -241,6 +216,8 @@ def build(out="kaiser_appointment_form.pdf"):
     c.setFillColor(colors.white)
     c.setFont("Helvetica", 6.5)
     c.drawString(M+5, M+5, "Kaiser's Detail Co.  ·  kaiserdetailing.com  ·  KaoFechner@outlook.com")
+    c.setFont("Helvetica-Bold", 6.5)
+    c.drawRightString(M+CW-5, M+5, "Local, mobile & meticulous — one booking a day")
 
     c.save()
     print(f"✅ Saved: {out}")
